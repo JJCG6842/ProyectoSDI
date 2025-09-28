@@ -1,0 +1,104 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: #1C91FF;
+    font-family: Arial, sans-serif;
+  }
+  
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; // Pantalla completa
+    padding: 20px;
+  }
+  
+  .card {
+    width: 100%;
+    max-width: 500px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 40px 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+  }
+  
+  .logo {
+    width: 100%;
+    max-width: 300px;
+    display: block;
+    margin: 0 auto 30px auto;
+  }
+  
+  .title1 {
+    text-align: center;
+    font-size: 36px;
+    color: hsl(209, 100%, 55%);
+    font-weight: 600;
+    margin-bottom: 30px;
+  }
+  
+  .text1 {
+    font-size: 18px;
+    color: #1C91FF;
+    font-weight: 500;
+    margin-bottom: 8px;
+    display: block;
+  }
+  
+  .input-container {
+    position: relative;
+    margin-bottom: 20px;
+  }
+  
+  .icon {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    color: #1C91FF;
+    font-size: 18px;
+  }
+  
+  .input1 {
+    width: 100%;
+    height: 45px;
+    outline: none;
+    border-radius: 8px;
+    font-size: 18px;
+    padding-left: 40px; 
+    box-sizing: border-box;
+    background-color: #f2f2f2;
+  }
+  
+  .jeje {
+    font-size: 14px;
+    color: #1C91FF;
+    text-align: right;
+    margin-bottom: 30px;
+    cursor: pointer;
+    transition: color 0.3s;
+  
+    &:hover {
+      color: #0b6cc3;
+      text-decoration: underline;
+    }
+  }
+  
+  .boton {
+    width: 100%;
+    height: 50px;
+    background-color: #1C91FF;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  
+    &:hover {
+      background-color: #0b6cc3;
+    }
+  }
+  
