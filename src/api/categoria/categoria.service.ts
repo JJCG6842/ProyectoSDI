@@ -7,14 +7,12 @@ export class CategoriaService {
 
     async findAll() {
         return this.prisma.category.findMany({
-            include: {products: true},
         });
     }
 
     async findOne(id: number){
         const category = await this.prisma.category.findUnique({
             where: {id},
-            include: {products: true},
         });
         if (!category) throw new NotFoundException('category not found');
         return category;

@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-//  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -20,7 +19,6 @@ model Category {
   description String
   createAt    DateTime   @default(now())
   updateAt    DateTime   @updatedAt
-  products    Products[]
 }
 
 model Products {
@@ -33,5 +31,4 @@ model Products {
   categoryId Int
   createAt   DateTime @default(now())
   updateAt   DateTime @updatedAt
-  category   Category @relation(fields: [categoryId], references: [id])
 }
