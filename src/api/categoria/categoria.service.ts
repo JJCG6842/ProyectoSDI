@@ -24,7 +24,7 @@ export class CategoriaService {
         return this.prisma.category.create({data});
     }
 
-    async update(id: number, data: { name?: string; descrption?: string}){
+    async update(id: number, data: { name?: string; description?: string}){
         await this.findOne(id);
         return this.prisma.category.update({
             where: {id},

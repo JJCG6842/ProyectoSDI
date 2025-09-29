@@ -28,6 +28,7 @@ export class CategoriaController {
         return this.categoriaService.update(id, body);
     }
 
+    
     @Delete(':id')
     remove(@Param('id', ParseIntPipe) id:number) {
         return this.categoriaService.delete(id);
