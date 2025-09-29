@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
-import { f } from "../../../../../node_modules/@angular/material/icon-module.d-COXCrhrh";
+import { Component , inject, ChangeDetectionStrategy} from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog'
 
 @Component({
   selector: 'app-categoria-almacenero',
-  imports: [MatIconModule],
+  imports: [MatIconModule, ],
   templateUrl: './categoria-almacenero.component.html',
   styleUrl: './categoria-almacenero.component.scss'
 })

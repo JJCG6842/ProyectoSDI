@@ -97,7 +97,17 @@ export class menuAlmaceneroComponent{
     icon: 'dashboard',
     label: 'Gestión de Productos',
     route: '/almacenero/categoria-almacenero'
-  } 
+  },
+  {
+    icon: '',
+    label: 'Categoria',
+    route: '/almacenero/categoria-almacenero'
+  },
+  {
+    icon: '',
+    label: 'Productos',
+    route: '/almacenero/productos-almacenero'
+  }  
 ])
 
   profilePicSize = computed(()=>
