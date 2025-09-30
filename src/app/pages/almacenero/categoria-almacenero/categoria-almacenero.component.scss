@@ -142,3 +142,10 @@ input{
 .add:hover{
     background: rgb(59, 102, 245);
 }
+
+.textarea{
+  resize: none;
+  height: 100px;
+  width: 100%;
+  box-sizing: border-box;
+}
