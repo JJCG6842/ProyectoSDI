@@ -11,9 +11,7 @@ import { CommonModule } from '@angular/common';
 })
 export class LoginComponent {
 
-  constructor(private router: Router){
-    
-  }
+  constructor(private router: Router){}
 
   login(){
     this.router.navigate(['/almacenero'])

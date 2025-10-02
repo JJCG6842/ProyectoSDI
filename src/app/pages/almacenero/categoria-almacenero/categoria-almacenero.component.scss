@@ -20,8 +20,8 @@ input{
     height: 45px;
     font-size: 24px;
     position: relative;
-    left: 270px;
-    bottom: 26px;
+    left: 20px;
+    bottom: -70px;
     border-radius: 8px;
     outline: none;
     border-color: #A4A4A4;
@@ -31,14 +31,16 @@ input{
 .content1{
     position: relative;
     bottom: 20px;
+    display: flex;
+    
 }
 
 .boton1{
     width: 180px;
     height: 56px;
     position: relative;
-    left: 330px;
-    bottom: 26px;
+    left: 100px;
+    bottom: -70px;
     cursor: pointer;
     background-color: #045CFF;
     border: none;
@@ -47,6 +49,12 @@ input{
     font-size: 24px;
     font-weight: 500;
 }
+
+.botons{
+  display: flex;
+  gap: 10px;
+}
+
 .icon{
     font-size: 35px;  
     height: 30px;
@@ -106,8 +114,8 @@ input{
 .edit{
   padding: 8px 16px;
   margin-right: 10px; 
-  width: 90px;
-  height: 44px;
+  width: 60px;
+  height: 48px;
   border: none;
   border-radius: 8px;
   color: white;
@@ -120,8 +128,8 @@ input{
 .delete{
   padding: 8px 16px;
   margin-right: 10px; 
-  width: 90px;
-  height: 44px;
+  width: 60px;
+  height: 48px;
   border: none;
   border-radius: 8px;
   color: white;

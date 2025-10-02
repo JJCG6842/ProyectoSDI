@@ -5,14 +5,16 @@ import { Router } from '@angular/router';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog'
 import { AddCategoriaComponent } from '../../../shared/modals-almacenero/add-categoria/add-categoria.component';
 
+
 @Component({
-  selector: 'app-categoria-almacenero',
+  selector: 'app-subcategoria-almacenero',
   imports: [MatIconModule, MatDialogModule, MatButtonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './categoria-almacenero.component.html',
-  styleUrl: './categoria-almacenero.component.scss'
+  templateUrl: './subcategoria-almacenero.component.html',
+  styleUrl: './subcategoria-almacenero.component.scss'
 })
-export class CategoriaAlmaceneroComponent {
+export class SubcategoriaAlmaceneroComponent {
+
   readonly dialog = inject(MatDialog);
 
   constructor(private router: Router){}
@@ -28,7 +30,7 @@ export class CategoriaAlmaceneroComponent {
     })
   } 
 
-  page2(){
-    this.router.navigate(['/almacenero/subcategoria'])
+  page1(){
+    this.router.navigate(['/almacenero/categoria-almacenero'])
   }
 }

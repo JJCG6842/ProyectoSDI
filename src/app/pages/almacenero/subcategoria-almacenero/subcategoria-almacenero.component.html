@@ -1,14 +1,14 @@
 <div class="header-row">
-  <h1>Categorias</h1>
+  <h1>Subcategorias</h1>
   <button class="add" (click)="addCategory()">
     <mat-icon fontIcon="add" class="icon-btn"></mat-icon>
-    Agregar Categoría
+    Agregar Subcategoría
   </button>
 </div>
 
 <div class="content1">
-  <p class="enter">Ingrese categoria:</p>
-<input type="text" placeholder="Buscar categoria...">
+  <p class="enter">Ingrese subcategoria:</p>
+<input type="text" placeholder="Buscar subcategoria...">
 
 <div class="botons">
   <button class="boton1">
@@ -17,8 +17,8 @@
 </button>
 
 
-<button class="boton1" (click)="page2()">
-Subcategorias
+<button class="boton1" (click)="page1()">
+Categorias
 </button>
 </div>
 
@@ -31,16 +31,18 @@ Subcategorias
          <thead>
            <tr>   
              <th>Nro °</th>
-             <th>Nombre</th>
-             <th>Descripcion de la categoria</th>
+             <th>Subcategoria</th>
+             <th>Descripcion de la subcategoria</th>
+             <th>Categoria</th>
              <th>Acciones</th>
            </tr>
          </thead>
          <tbody>
           <tr>   
              <th>1</th>
+             <th>Escritorio</th>
+             <th>Computadora diseñada para el trabajo</th>
              <th>Computadoras</th>
-             <th>Dispositivo electrónico que procesa datos mediante programas.</th>
              <th>
                <button class="edit"><mat-icon aria-hidden="false" fontIcon="edit"></mat-icon></button>
                <button class="delete" ><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>

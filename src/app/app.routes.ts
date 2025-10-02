@@ -5,6 +5,7 @@ import { InicioAlmaceneroComponent } from './pages/almacenero/inicio-almacenero/
 import { CategoriaAlmaceneroComponent } from './pages/almacenero/categoria-almacenero/categoria-almacenero.component';
 import { ProductosAlmaceneroComponent } from './pages/almacenero/productos-almacenero/productos-almacenero.component';
 import { AddCategoriaComponent } from './shared/modals-almacenero/add-categoria/add-categoria.component';
+import { SubcategoriaAlmaceneroComponent } from './pages/almacenero/subcategoria-almacenero/subcategoria-almacenero.component';
 
 export const routes: Routes = [
   {
@@ -12,6 +13,7 @@ export const routes: Routes = [
     pathMatch: 'full',
     redirectTo: 'login'
   },
+  
   {
     path: 'login',
     component: LoginComponent
@@ -27,6 +29,10 @@ export const routes: Routes = [
       {
         path: 'categoria-almacenero',
         component: CategoriaAlmaceneroComponent
+      },
+      {
+        path: 'subcategoria',
+        component: SubcategoriaAlmaceneroComponent
       },
       {
         path: 'productos-almacenero',

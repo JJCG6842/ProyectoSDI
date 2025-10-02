@@ -8,21 +8,51 @@
 h1 {
   font-size: 46px;
 }
+.enter{
+    font-size: 30px;
+    font-weight: 500;
+    position: relative;
+    top: 46px;
+}
 
-.add{
-    width: 280px;
-    height: 65px;
+input{
+    width: 950px;
+    height: 45px;
+    font-size: 24px;
+    position: relative;
+    left: 20px;
+    bottom: -70px;
+    border-radius: 8px;
+    outline: none;
+    border-color: #A4A4A4;
+    padding-left: 20px; 
+}
+
+.content1{
+    position: relative;
+    bottom: 20px;
+    display: flex;
+    
+}
+
+.boton1{
+    width: 180px;
+    height: 56px;
+    position: relative;
+    left: 60px;
+    bottom: -70px;
+    cursor: pointer;
     background-color: #045CFF;
     border: none;
     border-radius: 8px;
     color: white;
     font-size: 24px;
     font-weight: 500;
-    cursor: pointer;
 }
 
-.add:hover{
-    background: rgb(59, 102, 245);
+.botons{
+  display: flex;
+  gap: 10px;
 }
 
 .icon{
@@ -38,46 +68,6 @@ h1 {
   vertical-align: middle;
   bottom: 4px;
   position: relative;
-}
-
-.enter{
-    font-size: 30px;
-    font-weight: 500;
-    position: relative;
-    top: 46px;
-}
-
-input{
-    width: 950px;
-    height: 45px;
-    font-size: 24px;
-    position: relative;
-    left: 270px;
-    bottom: 26px;
-    border-radius: 8px;
-    outline: none;
-    border-color: #A4A4A4;
-    padding-left: 20px; 
-}
-
-.content1{
-    position: relative;
-    bottom: 20px;
-}
-
-.boton1{
-    width: 180px;
-    height: 56px;
-    position: relative;
-    left: 330px;
-    bottom: 26px;
-    cursor: pointer;
-    background-color: #045CFF;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    font-size: 24px;
-    font-weight: 500;
 }
 
 .table {
@@ -109,6 +99,18 @@ input{
   border-bottom: 1px solid #ddd;
 }
 
+.add{
+    width: 300px;
+    height: 65px;
+    background-color: #045CFF;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 24px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
 .edit{
   padding: 8px 16px;
   margin-right: 10px; 
@@ -121,20 +123,6 @@ input{
   padding: 10px 0;
   cursor: pointer;
   background: rgb(33, 83, 247);
-}
-
-.view{
-  padding: 8px 16px;
-  margin-right: 10px; 
-  width: 60px;
-  height: 48px;
-  border: none;
-  border-radius: 8px;
-  color: white;
-  font-size: 16px;
-  padding: 10px 0;
-  cursor: pointer;
-  background: rgb(1, 255, 1);
 }
 
 .delete{
@@ -155,32 +143,17 @@ input{
     background: rgb(59, 102, 245);
 }
 
-.view:hover{
-    background: rgb(52, 250, 52)
-}
-
 .delete:hover{
     background: rgb(243, 47, 47);
 }
 
-mat-expansion-panel{
-    width: 200px;
+.add:hover{
+    background: rgb(59, 102, 245);
 }
 
-mat-expansion-panel-header{
-    background: #045CFF;
-}
-
-mat-panel-title {
-  background: #045CFF;
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 23px;
-}
-
-.miniselect{
-    display: flex;
-    gap: 30px;
-    justify-content: end;
+.textarea{
+  resize: none;
+  height: 100px;
+  width: 100%;
+  box-sizing: border-box;
 }
