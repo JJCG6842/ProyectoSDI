@@ -2,8 +2,8 @@ import { Component , inject, ChangeDetectionStrategy} from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import { Router } from '@angular/router';
-import {MatDialog, MatDialogModule} from '@angular/material/dialog'
-import { AddCategoriaComponent } from '../../../shared/modals-almacenero/add-categoria/add-categoria.component';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import { AddSubcategoriaComponent } from '../../../shared/modals-almacenero/add-subcategoria/add-subcategoria.component';
 
 
 @Component({
@@ -19,8 +19,8 @@ export class SubcategoriaAlmaceneroComponent {
 
   constructor(private router: Router){}
 
-  addCategory(){
-    const dialogRef = this.dialog.open(AddCategoriaComponent, {
+  addSubcategory(){
+    const dialogRef = this.dialog.open(AddSubcategoriaComponent, {
       width: '70%',
       panelClass:'custom-dialog-container'
     });

@@ -1,0 +1,37 @@
+<h2 mat-dialog-title>Agregar producto</h2>
+
+<mat-dialog-content>
+    <form [formGroup]="formProduct">
+        <h3>Numero de parte:</h3>
+        <mat-form-field appearance="fill">
+            <mat-label>N° parte:</mat-label>
+            <input matInput formControlName="partnumber">
+        </mat-form-field>
+        <div [hidden]="partnumber.valid || partnumber.pristine" class="error">
+            <span *ngIf="partnumber.errors?.['required']">El campo es requerido</span>
+        </div>
+
+        <h3>Nombre del producto:</h3>
+        <mat-form-field appearance="fill">
+            <mat-label>Nombre:</mat-label>
+            <input matInput formControlName="name">
+        </mat-form-field>
+        <div [hidden]="name.valid || name.pristine" class="error">
+            <span *ngIf="name.errors?.['required']">El campo es requerido</span>
+        </div>
+
+        <h3>Marca del producto:</h3>
+            <mat-form-field appearance="fill">
+            <mat-label>Marca:</mat-label>
+            <mat-select matInput formControlName="marca">
+                <mat-option value="one">HP</mat-option>
+                <mat-option value="two">Lenovo</mat-option>
+            </mat-select>
+            </mat-form-field>
+            <div [hidden]="marca.valid || marca.pristine" class="error">
+                <span *ngIf="marca.errors?.['required']">El campo es requerido</span>
+            </div>
+            
+
+    </form>
+</mat-dialog-content>
