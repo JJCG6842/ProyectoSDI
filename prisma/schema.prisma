@@ -9,26 +9,43 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url  	    = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Category {
-  id          Int        @id @default(autoincrement())
+  id            String        @id @default(uuid())
+  name          String
+  description   String
+  createAt      DateTime      @default(now())
+  updateAt      DateTime      @updatedAt
+  subcategories Subcategory[]
+  products      Products[]
+}
+
+model Subcategory {
+  id          String     @id @default(uuid())
   name        String
   description String
+  categoryId  String
+  products    Products[]
   createAt    DateTime   @default(now())
   updateAt    DateTime   @updatedAt
+  category    Category   @relation(fields: [categoryId], references: [id])
 }
 
 model Products {
-  id         Int      @id @default(autoincrement())
-  SKU        String
-  image      String
-  name       String
-  marca      String
-  price      Float
-  categoryId Int
-  createAt   DateTime @default(now())
-  updateAt   DateTime @updatedAt
+  id            String      @id @default(uuid())
+  partnumber    String
+  image         String
+  name          String
+  marca         String
+  price         Float
+  model         String
+  categoryId    String
+  subcategoryId String
+  category      Category    @relation(fields: [categoryId], references: [id])
+  subcategory   Subcategory @relation(fields: [subcategoryId], references: [id])
+  createAt      DateTime    @default(now())
+  updateAt      DateTime    @updatedAt
 }

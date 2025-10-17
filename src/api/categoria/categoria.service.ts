@@ -3,35 +3,35 @@ import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class CategoriaService {
-    private prisma = new PrismaClient();
+  private prisma = new PrismaClient();
 
-    async findAll() {
-        return this.prisma.category.findMany({
-        });
-    }
+  async findAll() {
+    return this.prisma.category.findMany({
+      include: {subcategories: true,products: true,},
+    });
+  }
 
-    async findOne(id: number){
-        const category = await this.prisma.category.findUnique({
-            where: {id},
-        });
-        if (!category) throw new NotFoundException('category not found');
-        return category;
-    }
+  async findOne(id: string) {
+    const category = await this.prisma.category.findUnique({ where: { id }, 
+    include: { subcategories: true, products: true,} });
+    if (!category) throw new NotFoundException('No hay categoria');
+    return category;
+  }
 
-    async create(data: {name :string; description: string}){
-        return this.prisma.category.create({data});
-    }
+  async create(data: { name: string; description: string }) {
+    return this.prisma.category.create({ data });
+  }
 
-    async update(id: number, data: { name?: string; description?: string}){
-        await this.findOne(id);
-        return this.prisma.category.update({
-            where: {id},
-            data,
-        });
-    }
+  async update(id: string, data: { name?: string; description?: string }) {
+    await this.findOne(id);
+    return this.prisma.category.update({
+      where: { id },
+      data,
+    });
+  }
 
-    async delete(id:number){
-        await this.findOne(id);
-        return this.prisma.category.delete({where: {id}})
-    }
+  async delete(id: string) {
+    await this.findOne(id);
+    return this.prisma.category.delete({ where: { id } });
+  }
 }

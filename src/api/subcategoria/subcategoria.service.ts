@@ -1,0 +1,52 @@
+import { Injectable , NotFoundException} from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
+
+@Injectable()
+export class SubcategoriaService {
+    private prisma = new PrismaClient();
+
+    async findAll(){
+        return this.prisma.subcategory.findMany({
+            include: {category:{select:{id: true, name: true,}}}
+        })
+    }
+
+    async findOne(id: string){
+        const subcategory = await this.prisma.subcategory.findUnique({where:{id},
+            include: {category:{select:{id: true, name: true}}} 
+        });
+
+        if (!subcategory) {throw new NotFoundException('Subcategory not found');}
+        return subcategory;
+    }
+
+    async create(data:{ name:string; description: string; categoryId: string}){
+        const category = await this.prisma.category.findUnique({
+            where: { id: data.categoryId},
+        });
+
+        if (!category){
+            throw new NotFoundException('No hay categoria')
+        }
+
+        return this.prisma.subcategory.create({data});
+    }
+
+    async update(id: string, data: { name?: string; description?: string; categoryId?: string },){
+        await this.findOne(id);
+
+        if (data.categoryId){
+            const category = await this.prisma.category.findUnique({
+                where: {id: data.categoryId},
+            });
+            if(!category) throw new NotFoundException('No hay categoria');
+        }
+
+        return this.prisma.subcategory.update({where:{id},data});
+    }
+
+    async delete(id: string){
+        await this.findOne(id);
+        return this.prisma.subcategory.delete({where: {id}});
+    }
+}
