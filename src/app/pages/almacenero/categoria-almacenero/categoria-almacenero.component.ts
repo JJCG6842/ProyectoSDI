@@ -1,21 +1,34 @@
-import { Component , inject, ChangeDetectionStrategy} from '@angular/core';
+import { Component , inject, ChangeDetectionStrategy, OnInit, ChangeDetectorRef} from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog'
 import { AddCategoriaComponent } from '../../../shared/modals-almacenero/add-categoria/add-categoria.component';
+import { EditCategoriaComponent } from '../../../shared/modals-almacenero/option-categoria/edit-categoria/edit-categoria.component';
+import { CategoriaService } from '../../../services/categoria.service';
+import { Categoria } from '../../../interface/categoria.interface';
+import { DeleteCategoriaConfirmComponent } from '../../../shared/modals-almacenero/option-categoria/delete/delete-categoria-confirm/delete-categoria-confirm.component';
+import { DeleteCategoriaSuccessComponent } from '../../../shared/modals-almacenero/option-categoria/delete/delete-categoria-success/delete-categoria-success.component';
 
 @Component({
   selector: 'app-categoria-almacenero',
-  imports: [MatIconModule, MatDialogModule, MatButtonModule],
+  imports: [MatIconModule, MatDialogModule, MatButtonModule,CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './categoria-almacenero.component.html',
   styleUrl: './categoria-almacenero.component.scss'
 })
-export class CategoriaAlmaceneroComponent {
+export class CategoriaAlmaceneroComponent implements OnInit{
   readonly dialog = inject(MatDialog);
+  readonly cd = inject(ChangeDetectorRef);
+  categorias: Categoria[] = [];
+  isLoading = false;
 
-  constructor(private router: Router){}
+  constructor(private router: Router, private categoriaService: CategoriaService){}
+
+  ngOnInit(): void {
+    this.obtenerCategorias();
+  }
 
   addCategory(){
     const dialogRef = this.dialog.open(AddCategoriaComponent, {
@@ -24,9 +37,63 @@ export class CategoriaAlmaceneroComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+      if(result){
+        this.obtenerCategorias();
+      }
+    });
+  } 
+
+  obtenerCategorias(){
+    this.categoriaService.getCategorias().subscribe({
+      next: (res) => {
+        this.categorias = res;
+        this.isLoading = false;
+        console.log('Categorías cargadas:', this.categorias);
+        this.cd.markForCheck()
+      },
+      error: (err) => {
+      console.error('Error al obtener categorías:', err);
+      this.isLoading = false;
+    },
+    });
+  }
+
+  editCategory(){
+    const dialogRef = this.dialog.open(EditCategoriaComponent, {
+      width: '70%',
+      panelClass:'custom-dialog-container'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`)
     })
-  } 
+  }
+
+  deleteCategoria(id: string){
+    const dialogRef = this.dialog.open(DeleteCategoriaConfirmComponent,{
+      width: '400px',
+      disableClose:true,
+    });
+
+    dialogRef.afterClosed().subscribe((confirmado) => {
+      if(confirmado){
+        this.categoriaService.eliminarCategoriaporId(id).subscribe({
+          next: () => {
+            this.dialog.open(DeleteCategoriaSuccessComponent,{
+              width: '400px',
+              disableClose: true,
+            });
+
+            this.obtenerCategorias();
+          },
+          error: (err) => {
+            console.error('error al eliminar la categoria', err);
+          },
+        });
+      }
+    });
+  }
 
   page2(){
     this.router.navigate(['/almacenero/subcategoria'])

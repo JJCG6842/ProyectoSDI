@@ -37,13 +37,13 @@ Subcategorias
            </tr>
          </thead>
          <tbody>
-          <tr>   
+          <tr *ngFor="let categoria of categorias">   
              <th>1</th>
-             <th>Computadoras</th>
-             <th>Dispositivo electrónico que procesa datos mediante programas.</th>
+             <th>{{categoria.name}}</th>
+             <th>{{categoria.description}}</th>
              <th>
-               <button class="edit"><mat-icon aria-hidden="false" fontIcon="edit"></mat-icon></button>
-               <button class="delete" ><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
+               <button class="edit" (click)="editCategory()"><mat-icon aria-hidden="false" fontIcon="edit"></mat-icon></button>
+               <button class="delete" (click)="deleteCategoria(categoria.id!)"><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
              </th>
            </tr>
          </tbody>
