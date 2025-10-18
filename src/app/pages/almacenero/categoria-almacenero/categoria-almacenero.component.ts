@@ -3,6 +3,7 @@ import { MatIconModule } from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog'
 import { AddCategoriaComponent } from '../../../shared/modals-almacenero/add-categoria/add-categoria.component';
 import { EditCategoriaComponent } from '../../../shared/modals-almacenero/option-categoria/edit-categoria/edit-categoria.component';
@@ -13,7 +14,7 @@ import { DeleteCategoriaSuccessComponent } from '../../../shared/modals-almacene
 
 @Component({
   selector: 'app-categoria-almacenero',
-  imports: [MatIconModule, MatDialogModule, MatButtonModule,CommonModule],
+  imports: [MatIconModule, MatDialogModule, MatButtonModule,CommonModule,FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './categoria-almacenero.component.html',
   styleUrl: './categoria-almacenero.component.scss'
@@ -23,6 +24,7 @@ export class CategoriaAlmaceneroComponent implements OnInit{
   readonly cd = inject(ChangeDetectorRef);
   categorias: Categoria[] = [];
   isLoading = false;
+  searchTerm: string = '';
 
   constructor(private router: Router, private categoriaService: CategoriaService){}
 
@@ -95,6 +97,53 @@ export class CategoriaAlmaceneroComponent implements OnInit{
           },
         });
       }
+    });
+  }
+
+  search(){
+    const term = this.searchTerm.trim();
+
+    if(!term){
+      this.obtenerCategorias();
+      return;
+    }
+
+    this.isLoading = true;
+
+    this.categoriaService.buscarCategoria(term).subscribe({
+      next: (res) => {
+        this.categorias = res;
+        this.isLoading = false;
+        this.cd.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error en la busqueda :/', err);
+        this.categorias = [];
+        this.isLoading = false;
+        this.cd.markForCheck();
+      },
+    });
+  }
+
+  //solo un filtado automatico :/
+  onSearchChange(){
+    const term = this.searchTerm.trim();
+
+    if(!term){
+      this.obtenerCategorias();
+      return;
+    }
+
+    this.categoriaService.buscarCategoria(term).subscribe({
+      next: (res) => {
+        this.categorias = res;
+        this.cd.markForCheck();
+      },
+      error: (err) => {
+        console.error('error :/', err);
+        this.categorias = [];
+        this.cd.markForCheck();
+      },
     });
   }
 

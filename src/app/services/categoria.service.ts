@@ -16,6 +16,14 @@ export class CategoriaService{
         return this.http.get<Categoria[]>(this.apiUrl);
     }
 
+    getCategoriaPorNombre(name: string): Observable<Categoria> {
+        return this.http.get<Categoria>(`${this.apiUrl}/nombre/${name}`)
+    }
+
+    buscarCategoria(term: string): Observable<Categoria[]> {
+        return this.http.get<Categoria[]>(`${this.apiUrl}/buscar/${term}`);
+    }
+    
     crearCategoria(data: Categoria): Observable<Categoria> {
     return this.http.post<Categoria>(this.apiUrl, data);
     }

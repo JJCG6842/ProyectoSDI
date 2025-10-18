@@ -1,3 +1,5 @@
+<!--(input)="onSearchChange()"-->
+
 <div class="header-row">
   <h1>Categorias</h1>
   <button class="add" (click)="addCategory()">
@@ -8,11 +10,12 @@
 
 <div class="content1">
   <p class="enter">Ingrese categoria:</p>
-<input type="text" placeholder="Buscar categoria...">
+<input type="text" placeholder="Buscar categoria..." [(ngModel)]="searchTerm"
+>
 
 <div class="botons">
-  <button class="boton1">
-  <mat-icon fontIcon="search" class="icon-btn"></mat-icon>
+  <button class="boton1" (click)="search()">
+  <mat-icon fontIcon="search" class="icon-btn" ></mat-icon>
   Buscar
 </button>
 
