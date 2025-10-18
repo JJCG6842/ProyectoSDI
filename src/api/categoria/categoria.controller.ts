@@ -10,10 +10,22 @@ export class CategoriaController {
         return this.categoriaService.findAll();
     }
 
+
+    @Get('nombre/:name')
+    getName(@Param('name') name: string) {
+        return this.categoriaService.findName(name);
+    }
+
+    @Get('buscar/:term')
+    search(@Param('term') term: string) {
+        return this.categoriaService.searchByName(term);
+    }
+
     @Get(':id')
     getOne(@Param('id') id:string){
         return this.categoriaService.findOne(id);
     }
+
 
     @Post()
     create(@Body() body: {name: string; description: string}){
