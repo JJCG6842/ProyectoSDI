@@ -23,6 +23,6 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-    <button mat-flat-button [mat-dialog-close]="true" style="background-color: blue; color: white;">Guardar</button>
+    <button mat-flat-button [mat-dialog-close]="true" style="background-color: blue; color: white;" (click)="procesar()">Guardar</button>
     <button mat-flat-button mat-dialog-close style="background-color: red; color: white;">Cancelar</button>
 </mat-dialog-actions>

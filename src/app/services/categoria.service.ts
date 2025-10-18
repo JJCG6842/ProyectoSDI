@@ -20,6 +20,10 @@ export class CategoriaService{
     return this.http.post<Categoria>(this.apiUrl, data);
     }
 
+    actualizarCategoria(id:string, data: Categoria): Observable<Categoria> {
+      return this.http.put<Categoria>(`${this.apiUrl}/${id}`, data);
+    }
+
     eliminarCategoriaporId(id: string): Observable<void>{
       return this.http.delete<void>(`${this.apiUrl}/${id}`);
     }

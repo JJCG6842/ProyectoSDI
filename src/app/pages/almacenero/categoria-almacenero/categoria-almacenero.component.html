@@ -42,7 +42,7 @@ Subcategorias
              <th>{{categoria.name}}</th>
              <th>{{categoria.description}}</th>
              <th>
-               <button class="edit" (click)="editCategory()"><mat-icon aria-hidden="false" fontIcon="edit"></mat-icon></button>
+               <button class="edit" (click)="editCategory(categoria)"><mat-icon aria-hidden="false" fontIcon="edit"></mat-icon></button>
                <button class="delete" (click)="deleteCategoria(categoria.id!)"><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
              </th>
            </tr>

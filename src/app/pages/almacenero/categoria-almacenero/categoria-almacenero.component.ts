@@ -59,14 +59,17 @@ export class CategoriaAlmaceneroComponent implements OnInit{
     });
   }
 
-  editCategory(){
+  editCategory(categoria: Categoria){
     const dialogRef = this.dialog.open(EditCategoriaComponent, {
       width: '70%',
-      panelClass:'custom-dialog-container'
+      panelClass:'custom-dialog-container',
+      data: categoria
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`)
+      if(result === true){
+        this.obtenerCategorias();
+      }
     })
   }
 
