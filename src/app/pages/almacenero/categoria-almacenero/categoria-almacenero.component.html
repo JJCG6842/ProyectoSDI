@@ -40,8 +40,8 @@ Subcategorias
            </tr>
          </thead>
          <tbody>
-          <tr *ngFor="let categoria of categorias">   
-             <th>1</th>
+          <tr *ngFor="let categoria of categorias; let i = index">   
+             <th>{{i + 1}}</th>
              <th>{{categoria.name}}</th>
              <th>{{categoria.description}}</th>
              <th>

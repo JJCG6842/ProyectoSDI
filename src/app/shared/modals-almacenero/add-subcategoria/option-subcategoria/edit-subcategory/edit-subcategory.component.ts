@@ -1,32 +1,34 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Inject } from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
-import {MatDialog, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
+import {MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {MatSelectModule} from '@angular/material/select';
-import { SubcategoriaService } from '../../../services/subcategoria.service';
+import { SubcategoriaService } from '../../../../../services/subcategoria.service';
+import { Subcategoria } from '../../../../../interface/subcategoria.interface';
 import { MatInputModule, MatInput } from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {FormControl, FormsModule, ReactiveFormsModule, Validators, FormBuilder, FormGroup} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TextFieldModule } from '@angular/cdk/text-field';
-import { CreateSubcategorySuccessComponent } from './modals-subcategoria/create-subcategory-success/create-subcategory-success.component';
-import { Categoria } from '../../../interface/categoria.interface';
-import { CategoriaService } from '../../../services/categoria.service';
+import { Categoria } from '../../../../../interface/categoria.interface';
+import { CategoriaService } from '../../../../../services/categoria.service';
+import { EditSubcategorySuccessComponent } from '../../modals-subcategoria/edit-subcategory-success/edit-subcategory-success.component';
 
 @Component({
-  selector: 'app-add-subcategoria',
+  selector: 'app-edit-subcategory',
   imports: [MatDialogModule, MatFormFieldModule, MatSelectModule, MatInput, MatButtonModule,TextFieldModule, CommonModule,
     FormsModule, ReactiveFormsModule],
-  templateUrl: './add-subcategoria.component.html',
-  styleUrl: './add-subcategoria.component.scss',
+  templateUrl: './edit-subcategory.component.html',
+  styleUrl: './edit-subcategory.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddSubcategoriaComponent implements OnInit{
+export class EditSubcategoryComponent implements OnInit{
   formSubcategory!: FormGroup;
   categorias: Categoria[] = [];
 
   constructor(private fb:FormBuilder, private subcategoriaService : SubcategoriaService,
-    private dialogRef: MatDialogRef<AddSubcategoriaComponent>, private dialog: MatDialog, 
-    private categoriaService: CategoriaService
+    private dialog: MatDialog, 
+    private categoriaService: CategoriaService,private dialogRef: MatDialogRef<EditSubcategoryComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: Subcategoria
   ){
     this.formSubcategory = this.fb.group({
       name:['', Validators.required],
@@ -37,6 +39,14 @@ export class AddSubcategoriaComponent implements OnInit{
 
   ngOnInit(): void{
     this.cargarCategorias();
+
+    if(this.data){
+      this.formSubcategory.patchValue({
+        name: this.data.name,
+        description: this.data.description,
+        category: this.data.category.id
+      });
+    }
   }
 
   cargarCategorias(){
@@ -62,26 +72,26 @@ export class AddSubcategoriaComponent implements OnInit{
     return this.formSubcategory.get('category') as FormControl;
   }
 
-  process(){
-    if (this.formSubcategory.invalid){
-      this.formSubcategory.markAllAsTouched();
-      return
-    };
+  editar(){
+    if(this.formSubcategory.invalid) return;
 
-    const data = {
+    const dataToSend = {
       name: this.name.value,
       description: this.description.value,
       categoryId: this.category.value
     };
 
-    this.subcategoriaService.crearSubcategoria(data).subscribe({
-      next: () => {
+    
+
+    this.subcategoriaService.actualizarSubcategoria(this.data.id, dataToSend).subscribe({
+      next:() => {
+        this.dialog.open(EditSubcategorySuccessComponent,{
+                width:'400px',disableClose: true,});
         this.dialogRef.close(true);
-        this.dialog.open(CreateSubcategorySuccessComponent);
       },
-      error: (fail) => {
-        console.error('Error al crear subcategoria', fail);
-      },
-    });
+      error: (erroneo) => {
+        console.error('error al editar la subcategoria', erroneo);
+      }
+    })
   }
 }

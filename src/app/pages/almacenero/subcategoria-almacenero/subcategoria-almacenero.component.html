@@ -8,10 +8,10 @@
 
 <div class="content1">
   <p class="enter">Ingrese subcategoria:</p>
-<input type="text" placeholder="Buscar subcategoria...">
+<input type="text" placeholder="Buscar subcategoria..." [(ngModel)]="searchTerm">
 
 <div class="botons">
-  <button class="boton1">
+  <button class="boton1" (click)="search()">
   <mat-icon fontIcon="search" class="icon-btn"></mat-icon>
   Buscar
 </button>
@@ -38,14 +38,14 @@ Categorias
            </tr>
          </thead>
          <tbody>
-          <tr>   
-             <th>1</th>
-             <th>Escritorio</th>
-             <th>Computadora diseñada para el trabajo</th>
-             <th>Computadoras</th>
+          <tr *ngFor="let subcategorias of subcategorias; let i = index">   
+             <th>{{ i + 1 }}</th>
+             <th>{{subcategorias.name}}</th>
+             <th>{{subcategorias.description}}</th>
+             <th>{{subcategorias.category.name}}</th>
              <th>
-               <button class="edit"><mat-icon aria-hidden="false" fontIcon="edit"></mat-icon></button>
-               <button class="delete" ><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
+               <button class="edit" (click)="editSubcategory(subcategorias)"><mat-icon aria-hidden="false" fontIcon="edit"></mat-icon></button>
+               <button class="delete" (click)="deleteSubcategory(subcategorias.id!)" ><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
              </th>
            </tr>
          </tbody>
