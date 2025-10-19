@@ -10,6 +10,16 @@ export class SubcategoriaController {
         return this.subcategoriaservice.findAll();
     }
 
+    @Get('nombre/:name')
+    getName(@Param('name') name: string) {
+        return this.subcategoriaservice.findName(name);
+    }
+
+    @Get('buscar/:term')
+    search(@Param('term') term: string) {
+        return this.subcategoriaservice.searchByName(term);
+    }
+
     @Get(':id')
     getOne(@Param('id') id:string){
         return this.subcategoriaservice.findOne(id);

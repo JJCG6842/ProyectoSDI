@@ -11,6 +11,33 @@ export class SubcategoriaService {
         })
     }
 
+    async findName(name: string){
+        const subcategory = await this.prisma.subcategory.findFirst({
+            where:{name: {equals: name , mode:'insensitive'}},
+            include: {products: true},
+        });
+
+        if(!subcategory){
+            throw new NotFoundException (`No se encontró la subcategoría con nombre: ${name}`)
+        }
+        return subcategory;
+    }
+
+    async searchByName(term:string){
+        const subcategory = await this.prisma.subcategory.findMany({
+            where: {
+                name:{ contains: term, mode:'insensitive'},
+            },
+            include:{category: {select: {id:true, name:true},},products:true},
+        });
+
+        if(subcategory.length === 0){
+            throw new NotFoundException(`No se encontraron subcategorías con: ${term}`);
+        }
+
+        return subcategory;
+    }
+
     async findOne(id: string){
         const subcategory = await this.prisma.subcategory.findUnique({where:{id},
             include: {category:{select:{id: true, name: true}}} 
@@ -32,7 +59,7 @@ export class SubcategoriaService {
         return this.prisma.subcategory.create({data});
     }
 
-    async update(id: string, data: { name?: string; description?: string; categoryId?: string },){
+    async update(id: string, data: { name?: string; description?: string; categoryId?: string }){
         await this.findOne(id);
 
         if (data.categoryId){
