@@ -54,7 +54,8 @@
              <th>Imagen</th>
              <th>Marca</th>
              <th>Nombre del producto</th>
-             <th>Categoria</th>
+             <th>Estado</th>
+             <th>Cantidad</th>
              <th>Precio unitario</th>
              <th>Acciones</th>
            </tr>
@@ -65,7 +66,8 @@
              <th><img [src]="producto.image" alt="Imagen" width="50"></th>
              <th>{{producto.marca}}</th>
              <th>{{producto.name}}</th>
-             <th>{{producto.category?.name}}</th>
+             <th>{{producto.status}}</th>
+             <th>{{producto.quantity}}</th>
              <th>S/.{{ producto.price | number: '1.2-2' }}</th>
              <th>
                <button class="edit"><mat-icon aria-hidden="false" fontIcon="edit"></mat-icon></button>

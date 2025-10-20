@@ -2,12 +2,14 @@ import { Categoria } from "./categoria.interface";
 import { Subcategoria } from "./subcategoria.interface";
 
 export interface Producto {
-id: string;
+  id: string;
   partnumber: string;
   image: string;
   name: string;
   marca: string;
   price: number;
+  quantity: number;
+  status: 'Instock' | 'Outstock';
   model: string;
   categoryId: string;
   subcategoryId: string;
