@@ -1,4 +1,4 @@
-import { Controller, Get, Put, Post, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Get, Put, Post, Delete, Param, Body, Query } from '@nestjs/common';
 import { ProductosService } from './productos.service';
 
 @Controller('productos')
@@ -8,6 +8,21 @@ export class ProductosController {
   @Get()
   getAll() {
     return this.productoService.findAll();
+  }
+
+  @Get('buscar/nombre/:name')
+  findByName(@Param('name') name: string) {
+    return this.productoService.findName(name);
+  }
+
+  @Get('buscar/categoria/:categoryName')
+  findByCategoryName(@Param('categoryName') categoryName: string) {
+    return this.productoService.findCategoryName(categoryName);
+  }
+
+  @Get('buscar/marca/:marca')
+  findByMarca(@Param('marca') marca: string) {
+    return this.productoService.findMarca(marca);
   }
 
   @Get(':id')

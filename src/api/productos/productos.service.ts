@@ -31,6 +31,55 @@ export class ProductosService {
     return product;
   }
 
+  async findName (name: string){
+    return this.prisma.products.findMany({
+      where: {
+        name: {
+          contains: name,
+          mode: 'insensitive'
+        },
+      },
+      include: {
+        category: {select: {id: true, name:true}},
+        subcategory: {select: {id: true, name:true}}
+      }
+    });
+  }
+
+  async findCategoryName(categoryName: string) {
+  return this.prisma.products.findMany({
+    where: {
+      category: {
+        name: {
+          contains: categoryName,
+          mode: 'insensitive',
+        },
+      },
+    },
+    include: {
+      category: { select: { id: true, name: true } },
+      subcategory: { select: { id: true, name: true } },
+    },
+  });
+}
+
+
+  async findMarca(marca: string) {
+  return this.prisma.products.findMany({
+    where: {
+      marca: {
+        contains: marca,
+        mode: 'insensitive',
+      },
+    },
+    include: {
+      category: { select: { id: true, name: true } },
+      subcategory: { select: { id: true, name: true } },
+    },
+  });
+}
+
+
   async create(data: {
     partnumber: string;
     image: string;
