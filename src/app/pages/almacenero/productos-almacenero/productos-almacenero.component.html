@@ -2,7 +2,7 @@
   <h1>Productos</h1>
   <button class="add" (click)="addProduct()">
     <mat-icon fontIcon="add" class="icon-btn"></mat-icon>
-    Agregar Producto
+    Crear Producto
   </button>
 </div>
 
@@ -60,13 +60,13 @@
            </tr>
          </thead>
          <tbody>
-          <tr>   
-             <th>178789</th>
-             <th>foto</th>
-             <th>HP</th>
-             <th>Notebook Gaming ASUS TUF A15</th>
-             <th>Laptop</th>
-             <th>S/.1300</th>
+          <tr *ngFor="let producto of productos">   
+             <th>{{producto.partnumber}}</th>
+             <th><img [src]="producto.image" alt="Imagen" width="50"></th>
+             <th>{{producto.marca}}</th>
+             <th>{{producto.name}}</th>
+             <th>{{producto.category?.name}}</th>
+             <th>S/.{{ producto.price | number: '1.2-2' }}</th>
              <th>
                <button class="edit"><mat-icon aria-hidden="false" fontIcon="edit"></mat-icon></button>
                <button class="view"><mat-icon aria-hidden="false" fontIcon="visibility"></mat-icon></button>

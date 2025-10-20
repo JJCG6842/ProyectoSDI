@@ -2,6 +2,9 @@
 
 <mat-dialog-content>
     <form [formGroup]="formProduct">
+        <div class="form-grid">
+
+        <div class="form-field">
         <h3>Numero de parte:</h3>
         <mat-form-field appearance="fill">
             <mat-label>N° parte:</mat-label>
@@ -10,7 +13,9 @@
         <div [hidden]="partnumber.valid || partnumber.pristine" class="error">
             <span *ngIf="partnumber.errors?.['required']">El campo es requerido</span>
         </div>
+        </div>
 
+        <div class="form-field">
         <h3>Nombre del producto:</h3>
         <mat-form-field appearance="fill">
             <mat-label>Nombre:</mat-label>
@@ -19,19 +24,85 @@
         <div [hidden]="name.valid || name.pristine" class="error">
             <span *ngIf="name.errors?.['required']">El campo es requerido</span>
         </div>
+        </div>
 
+        <div class="form-field">
         <h3>Marca del producto:</h3>
             <mat-form-field appearance="fill">
             <mat-label>Marca:</mat-label>
-            <mat-select matInput formControlName="marca">
+            <input matInput formControlName="marca">
+            </mat-form-field>
+        <div [hidden]="marca.valid || marca.pristine" class="error">
+            <span *ngIf="marca.errors?.['required']">El campo es requerido</span>
+        </div>
+        </div>
+            
+        <div class="form-field">
+        <h3>Modelo del producto:</h3>
+            <mat-form-field appearance="fill">
+            <mat-label>Modelo:</mat-label>
+            <input matInput formControlName="model">
+            </mat-form-field>
+        <div [hidden]="model.valid || model.pristine" class="error">
+            <span *ngIf="model.errors?.['required']">El campo es requerido</span>
+        </div>
+        </div>
+
+        <div class="form-field">
+        <h3>Imagen del producto:</h3>
+            <mat-form-field appearance="fill">
+            <mat-label>Imagen:</mat-label>
+            <input matInput formControlName="image">
+            </mat-form-field>
+        <div [hidden]="image.valid || image.pristine" class="error">
+            <span *ngIf="image.errors?.['required']">El campo es requerido</span>
+        </div>
+        </div>
+
+        <div class="form-field">
+        <h3>Categoria del producto:</h3>
+            <mat-form-field appearance="fill">
+            <mat-label>Categoria:</mat-label>
+            <mat-select matInput formControlName="category">
                 <mat-option value="one">HP</mat-option>
                 <mat-option value="two">Lenovo</mat-option>
             </mat-select>
             </mat-form-field>
-            <div [hidden]="marca.valid || marca.pristine" class="error">
-                <span *ngIf="marca.errors?.['required']">El campo es requerido</span>
-            </div>
-            
+        <div [hidden]="category.valid || category.pristine" class="error">
+            <span *ngIf="category.errors?.['required']">El campo es requerido</span>
+        </div>
+        </div>
 
+        <div class="form-field">
+        <h3>Subcategoria del producto:</h3>
+            <mat-form-field appearance="fill">
+            <mat-label>Subcategoria:</mat-label>
+            <mat-select matInput formControlName="subcategory">
+                <mat-option value="one">HP</mat-option>
+                <mat-option value="two">Lenovo</mat-option>
+            </mat-select>
+            </mat-form-field>
+        <div [hidden]="subcategory.valid || subcategory.pristine" class="error">
+            <span *ngIf="subcategory.errors?.['required']">El campo es requerido</span>
+        </div>
+        </div>
+
+        <div class="form-field">
+        <h3>Precio del producto:</h3>
+            <mat-form-field appearance="fill">
+            <mat-label>Precio:</mat-label>
+            <input matInput formControlName="price">
+            </mat-form-field>
+        <div [hidden]="price.valid || price.pristine" class="error">
+            <span *ngIf="price.errors?.['required']">El campo es requerido</span>
+        </div>
+        </div>
+        
+        </div>
     </form>
 </mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-flat-button (click)="addProduct()" style="background-color: blue; color: white;">Agregar</button>
+    <button mat-flat-button mat-dialog-close style="background-color: red; color: white;">Cancelar</button>
+</mat-dialog-actions>

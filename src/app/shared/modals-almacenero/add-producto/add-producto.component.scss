@@ -1,0 +1,14 @@
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+  
+mat-form-field {
+  flex: 1 1 48%; 
+  min-width: 280px; 
+}
+
+.error {
+  color: red;
+}

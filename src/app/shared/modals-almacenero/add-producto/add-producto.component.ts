@@ -64,4 +64,9 @@ export class AddProductoComponent {
   get price(){
     return this.formProduct.get('price') as FormControl;
   }
+
+
+  addProduct(){
+    
+  }
 }
