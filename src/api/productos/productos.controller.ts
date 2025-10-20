@@ -1,5 +1,6 @@
 import { Controller, Get, Put, Post, Delete, Param, Body, Query } from '@nestjs/common';
 import { ProductosService } from './productos.service';
+import { ProductStatus } from '@prisma/client';
 
 @Controller('productos')
 export class ProductosController {
@@ -39,6 +40,8 @@ export class ProductosController {
       name: string;
       marca: string;
       price: number;
+      quantity: number;
+      status: ProductStatus;
       model: string;
       categoryId: string;
       subcategoryId: string;
@@ -57,6 +60,8 @@ export class ProductosController {
       name: string;
       marca: string;
       price: number;
+      quantity: number;
+      status: ProductStatus;
       model: string;
       categoryId: string;
       subcategoryId: string;

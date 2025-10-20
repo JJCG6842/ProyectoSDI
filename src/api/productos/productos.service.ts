@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, ProductStatus } from '@prisma/client';
 
 @Injectable()
 export class ProductosService {
@@ -86,6 +86,8 @@ export class ProductosService {
     name: string;
     marca: string;
     price: number;
+    quantity: number;
+    status: ProductStatus;
     model: string;
     categoryId: string;
     subcategoryId: string;
@@ -111,6 +113,8 @@ export class ProductosService {
       name: string;
       marca: string;
       price: number;
+      quantity: number;
+      status: ProductStatus;
       model: string;
       categoryId: string;
       subcategoryId: string;

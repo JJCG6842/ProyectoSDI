@@ -35,17 +35,24 @@ model Subcategory {
 }
 
 model Products {
-  id            String      @id @default(uuid())
+  id            String        @id @default(uuid())
   partnumber    String
   image         String
   name          String
   marca         String
   price         Float
+  quantity      Int
+  status        ProductStatus
   model         String
   categoryId    String
   subcategoryId String
-  category      Category    @relation(fields: [categoryId], references: [id])
-  subcategory   Subcategory @relation(fields: [subcategoryId], references: [id])
-  createAt      DateTime    @default(now())
-  updateAt      DateTime    @updatedAt
+  category      Category      @relation(fields: [categoryId], references: [id])
+  subcategory   Subcategory   @relation(fields: [subcategoryId], references: [id])
+  createAt      DateTime      @default(now())
+  updateAt      DateTime      @updatedAt
+}
+
+enum ProductStatus {
+  Instock
+  Outstock
 }
