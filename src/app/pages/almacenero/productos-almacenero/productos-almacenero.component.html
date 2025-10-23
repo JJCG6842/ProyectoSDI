@@ -7,10 +7,10 @@
 </div>
 
 <div class="content1">
-  <p class="enter">Ingrese producto:</p>
-<input type="text" placeholder="Buscar producto...">
+  <p class="enter">Ingrese N° de parte:</p>
+<input type="text" placeholder="Buscar producto..." [(ngModel)]="searchTerm">
 
-<button class="boton1">
+<button class="boton1" (click)="search()">
   <mat-icon fontIcon="search" class="icon-btn"></mat-icon>
   Buscar
 </button>
@@ -56,7 +56,7 @@
              <th>Nombre del producto</th>
              <th>Estado</th>
              <th>Cantidad</th>
-             <th>Precio unitario</th>
+             <th>Precio</th>
              <th>Acciones</th>
            </tr>
          </thead>
@@ -70,9 +70,9 @@
              <th>{{producto.quantity}}</th>
              <th>S/.{{ producto.price | number: '1.2-2' }}</th>
              <th>
-               <button class="edit"><mat-icon aria-hidden="false" fontIcon="edit"></mat-icon></button>
-               <button class="view"><mat-icon aria-hidden="false" fontIcon="visibility"></mat-icon></button>
-               <button class="delete"><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
+               <button class="edit" (click)="editProduct(producto)"><mat-icon aria-hidden="false" fontIcon="edit"></mat-icon></button>
+               <button class="view" (click)="view()"><mat-icon aria-hidden="false" fontIcon="visibility"></mat-icon></button>
+               <button class="delete" (click)="eliminarProducto(producto.id!)"><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
              </th>
            </tr>
          </tbody>

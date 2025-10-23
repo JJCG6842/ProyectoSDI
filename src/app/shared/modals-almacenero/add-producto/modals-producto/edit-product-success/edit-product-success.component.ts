@@ -3,12 +3,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-delete-product-success',
+  selector: 'app-edit-product-success',
   imports: [MatButtonModule,MatDialogModule],
-  templateUrl: './delete-product-success.component.html',
-  styleUrl: './delete-product-success.component.scss',
+  templateUrl: './edit-product-success.component.html',
+  styleUrl: './edit-product-success.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DeleteProductSuccessComponent {
+export class EditProductSuccessComponent {
 
 }

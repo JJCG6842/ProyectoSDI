@@ -1,0 +1,86 @@
+mat-card{
+    width: 420px;
+    height: 180px;
+    
+}
+h1{
+    font-size: 46px;
+}
+
+mat-card-header{
+    font-size: 24px;
+    font-weight: 400;
+    margin-left: 15px;
+}
+
+.container{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 106px;
+    margin-top: 40px;
+}
+
+
+.count{
+    font-size: 46px;
+    font-weight: 600;
+    position: relative;
+    margin-left: 15px;
+    margin-top: 36px;
+}
+
+.logo{
+    width: 80px;
+    height: 80px;
+    background-color: rgb(3, 255, 3);
+    border-radius: 8px;
+    position: absolute;
+    left: 300px;
+}
+
+.logo2{
+    width: 80px;
+    height: 80px;
+    background-color: rgb(255, 3, 3);
+    border-radius: 8px;
+    position: absolute;
+    left: 300px;
+}
+
+.logo3{
+    width: 80px;
+    height: 80px;
+    background-color: rgb(3, 20, 255);
+    border-radius: 8px;
+    position: absolute;
+    left: 300px;
+} 
+
+.logo4{
+    width: 80px;
+    height: 80px;
+    background-color: rgb(184, 3, 255);
+    border-radius: 8px;
+    position: absolute;
+    left: 300px;
+} 
+.material-symbols-outlined{
+    color: white;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    top: 15px;
+    font-size: 50px;
+}
+
+mat-icon{
+    color: white;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    top: 15px;
+    font-size: 50px;
+    height: 60px;
+    width: 40px;
+    left: 20px;
+}
