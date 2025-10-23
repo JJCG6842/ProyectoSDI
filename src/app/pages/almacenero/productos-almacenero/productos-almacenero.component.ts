@@ -133,11 +133,12 @@ export class ProductosAlmaceneroComponent implements OnInit{
 
   }
 
-  view(){
+  view(producto: Producto){
     const dialogRef = this.dialog.open(ViewProductComponent,{
       width: '600px',
       maxWidth: 'none',
-      panelClass:'custom-dialog-container'
+      panelClass:'custom-dialog-container',
+      data: producto
     });
 
     dialogRef.afterClosed().subscribe(result => {
