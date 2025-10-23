@@ -46,6 +46,21 @@ export class ProductosService {
     });
   }
 
+  async findPartnumber(partnumber: string) {
+  return this.prisma.products.findMany({
+    where: {
+      partnumber: {
+        contains: partnumber,
+        mode: 'insensitive',
+      },
+    },
+    include: {
+      category: { select: { id: true, name: true } },
+      subcategory: { select: { id: true, name: true } },
+    },
+  });
+}
+
   async findCategoryName(categoryName: string) {
   return this.prisma.products.findMany({
     where: {

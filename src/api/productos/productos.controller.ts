@@ -21,6 +21,11 @@ export class ProductosController {
     return this.productoService.findCategoryName(categoryName);
   }
 
+  @Get('buscar/partnumber/:partnumber')
+  findByPartnumber(@Param('partnumber') partnumber: string) {
+    return this.productoService.findPartnumber(partnumber);
+  }
+
   @Get('buscar/marca/:marca')
   findByMarca(@Param('marca') marca: string) {
     return this.productoService.findMarca(marca);
