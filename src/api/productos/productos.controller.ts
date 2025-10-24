@@ -21,11 +21,6 @@ export class ProductosController {
     return this.productoService.findCategoryName(categoryName);
   }
 
-  @Get('buscar/partnumber/:partnumber')
-  findByPartnumber(@Param('partnumber') partnumber: string) {
-    return this.productoService.findPartnumber(partnumber);
-  }
-
   @Get('buscar/marca/:marca')
   findByMarca(@Param('marca') marca: string) {
     return this.productoService.findMarca(marca);
@@ -40,9 +35,9 @@ export class ProductosController {
   create(
     @Body()
     body: {
-      partnumber: string;
       image: string;
       name: string;
+      description: string;
       marca: string;
       price: number;
       quantity: number;
@@ -60,9 +55,9 @@ export class ProductosController {
     @Param('id') id: string,
     @Body()
     body: Partial<{
-      partnumber: string;
       image: string;
       name: string;
+      description: string;
       marca: string;
       price: number;
       quantity: number;

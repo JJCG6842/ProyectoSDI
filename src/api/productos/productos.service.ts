@@ -29,7 +29,7 @@ export class ProductosService {
 
     if (!product) throw new NotFoundException('Producto no encontrado');
     return product;
-  }
+    }
 
   async findName (name: string){
     return this.prisma.products.findMany({
@@ -46,20 +46,6 @@ export class ProductosService {
     });
   }
 
-  async findPartnumber(partnumber: string) {
-  return this.prisma.products.findMany({
-    where: {
-      partnumber: {
-        contains: partnumber,
-        mode: 'insensitive',
-      },
-    },
-    include: {
-      category: { select: { id: true, name: true } },
-      subcategory: { select: { id: true, name: true } },
-    },
-  });
-}
 
   async findCategoryName(categoryName: string) {
   return this.prisma.products.findMany({
@@ -96,9 +82,9 @@ export class ProductosService {
 
 
   async create(data: {
-    partnumber: string;
     image: string;
     name: string;
+    description: string;
     marca: string;
     price: number;
     quantity: number;
@@ -123,9 +109,9 @@ export class ProductosService {
   async update(
     id: string,
     data: Partial<{
-      partnumber: string;
       image: string;
       name: string;
+      description: string;
       marca: string;
       price: number;
       quantity: number;

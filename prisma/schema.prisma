@@ -36,9 +36,9 @@ model Subcategory {
 
 model Products {
   id            String        @id @default(uuid())
-  partnumber    String
   image         String
   name          String
+  description   String
   marca         String
   price         Float
   quantity      Int
