@@ -32,8 +32,8 @@ export class EditProductComponent {
     private categoriaService: CategoriaService,private subcategoriaService : SubcategoriaService,
     @Inject(MAT_DIALOG_DATA) public data: Producto){
     this.formProduct = this.fb.group({
-      partnumber: ['', Validators.required],
       name: ['', Validators.required],
+      description: ['', Validators.required],
       marca: ['', Validators.required],
       model: ['', Validators.required],
       image: [''],
@@ -50,8 +50,8 @@ export class EditProductComponent {
 
     if (this.data) {
     this.formProduct.patchValue({
-      partnumber: this.data.partnumber,
       name: this.data.name,
+      description: this.data.description,
       marca: this.data.marca,
       model: this.data.model,
       image: this.data.image,
@@ -85,12 +85,12 @@ export class EditProductComponent {
     });
   }
 
-  get partnumber(){
-    return this.formProduct.get('partnumber') as FormControl;
-  }
-
   get name(){
     return this.formProduct.get('name') as FormControl;
+  }
+
+  get description(){
+    return this.formProduct.get('description') as FormControl;
   }
 
   get marca(){
@@ -127,14 +127,19 @@ export class EditProductComponent {
     return;
   }
 
+  const formValue = this.formProduct.value;
+
+  const status: 'Instock' | 'Outstock' = formValue.quantity === 0 ? 'Outstock' : 'Instock';
+
   const updatedProduct = {
-    partnumber: this.partnumber.value,
     name: this.name.value,
+    description: this.description.value,
     marca: this.marca.value,
     model: this.model.value,
     image: this.image.value,
     price: this.price.value,
     quantity: this.quantity.value,
+    status,
     categoryId: this.category.value,
     subcategoryId: this.subcategory.value,
   };
@@ -142,7 +147,7 @@ export class EditProductComponent {
   this.productoService.actualizarProducto(this.data.id, updatedProduct).subscribe({
     next: () => {
       this.dialog.open(EditProductSuccessComponent,{
-            width:'400px',disableClose: true,});
+          width:'400px',disableClose: true,});
       this.dialogRef.close(true); 
     },
     error: (err) => {

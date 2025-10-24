@@ -5,17 +5,6 @@
         <div class="form-grid">
 
         <div class="form-field">
-        <h3>Numero de parte:</h3>
-        <mat-form-field appearance="fill">
-            <mat-label>N° parte:</mat-label>
-            <input matInput formControlName="partnumber">
-        </mat-form-field>
-        <div [hidden]="partnumber.valid || partnumber.pristine" class="error">
-            <span *ngIf="partnumber.errors?.['required']">El campo es requerido</span>
-        </div>
-        </div>
-
-        <div class="form-field">
         <h3>Nombre del producto:</h3>
         <mat-form-field appearance="fill">
             <mat-label>Nombre:</mat-label>
@@ -110,6 +99,17 @@
         <div [hidden]="quantity.valid || quantity.pristine" class="error">
             <span *ngIf="quantity.errors?.['required']">El campo es requerido</span>
             <span *ngIf="quantity.errors?.['min']">en serio? :/</span>
+        </div>
+        </div>
+
+        <div class="form-field">
+        <h3>Descripción del producto:</h3>
+        <mat-form-field appearance="fill">
+            <mat-label>Descripción:</mat-label>
+            <input matInput formControlName="description">
+        </mat-form-field>
+        <div [hidden]="description.valid || description.pristine" class="error">
+            <span *ngIf="description.errors?.['required']">El campo es requerido</span>
         </div>
         </div>
         

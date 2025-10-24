@@ -32,8 +32,8 @@ export class AddProductoComponent implements OnInit{
     private dialogRef: MatDialogRef<AddProductoComponent>, private dialog: MatDialog,
     private categoriaService: CategoriaService,private subcategoriaService : SubcategoriaService){
     this.formProduct = this.fb.group({
-      partnumber: ['', Validators.required],
       name: ['', Validators.required],
+      description: ['',Validators.required],
       marca: ['', Validators.required],
       model: ['', Validators.required],
       image: [''],
@@ -71,12 +71,13 @@ export class AddProductoComponent implements OnInit{
     });
   }
 
-  get partnumber(){
-    return this.formProduct.get('partnumber') as FormControl;
-  }
 
   get name(){
     return this.formProduct.get('name') as FormControl;
+  }
+
+  get description(){
+    return this.formProduct.get('description') as FormControl;
   }
 
   get marca(){
@@ -121,6 +122,7 @@ export class AddProductoComponent implements OnInit{
       partnumber: formValue.partnumber,
       image: formValue.image,
       name: formValue.name,
+      description: formValue.description,
       marca: formValue.marca,
       price: Number(formValue.price),
       quantity: Number(formValue.quantity),

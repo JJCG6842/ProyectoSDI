@@ -3,9 +3,9 @@ import { Subcategoria } from "./subcategoria.interface";
 
 export interface Producto {
   id: string;
-  partnumber: string;
   image: string;
   name: string;
+  description: string;
   marca: string;
   price: number;
   quantity: number;

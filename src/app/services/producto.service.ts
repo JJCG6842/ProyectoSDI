@@ -20,14 +20,13 @@ export class ProductoService {
     return this.http.get<Producto>(`${this.apiUrl}/${id}`);
   }
 
-  buscarPorPartnumber(partnumber: string): Observable<Producto[]> {
-  return this.http.get<Producto[]>(`${this.apiUrl}/buscar/partnumber/${partnumber}`);
-}
-
   buscarPorNombre(nombre: string): Observable<Producto[]> {
     return this.http.get<Producto[]>(`${this.apiUrl}/buscar/nombre/${nombre}`);
   }
 
+  buscarProducto(term: string): Observable<Producto[]>{
+      return this.http.get<Producto[]>(`${this.apiUrl}/buscar/nombre/${term}`)
+  }
 
   buscarPorCategoria(nombreCategoria: string): Observable<Producto[]> {
     return this.http.get<Producto[]>(

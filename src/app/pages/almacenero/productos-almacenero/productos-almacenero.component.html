@@ -7,7 +7,7 @@
 </div>
 
 <div class="content1">
-  <p class="enter">Ingrese N° de parte:</p>
+  <p class="enter">Ingrese Producto:</p>
 <input type="text" placeholder="Buscar producto..." [(ngModel)]="searchTerm">
 
 <button class="boton1" (click)="search()">
@@ -50,10 +50,9 @@
      <table>
          <thead>
            <tr>   
-             <th>N° parte</th>
+             <th>Nombre del producto</th>
              <th>Imagen</th>
              <th>Marca</th>
-             <th>Nombre del producto</th>
              <th>Estado</th>
              <th>Cantidad</th>
              <th>Precio</th>
@@ -61,17 +60,16 @@
            </tr>
          </thead>
          <tbody>
-          <tr *ngFor="let producto of productos">   
-             <th>{{producto.partnumber}}</th>
+          <tr *ngFor="let producto of productos">
+            <th>{{producto.name}}</th>   
              <th><img [src]="producto.image" alt="Imagen" width="50"></th>
              <th>{{producto.marca}}</th>
-             <th>{{producto.name}}</th>
              <th>{{producto.status}}</th>
              <th>{{producto.quantity}}</th>
              <th>S/.{{ producto.price | number: '1.2-2' }}</th>
              <th>
                <button class="edit" (click)="editProduct(producto)"><mat-icon aria-hidden="false" fontIcon="edit"></mat-icon></button>
-               <button class="view" (click)="view()"><mat-icon aria-hidden="false" fontIcon="visibility"></mat-icon></button>
+               <button class="view" (click)="view(producto)"><mat-icon aria-hidden="false" fontIcon="visibility"></mat-icon></button>
                <button class="delete" (click)="eliminarProducto(producto.id!)"><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
              </th>
            </tr>

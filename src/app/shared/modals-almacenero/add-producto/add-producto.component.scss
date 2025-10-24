@@ -9,6 +9,11 @@ mat-form-field {
   min-width: 280px; 
 }
 
+textarea{
+  width: 450px;
+  resize: none;
+}
+
 .error {
   color: red;
 }

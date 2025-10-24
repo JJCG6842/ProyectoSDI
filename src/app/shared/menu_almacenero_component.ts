@@ -107,7 +107,12 @@ export class menuAlmaceneroComponent{
     icon: '',
     label: 'Productos',
     route: '/almacenero/productos-almacenero'
-  }  
+  },
+  {
+    icon:'storage',
+    label: 'Almacenes',
+    route: '/almacenero/almacenes-almacenero'
+  }
 ])
 
   profilePicSize = computed(()=>

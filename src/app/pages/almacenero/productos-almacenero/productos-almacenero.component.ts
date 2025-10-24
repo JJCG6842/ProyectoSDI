@@ -112,25 +112,20 @@ export class ProductosAlmaceneroComponent implements OnInit{
 
     this.isloading = true;
 
-    const esPartnumber = /^[A-Za-z0-9\-]+$/.test(term);
-
-    const observable = esPartnumber
-      ? this.productoService.buscarPorPartnumber(term)
-      : this.productoService.buscarPorNombre(term);
-
-    observable.subscribe({
-      next: (productos) => {
-        this.productos = productos;
+    this.productoService.buscarProducto(term).subscribe({
+      next: (res)=>{
+        this.productos = res;
         this.isloading = false;
         this.reload.markForCheck();
-    },
-    error: (err) => {
-      console.error('Error al buscar productos:', err);
-      this.isloading = false;
-      this.productos = [];
-    },
-  });
+      },
 
+      error: (err) => {
+        console.error('Error en la busqueda :/', err);
+        this.productos = [];
+        this.isloading = false;
+        this.reload.markForCheck();
+      }
+    })
   }
 
   view(producto: Producto){
