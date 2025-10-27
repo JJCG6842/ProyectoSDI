@@ -12,6 +12,16 @@ export class UsuarioController {
         return this.usuarioService.findAll();
     }
 
+    @Get('nombre/:nombre')
+    getName(@Param('nombre') nombre:string){
+        return this.usuarioService.findName(nombre);
+    }
+
+    @Get('buscar/:term')
+    search(@Param('term') term: string){
+        return this.usuarioService.searchByName(term);
+    }
+
     @Get(':id')
     getOne(@Param('id') id: string) {
         return this.usuarioService.findOne(id);
@@ -30,5 +40,10 @@ export class UsuarioController {
     @Delete(':id')
     remove(@Param('id') id: string) {
         return this.usuarioService.deleteUser(id);
+    }
+
+    @Post('login')
+    login(@Body() body: { nombre: string; password: string }) {
+    return this.usuarioService.verifyPassword(body.nombre, body.password);
     }
 }

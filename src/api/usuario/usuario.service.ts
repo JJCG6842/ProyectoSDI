@@ -12,7 +12,34 @@ export class UsuarioService {
 
     async findOne(id: string) {
         const user = await this.prisma.users.findUnique({where: {id}});
-        if(!user) throw new NotFoundException('Usuario no existente o no encontrado');
+        if(!user) {
+            throw new NotFoundException('Usuario no existente o no encontrado');
+        }
+        return user;
+    }
+
+    async findName(nombre: string){
+        const user = await this.prisma.users.findFirst({
+            where: { nombre: { equals: nombre, mode: 'insensitive'}}
+        });
+
+        if(!user){
+            throw new NotFoundException(`No se encontró el usuario: ${nombre}`);
+        }
+        return user;
+    }
+
+    async searchByName(term: string){
+        const user = await this.prisma.users.findMany({
+            where:{
+                nombre: { contains: term, mode: 'insensitive' }
+            }
+        });
+
+        if(user.length === 0){
+            throw new NotFoundException(`No se encontro el usuario con: ${term}`);
+        }
+
         return user;
     }
 
