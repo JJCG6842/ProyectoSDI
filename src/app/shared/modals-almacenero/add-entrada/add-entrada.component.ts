@@ -22,12 +22,17 @@ export class AddEntradaComponent {
   constructor(private fb:FormBuilder,private dialogRef: MatDialogRef<AddEntradaComponent>, private dialog: MatDialog,){
     this.formEntrance = this.fb.group({
       product: ['',Validators.required],
-      quantity: ['', Validators.required]
+      provider: ['',Validators.required],
+      quantity: ['',[Validators.required,Validators.min(1)]]
     })
   }
 
   get product(){
     return this.formEntrance.get('product') as FormControl;
+  }
+
+  get provider(){
+    return this.formEntrance.get('provider') as FormControl;
   }
 
   get quantity(){

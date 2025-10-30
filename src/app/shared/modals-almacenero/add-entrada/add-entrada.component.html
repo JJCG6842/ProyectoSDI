@@ -2,31 +2,50 @@
 
 <mat-dialog-content>
     <form [formGroup]="formEntrance">
-        <div class="form-grid">
+        
 
-        <div class="form-field">
-        <h3>Nombre del producto:</h3>
+        
+        <h3>Seleccione el producto:</h3>
         <mat-form-field appearance="fill">
-            <mat-label>Nombre:</mat-label>
-            <input matInput formControlName="product">
+            <mat-label>Producto:</mat-label>
+            <mat-select formControlName="product">
+            <mat-option value="Notebook Gaming MSI Thin 15">Notebook Gaming MSI Thin 15</mat-option>
+        </mat-select>
         </mat-form-field>
         <div [hidden]="product.valid || product.pristine" class="error">
             <span *ngIf="product.errors?.['required']">El campo es requerido</span>
         </div>
-        </div>
 
-        <div class="form-field">
-        <h3>Marca del producto:</h3>
+        <h3>Seleccione proveedor:</h3>
+        <mat-form-field appearance="fill">
+            <mat-label>Proveedor:</mat-label>
+            <mat-select formControlName="provider">
+            <mat-option value="Compusur EIRL">Compusur EIRL</mat-option>
+            <mat-option value="Deltron">Deltron</mat-option>
+            <mat-option value="Perú Compras">Perú Compras</mat-option>
+        </mat-select>
+        </mat-form-field>
+        <div [hidden]="provider.valid || provider.pristine" class="error">
+            <span *ngIf="provider.errors?.['required']">El campo es requerido</span>
+        </div>
+      
+        <h3>Ingrese monto de entrada:</h3>
             <mat-form-field appearance="fill">
-            <mat-label>Marca:</mat-label>
-            <input matInput formControlName="quantity">
+            <mat-label>Cantidad:</mat-label>
+            <input matInput formControlName="quantity" type="number">
             </mat-form-field>
         <div [hidden]="quantity.valid || quantity.pristine" class="error">
             <span *ngIf="quantity.errors?.['required']">El campo es requerido</span>
         </div>
+
+        <div [hidden]="quantity.valid || quantity.pristine" class="error">
+            <span *ngIf="quantity.errors?.['min']">Debe haber almenos un producto</span>
         </div>
 
-        
-        </div>
     </form>
 </mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-flat-button  style="background-color: blue; color: white;">Realizar entrada</button>
+    <button mat-flat-button mat-dialog-close style="background-color: red; color: white;">Cancelar</button>
+</mat-dialog-actions>

@@ -15,7 +15,7 @@
   <p class="enter">Buscar producto:</p>
 <input type="text" placeholder="Ingrese producto...">
 
-<div class="botons" style="bottom: 5px;">
+<div class="botons" style="bottom: 5px; right: 40px;">
   <button class="boton1">
   <mat-icon fontIcon="search" class="icon-btn" ></mat-icon>
   Buscar
@@ -54,7 +54,7 @@
              <th>S/.4936</th>
              <th>
                  <button class="view" ><mat-icon aria-hidden="false" fontIcon="visibility"></mat-icon></button>
-                 <button class="delete"><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
+                 <button class="delete" (click)="eraseEntrada()"><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
              </th>
            </tr>
          </tbody>

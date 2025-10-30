@@ -1,0 +1,30 @@
+<h2 mat-dialog-title>Crear Usuario:</h2>
+
+<mat-dialog-content>
+    <form [formGroup]="formUser">
+
+        <h3>Nombre de usuario:</h3>
+        <mat-form-field appearance="fill">
+            <mat-label>Ingrese nombre:</mat-label>
+            <input matInput formControlName="name" />
+        </mat-form-field>
+        <div [hidden]="name.valid || name.pristine" class="error">
+            <span *ngIf="name.errors?.['required']">El campo es requerido</span>
+        </div>
+
+        <h3>Contraseña:</h3>
+        <mat-form-field appearance="fill">
+            <mat-label>Asigne una contraseña:</mat-label>
+            <input matInput formControlName="password" />
+        </mat-form-field>
+        <div [hidden]="password.valid || password.pristine" class="error">
+            <span *ngIf="password.errors?.['required']">El campo es requerido</span>
+        </div>
+
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-flat-button (click)="addUser()" style="background-color: blue; color: white;">Crear usuario</button>
+    <button mat-flat-button mat-dialog-close style="background-color: red; color: white;">Cancelar</button>
+</mat-dialog-actions>

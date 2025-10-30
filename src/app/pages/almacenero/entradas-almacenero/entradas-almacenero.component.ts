@@ -4,6 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import { AddEntradaComponent } from '../../../shared/modals-almacenero/add-entrada/add-entrada.component';
+import { EraseEntradaConfirmComponent } from '../../../shared/modals-almacenero/add-entrada/modals-entrada/erase-entrada-confirm/erase-entrada-confirm.component';
 
 @Component({
   selector: 'app-entradas-almacenero',
@@ -20,12 +21,20 @@ export class EntradasAlmaceneroComponent {
 
   addEntrance() {
       const dialogRef = this.dialog.open(AddEntradaComponent,{
-        width: '650px',
+        width: '550px',
         maxWidth: 'none',
         panelClass:'custom-dialog-container'
       });
 
       dialogRef.afterClosed().subscribe(result => {
+        console.log(`Dialog result: ${result}`);
+      });
+  }
+
+  eraseEntrada(){
+    const dialogRef = this.dialog.open(EraseEntradaConfirmComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
         console.log(`Dialog result: ${result}`);
       });
   }

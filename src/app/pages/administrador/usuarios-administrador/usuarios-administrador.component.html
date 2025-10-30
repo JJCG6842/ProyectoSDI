@@ -1,7 +1,7 @@
 
 <div class="header-row">
   <h1>Gestión de usuarios</h1>
-  <button class="add">
+  <button class="add" (click)="createUser()">
     <mat-icon fontIcon="add" class="icon-btn"></mat-icon>
     Crear usuario
   </button>
@@ -42,8 +42,8 @@
              <th>***</th>
              <th>30/10/2025</th>
              <th>
-               <button class="edit" ><mat-icon aria-hidden="false" fontIcon="edit"></mat-icon></button>
-               <button class="delete" ><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
+               <button class="edit" (click)="editUser()"><mat-icon aria-hidden="false" fontIcon="edit"></mat-icon></button>
+               <button class="delete" (click)="deleteUser()"><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
              </th>
            </tr>
          </tbody>

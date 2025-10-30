@@ -1,0 +1,9 @@
+<h2 mat-dialog-title>Confirmar eliminación</h2>
+<mat-dialog-content>
+  ¿Estás seguro de que deseas eliminar el almacén?
+  Esto tambien incluye los productos agregados del almacén.
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button color="warn" [mat-dialog-close]="true" style="background: red; color: white; width: 166px;">Eliminar Almacén</button>
+  <button mat-button mat-dialog-close [mat-dialog-close]="false" style="background: rgb(4, 0, 255); color: white; width: 100px;">Cancelar</button>
+</mat-dialog-actions>
