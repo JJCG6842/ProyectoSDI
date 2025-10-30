@@ -112,6 +112,11 @@ export class menuAlmaceneroComponent{
     icon:'storage',
     label: 'Almacenes',
     route: '/almacenero/almacenes-almacenero'
+  },
+  {
+    icon: 'article',
+    label: 'Kardex del sistema',
+    route: '/almacenero/kardex-almacenero'
   }
 ])
 

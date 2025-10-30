@@ -1,0 +1,86 @@
+<div class="header-row">
+  <h1>Kardex del sistema:</h1>
+    <div class="botons">
+        <button class="entrance" (click)="entradas()">
+            Gestión de entradas
+        </button> 
+        <button class="salida" (click)="salidas()">
+            Gestión de salidas
+        </button>
+    </div>
+</div>
+
+<div class="content1">
+  <p class="enter">Ingrese categoria:</p>
+<input type="text" placeholder="Buscar categoria..." >
+
+<div class="c2">
+  <div class="botons">
+    <button class="boton1">
+      <mat-icon fontIcon="search" class="icon-btn"></mat-icon>
+      Buscar
+    </button>
+
+    <div class="miniselect">
+  <div class="filters">
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Movimiento
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <p style="cursor: pointer;">Entradas</p>
+        <p style="cursor: pointer;">Salidas</p>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Fecha
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <p style="cursor: pointer;">Computadora</p>
+        <p style="cursor: pointer;">Laptop</p>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</div>
+
+
+  </div>
+</div>
+</div>
+
+<div class="table">
+     <table>
+         <thead>
+           <tr>   
+             <th>Fecha</th>
+             <th>Movimiento</th>
+             <th>Proveedor</th>
+             <th>Nombre del producto</th>
+             <th>Cantidad</th>
+             <th>Precio</th>
+             <th>Monto total</th>
+             <th>Ve detalles</th>
+           </tr>
+         </thead>
+         <tbody>
+          <tr>
+             <th>29/10/2025</th>   
+             <th>Entrada</th>
+             <th>Compusur EIRL</th>
+             <th>Notebook Gaming MSI Thin 15</th>
+             <th>4</th>
+             <th>S/.1234</th>
+             <th>S/.4936</th>
+             <th>
+              <button class="view"><mat-icon aria-hidden="false" fontIcon="visibility"></mat-icon></button>
+             </th>
+           </tr>
+         </tbody>
+      </table>
+</div>

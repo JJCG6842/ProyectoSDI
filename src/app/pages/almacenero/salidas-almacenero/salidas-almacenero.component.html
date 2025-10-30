@@ -1,0 +1,62 @@
+<div class="header-row">
+  <h1>Gestión de salidas:</h1>
+    <div class="botons">
+        <button class="kardex-boton" (click)="kardex()">
+            Kardex del sistema
+        </button> 
+        <button class="entrance" (click)="salidas()">
+            Gestión de entradas
+        </button>
+    </div>
+</div>
+
+
+<div class="content1">
+  <p class="enter">Buscar producto:</p>
+<input type="text" placeholder="Ingrese producto...">
+
+<div class="botons" style="bottom: 5px;">
+  <button class="boton1">
+  <mat-icon fontIcon="search" class="icon-btn" ></mat-icon>
+  Buscar
+</button>
+
+
+<button class="boton1" style="width: 260px;">
+    <mat-icon fontIcon="add" class="icon-btn" ></mat-icon>
+Generar salida
+</button>
+</div>
+
+</div> 
+
+
+<div class="table">
+     <table>
+         <thead>
+           <tr>   
+             <th>Fecha</th>
+             <th>Nombre del producto</th>
+             <th>Proveedor</th>
+             <th>Cantidad</th>
+             <th>Precio</th>
+             <th>Monto total</th>
+             <th>Acciones</th>
+           </tr>
+         </thead>
+         <tbody>
+          <tr>
+             <th>29/10/2025</th>   
+             <th>Notebook Gaming MSI Thin 15</th>
+             <th>Compusur EIRL</th>
+             <th>4</th>
+             <th>S/.1234</th>
+             <th>S/.4936</th>
+             <th>
+                 <button class="view" ><mat-icon aria-hidden="false" fontIcon="visibility"></mat-icon></button>
+                 <button class="delete"><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
+             </th>
+           </tr>
+         </tbody>
+      </table>
+</div>

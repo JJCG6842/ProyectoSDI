@@ -1,1 +1,50 @@
-<p>categoria-administrador works!</p>
+<!--(input)="onSearchChange()"-->
+
+<div class="header-row">
+  <h1>Categorias</h1>
+  
+</div>
+
+<div class="content1">
+  <p class="enter">Ingrese categoria:</p>
+<input type="text" placeholder="Buscar categoria..." [(ngModel)]="searchTerm"
+>
+
+<div class="botons">
+  <button class="boton1" (click)="search()">
+  <mat-icon fontIcon="search" class="icon-btn" ></mat-icon>
+  Buscar
+</button>
+
+
+<button class="boton1" (click)="page2()">
+Subcategorias
+</button>
+</div>
+
+</div> 
+
+
+
+<div class="table">
+     <table>
+         <thead>
+           <tr>   
+             <th>Nro °</th>
+             <th>Nombre</th>
+             <th>Descripcion de la categoria</th>
+             <th>Fecha de creación</th>
+             
+           </tr>
+         </thead>
+         <tbody>
+          <tr *ngFor="let categoria of categorias; let i = index">   
+             <th>{{i + 1}}</th>
+             <th>{{categoria.name}}</th>
+             <th>{{categoria.description}}</th>
+             <th>{{categoria.createdAt}}</th>
+             
+           </tr>
+         </tbody>
+      </table>
+</div>

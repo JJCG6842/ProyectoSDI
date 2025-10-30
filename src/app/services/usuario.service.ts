@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Usuario } from '../interface/usuario.interface';
-import { Categoria } from '../interface/categoria.interface';
 
 
 @Injectable({
@@ -38,8 +37,8 @@ export class UsuarioService{
         return this.http.delete<void>(`${this.apiUrl}/${id}`);
     }
 
-    login(nombre: string, password: string) {
-  return this.http.post<{ message: string; user: any }>(
+    login(nombre: string, password: string): Observable<{ message: string; user: Usuario }> {
+  return this.http.post<{ message: string; user: Usuario }>(
     `${this.apiUrl}/login`,
     { nombre, password }
   );

@@ -1,0 +1,67 @@
+<div class="header-row">
+  <h1>Control de inventario - Almacen 1:</h1>
+    <div class="botons">
+        <button class="add" (click)="almacen1()">
+            Almacenes
+        </button>
+    </div>
+</div>
+
+<div class="content1">
+  <p class="enter">Ingrese categoria:</p>
+<input type="text" placeholder="Buscar categoria..." >
+
+<div class="c2">
+  <div class="botons">
+    <button class="boton1">
+      <mat-icon fontIcon="search" class="icon-btn"></mat-icon>
+      Buscar
+    </button>
+
+    <div class="miniselect">
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Categorías
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <p style="cursor: pointer;">Computadora</p>
+          <p style="cursor: pointer;">Laptop</p>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+  
+</div>
+
+</div>
+
+<div class="table">
+     <table>
+         <thead>
+           <tr>   
+             <th>Nombre del producto</th>
+             <th>Imagen</th>
+             <th>Marca</th>
+             <th>Estado</th>
+             <th>Cantidad</th>
+             <th>Precio</th>
+             <th>Acciones</th>
+           </tr>
+         </thead>
+         <tbody>
+          <tr >
+            <th></th>   
+             <th><img  alt="Imagen" width="50"></th>
+             <th></th>
+             <th></th>
+             <th></th>
+             <th></th>
+             <th>
+               <button class="view" ><mat-icon aria-hidden="false" fontIcon="visibility"></mat-icon></button>
+             </th>
+           </tr>
+         </tbody>
+      </table>
+</div>

@@ -1,1 +1,46 @@
-<p>subcategoria-administrador works!</p>
+<div class="header-row">
+  <h1>Subcategorias</h1>
+</div>
+
+<div class="content1">
+  <p class="enter">Ingrese subcategoria:</p>
+<input type="text" placeholder="Buscar subcategoria..." [(ngModel)]="searchTerm">
+
+<div class="botons">
+  <button class="boton1" (click)="search()">
+  <mat-icon fontIcon="search" class="icon-btn"></mat-icon>
+  Buscar
+</button>
+
+
+<button class="boton1" (click)="page1()">
+Categorias
+</button>
+</div>
+
+</div> 
+
+
+
+<div class="table">
+     <table>
+         <thead>
+           <tr>   
+             <th>Nro °</th>
+             <th>Subcategoria</th>
+             <th>Descripcion de la subcategoria</th>
+             <th>Categoria</th>
+             <th>Fecha de creación</th>
+           </tr>
+         </thead>
+         <tbody>
+          <tr *ngFor="let subcategorias of subcategorias; let i = index">   
+             <th>{{ i + 1 }}</th>
+             <th>{{subcategorias.name}}</th>
+             <th>{{subcategorias.description}}</th>
+             <th>{{subcategorias.category.name}}</th>
+             <th>{{subcategorias.createdAt}}</th>
+           </tr>
+         </tbody>
+      </table>
+</div>

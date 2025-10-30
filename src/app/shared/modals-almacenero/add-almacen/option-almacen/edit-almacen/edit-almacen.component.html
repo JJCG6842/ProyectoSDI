@@ -1,0 +1,35 @@
+<h2 mat-dialog-title>Crear Almacén</h2>
+
+<mat-dialog-content>
+
+    <form [formGroup]="formAlmacen">
+        <h3>Seleccionar Almacén:</h3>
+        <mat-form-field appearance="fill">
+        <mat-label>Almacenes:</mat-label>
+            <mat-select matInput formControlName="name">
+                <mat-option value="Almacen 1">Almacen 1</mat-option>
+                <mat-option value="Almacen 2">Almacen 2</mat-option>
+            </mat-select>
+        </mat-form-field>
+    <div [hidden]="name.valid || name.pristine" class="error">
+            <span *ngIf="name.errors?.['required']">El campo es requerido</span>
+    </div>
+
+    <h3>Cambiar nombre:</h3>
+        <mat-form-field appearance="fill">
+        <mat-label>Nombre:</mat-label>
+            <input matInput formControlName="newname" />
+        </mat-form-field>
+    <div [hidden]="newname.valid || newname.pristine" class="error">
+            <span *ngIf="newname.errors?.['required']">El campo es requerido</span>
+    </div>
+    </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-flat-button (click)="editar()" style="background-color: blue; color: white;">Cambiar nombre</button>
+    <button mat-flat-button mat-dialog-close style="background-color: red; color: white;">Cerrar</button>
+</mat-dialog-actions>
+
+

@@ -106,8 +106,28 @@ export class menuAdministradorComponent{
   {
     icon: '',
     label: 'Productos',
-    route: '//administrador/subcategoria-administrador'
-  }  
+    route: '/administrador/productos-administrador'
+  },
+  {
+    icon:'storage',
+    label: 'Almacenes',
+    route: '/administrador/almacenes-administrador'
+  },
+  {
+    icon: 'article',
+    label: 'Kardex del sistema',
+    route: '/administrador/kardex-administrador'
+  },
+  {
+    icon: 'group',
+    label: 'Proveedores',
+    route: '/administrador/proveedores-administrador'
+  },
+  {
+    icon: 'person',
+    label: 'Gestion de usuarios',
+    route: '/administrador/usuarios-administrador'
+  }    
 ])
 
   profilePicSize = computed(()=>

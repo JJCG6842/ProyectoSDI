@@ -1,0 +1,72 @@
+<div class="header-row">
+  <h1>Productos</h1>
+</div>
+
+<div class="content1">
+  <p class="enter">Ingrese Producto:</p>
+<input type="text" placeholder="Buscar producto..." [(ngModel)]="searchTerm">
+
+<button class="boton1" (click)="search()">
+  <mat-icon fontIcon="search" class="icon-btn"></mat-icon>
+  Buscar
+</button>
+</div> 
+
+<div class="miniselect">
+
+  <mat-accordion>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Categorias
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <p style="cursor: pointer;">Computadora</p>
+    <p style="cursor: pointer;">Laptop</p>
+  </mat-expansion-panel>
+</mat-accordion>
+
+<mat-accordion>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Marca
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <p style="cursor: pointer;">HP</p>
+  </mat-expansion-panel>
+</mat-accordion>
+
+</div>
+
+
+
+
+<div class="table">
+     <table>
+         <thead>
+           <tr>   
+             <th>Nombre del producto</th>
+             <th>Imagen</th>
+             <th>Marca</th>
+             <th>Estado</th>
+             <th>Cantidad</th>
+             <th>Precio</th>
+             <th>Acciones</th>
+           </tr>
+         </thead>
+         <tbody>
+          <tr *ngFor="let producto of productos">
+            <th>{{producto.name}}</th>   
+             <th><img [src]="producto.image" alt="Imagen" width="50"></th>
+             <th>{{producto.marca}}</th>
+             <th>{{producto.status}}</th>
+             <th>{{producto.quantity}}</th>
+             <th>S/.{{ producto.price | number: '1.2-2' }}</th>
+             <th>
+               <button class="view" (click)="view(producto)"><mat-icon aria-hidden="false" fontIcon="visibility"></mat-icon></button>
+             </th>
+           </tr>
+         </tbody>
+      </table>
+</div>

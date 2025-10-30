@@ -31,6 +31,9 @@
         
 
         <button class="boton" (click)="login()">Iniciar sesión</button>
+          <div *ngIf="errorMessage" class="error">
+            {{ errorMessage }}
+          </div>
 
       </div>
     </div>

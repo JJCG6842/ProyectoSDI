@@ -10,10 +10,22 @@ import { AddSubcategoriaComponent } from './shared/modals-almacenero/add-subcate
 import { AddProductoComponent } from './shared/modals-almacenero/add-producto/add-producto.component';
 import { AdministradorComponent } from './components/administrador/administrador.component';
 import { AlmacenAlmaceneroComponent } from './pages/almacenero/almacen-almacenero/almacen-almacenero.component';
+import { Almacen2AlmaceneroComponent } from './pages/almacenero/almacen-2-almacenero/almacen-2-almacenero.component';
+import { KardexAlmaceneroComponent } from './pages/almacenero/kardex-almacenero/kardex-almacenero.component';
+import { EntradasAlmaceneroComponent } from './pages/almacenero/entradas-almacenero/entradas-almacenero.component';
+import { SalidasAlmaceneroComponent } from './pages/almacenero/salidas-almacenero/salidas-almacenero.component';
 
 import { InicioAdministradorComponent } from './pages/administrador/inicio-administrador/inicio-administrador.component';
 import { CategoriaAdministradorComponent } from './pages/administrador/categoria-administrador/categoria-administrador.component';
 import { SubcategoriaAdministradorComponent } from './pages/administrador/subcategoria-administrador/subcategoria-administrador.component';
+import { ProductosAdministradorComponent } from './pages/administrador/productos-administrador/productos-administrador.component';
+import { AlmacenAdministradorComponent } from './pages/administrador/almacen-administrador/almacen-administrador.component';
+import { Almacen2AdministradorComponent } from './pages/administrador/almacen-2-administrador/almacen-2-administrador.component';
+import { KardexAdministradorComponent } from './pages/administrador/kardex-administrador/kardex-administrador.component';
+import { EntradasAdministradorComponent } from './pages/administrador/entradas-administrador/entradas-administrador.component';
+import { SalidasAdministradorComponent } from './pages/administrador/salidas-administrador/salidas-administrador.component';
+import { ProveedoresAdministradorComponent } from './pages/administrador/proveedores-administrador/proveedores-administrador.component';
+import { UsuariosAdministradorComponent } from './pages/administrador/usuarios-administrador/usuarios-administrador.component';
 
 export const routes: Routes = [
   {
@@ -50,6 +62,10 @@ export const routes: Routes = [
         path: 'almacenes-almacenero',
         component: AlmacenAlmaceneroComponent
       },
+      {
+        path: 'almacenes-section-almacenero',
+        component: Almacen2AlmaceneroComponent
+      },
       
       {
         path: '',
@@ -67,6 +83,18 @@ export const routes: Routes = [
       {
         path: 'add-producto',
         component: AddProductoComponent
+      },
+      {
+        path: 'kardex-almacenero',
+        component: KardexAlmaceneroComponent
+      },
+      {
+        path: 'entrada-almacenero',
+        component: EntradasAlmaceneroComponent
+      },
+      {
+        path: 'salida-almacenero',
+        component: SalidasAlmaceneroComponent
       }
     ]
   },
@@ -91,6 +119,39 @@ export const routes: Routes = [
       {
         path: 'subcategoria-administrador',
         component: SubcategoriaAdministradorComponent
+      },
+      {
+        path: 'productos-administrador',
+        component: ProductosAdministradorComponent
+      },
+      {
+        path: 'almacenes-administrador',
+        component: AlmacenAdministradorComponent
+      },
+      {
+        path: 'almacenes-section-administrador',
+        component: Almacen2AdministradorComponent
+      },
+
+      {
+        path: 'kardex-administrador',
+        component: KardexAdministradorComponent
+      },
+      {
+        path: 'entrada-administrador',
+        component: EntradasAdministradorComponent
+      },
+      {
+        path: 'salida-administrador',
+        component: SalidasAdministradorComponent
+      },
+      {
+        path: 'proveedores-administrador',
+        component: ProveedoresAdministradorComponent
+      },
+      {
+        path: 'usuarios-administrador',
+        component: UsuariosAdministradorComponent
       }
     ]
   }
