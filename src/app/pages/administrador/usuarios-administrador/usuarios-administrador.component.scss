@@ -137,8 +137,9 @@ input{
   background: rgb(252, 0, 0);
 }
 
-.edit:hover{
-    background: rgb(59, 102, 245);
+.edit:hover,
+.boton1:hover{
+    background: rgb(70, 110, 241);
 }
 
 .delete:hover{

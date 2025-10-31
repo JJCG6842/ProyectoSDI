@@ -9,11 +9,11 @@
 
 <div class="content1">
   <p class="enter">Buscar usuario:</p>
-<input type="text" placeholder="Ingrese usuario..." >
+<input type="text" placeholder="Ingrese usuario..." [(ngModel)]="searchTerm">
 
 <div class="botons">
-  <button class="boton1" >
-  <mat-icon fontIcon="search" class="icon-btn" ></mat-icon>
+  <button class="boton1" (click)="search()">
+  <mat-icon fontIcon="search" class="icon-btn"></mat-icon>
   Buscar
 </button>
 
@@ -31,19 +31,21 @@
              <th>Nro °</th>
              <th>Nombre</th>
              <th>Contraseña</th>
+             <th>Rol</th>
              <th>Fecha de creación</th>
              <th>Acciones</th>
            </tr>
          </thead>
          <tbody>
-          <tr>   
-             <th>1</th>
-             <th>Usuario01</th>
-             <th>***</th>
-             <th>30/10/2025</th>
+          <tr *ngFor="let usuario of usuarios; let i = index">   
+             <th>{{i + 1}}</th>
+             <th>{{usuario.nombre}}</th>
+             <th>{{ ocultarPassword(usuario.password) }}</th>
+             <th>{{usuario.role}}</th>
+             <th>{{usuario.createdAt | date:'yyyy-MM-dd'}}</th>
              <th>
-               <button class="edit" (click)="editUser()"><mat-icon aria-hidden="false" fontIcon="edit"></mat-icon></button>
-               <button class="delete" (click)="deleteUser()"><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
+               <button class="edit" (click)="editUser(usuario)"><mat-icon aria-hidden="false" fontIcon="edit"></mat-icon></button>
+               <button class="delete" (click)="deleteUser(usuario.id!)"><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
              </th>
            </tr>
          </tbody>

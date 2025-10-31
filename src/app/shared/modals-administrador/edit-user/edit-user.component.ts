@@ -1,14 +1,19 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
-import {MatDialog, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
+import {MatDialog, MatDialogModule, MatDialogRef,MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule, MatInput } from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {FormControl, FormsModule, ReactiveFormsModule, Validators, FormBuilder, FormGroup} from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Usuario } from '../../../interface/usuario.interface';
+import { UsuarioService } from '../../../services/usuario.service';
+import { TextFieldModule } from '@angular/cdk/text-field';
+import { EditUserSuccessComponent } from '../modals/edit-user-success/edit-user-success.component';
 
 @Component({
   selector: 'app-edit-user',
-  imports: [MatDialogModule, MatFormFieldModule, MatInput, MatButtonModule, CommonModule,
+  imports: [MatDialogModule, MatFormFieldModule, MatSelectModule, MatInput, MatButtonModule,TextFieldModule, CommonModule,
     FormsModule, ReactiveFormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './edit-user.component.html',
@@ -18,15 +23,18 @@ export class editUserComponent {
 
   formUser!: FormGroup;
 
-  constructor(private fb:FormBuilder,private dialog:MatDialog, private dialogRef: MatDialogRef<editUserComponent>){
+  constructor(private fb:FormBuilder,private dialog:MatDialog,
+    private dialogRef: MatDialogRef<editUserComponent>, private usuarioService:UsuarioService,
+  @Inject(MAT_DIALOG_DATA) public data:Usuario
+  ){
     this.formUser = this.fb.group({
-      name: ['',Validators.required],
+      nombre: [data?.nombre || '',Validators.required],
       password: ['', Validators.required]
     });
   }
 
-  get name(){
-    return this.formUser.get('name') as FormControl;
+  get nombre(){
+    return this.formUser.get('nombre') as FormControl;
   }
 
   get password(){
@@ -35,7 +43,27 @@ export class editUserComponent {
 
 
   editUser(){
-    
+    if(this.formUser.invalid){
+      this.formUser.markAllAsTouched();
+      return;
+    }
+
+    const updateData = this.formUser.value;
+
+    this.usuarioService.actualizarUsuario(this.data.id!, updateData).subscribe({
+      next: () => {
+        this.dialog.open(EditUserSuccessComponent,{
+          width:'400px',
+          disableClose: true,
+        });
+
+        this.dialogRef.close(true);
+      },
+      error: (err) => {
+        console.log('Error al actualizar los datos', err);
+      }
+    });
+
   }
 
 }

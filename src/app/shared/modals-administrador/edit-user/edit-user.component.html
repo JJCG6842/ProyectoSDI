@@ -6,10 +6,10 @@
         <h3>Nombre de usuario:</h3>
         <mat-form-field appearance="fill">
             <mat-label>Editar nombre:</mat-label>
-            <input matInput formControlName="name" />
+            <input matInput formControlName="nombre" />
         </mat-form-field>
-        <div [hidden]="name.valid || name.pristine" class="error">
-            <span *ngIf="name.errors?.['required']">El campo es requerido</span>
+        <div [hidden]="nombre.valid || nombre.pristine" class="error">
+            <span *ngIf="nombre.errors?.['required']">El campo es requerido</span>
         </div>
 
         <h3>Contraseña:</h3>
