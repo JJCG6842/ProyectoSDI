@@ -5,7 +5,6 @@ import { PrismaClient } from '@prisma/client';
 export class AlmacenesService {
   private prisma = new PrismaClient();
 
-  // ✅ Crear un almacén
   async crearAlmacen(data: { name: string; }) {
     return await this.prisma.store.create({ data });
   }
@@ -17,6 +16,12 @@ export class AlmacenesService {
       },
       orderBy: { name: 'asc' },
     });
+  }
+
+  async findById(id: string) {
+    const almacen = await this.prisma.store.findUnique({ where: { id } });
+    if (!almacen) return null;
+    return almacen;
   }
 
   async listarProductosPorAlmacen(storeId: string) {
@@ -36,46 +41,41 @@ export class AlmacenesService {
     return store;
   }
 
-  async agregarProductoAlmacen(
-    storeId: string,
-    data: {
-      name: string;
-      description: string;
-      marca: string;
-      price: number;
-      quantity: number;
-      model: string;
-      categoryId: string;
-      subcategoryId: string;
-      image: string;
-    },
-  ) {
+  async registrarProductoExistenteEnAlmacen(storeId: string, productId: string) {
     const store = await this.prisma.store.findUnique({ where: { id: storeId } });
     if (!store) throw new NotFoundException('El almacén especificado no existe');
 
-    const category = await this.prisma.category.findUnique({
-      where: { id: data.categoryId },
-    });
-    if (!category) throw new NotFoundException('Categoría no encontrada');
+    const producto = await this.prisma.products.findUnique({ where: { id: productId } });
+    if (!producto) throw new NotFoundException('El producto no existe');
 
-    const subcategory = await this.prisma.subcategory.findUnique({
-      where: { id: data.subcategoryId },
+    return this.prisma.products.update({
+      where: { id: productId },
+      data: { storeId },
     });
-    if (!subcategory) throw new NotFoundException('Subcategoría no encontrada');
+  }
 
-    return await this.prisma.products.create({
-      data: {
-        name: data.name,
-        description: data.description,
-        marca: data.marca,
-        price: data.price,
-        quantity: data.quantity,
-        status: data.quantity > 0 ? 'Instock' : 'Outstock',
-        model: data.model,
-        image: data.image,
-        category: { connect: { id: data.categoryId } },
-        subcategory: { connect: { id: data.subcategoryId } },
-        store: { connect: { id: storeId } },
+  async removerProductoDeAlmacen(productId: string) {
+    const producto = await this.prisma.products.findUnique({ where: { id: productId } });
+    if (!producto) throw new NotFoundException('El producto no existe');
+
+    return await this.prisma.products.update({
+      where: { id: productId },
+      data: { storeId: null },
+    });
+  }
+
+  async buscarProductoPorNombreEnAlmacen(storeId: string, nombre: string) {
+
+    const store = await this.prisma.store.findUnique({ where: { id: storeId } });
+    if (!store) throw new NotFoundException('El almacén no existe');
+
+    return await this.prisma.products.findMany({
+      where: {
+        storeId: storeId,
+        name: {
+          contains: nombre,
+          mode: 'insensitive',
+        },
       },
     });
   }
@@ -107,7 +107,7 @@ export class AlmacenesService {
 
   async editarAlmacen(
     id: string,
-    data: { name?: string;},
+    data: { name?: string; },
   ) {
     const almacen = await this.prisma.store.findUnique({ where: { id } });
     if (!almacen) throw new NotFoundException('El almacén no existe');

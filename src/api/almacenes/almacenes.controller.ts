@@ -8,12 +8,13 @@ import {
   Body,
   Query,
   NotFoundException,
+  Patch
 } from '@nestjs/common';
 import { AlmacenesService } from './almacenes.service';
 
 @Controller('almacenes')
 export class AlmacenesController {
-  constructor(private readonly almacenesService: AlmacenesService) {}
+  constructor(private readonly almacenesService: AlmacenesService) { }
 
   @Get()
   async listarAlmacenes() {
@@ -27,33 +28,44 @@ export class AlmacenesController {
     return result;
   }
 
+  @Get(':id')
+  async obtenerAlmacenPorId(@Param('id') id: string) {
+    const almacen = await this.almacenesService.findById(id);
+    if (!almacen) throw new NotFoundException('Almacén no encontrado');
+    return almacen;
+  }
+
+  @Get(':id/productos/buscar')
+  async buscarProductoEnAlmacen(
+    @Param('id') storeId: string,
+    @Query('nombre') nombre: string,
+  ) {
+    if (!nombre) return this.almacenesService.listarProductosPorAlmacen(storeId);
+
+    return this.almacenesService.buscarProductoPorNombre(nombre, storeId);
+  }
+
   @Post()
-  async crearAlmacen(@Body() body: { name: string;}) {
+  async crearAlmacen(@Body() body: { name: string; }) {
     return this.almacenesService.crearAlmacen(body);
   }
 
-  @Post(':id/productos')
-  async agregarProductoAAlmacen(
-    @Param('id') id: string,
-    @Body()
-    body: {
-      name: string;
-      description: string;
-      marca: string;
-      price: number;
-      quantity: number;
-      model: string;
-      categoryId: string;
-      subcategoryId: string;
-      image: string;
-    },
+  @Post(':storeId/productos/:productId')
+  async registrarProductoExistente(
+    @Param('storeId') storeId: string,
+    @Param('productId') productId: string,
   ) {
-    return this.almacenesService.agregarProductoAlmacen(id, body);
+    return this.almacenesService.registrarProductoExistenteEnAlmacen(storeId, productId);
+  }
+
+  @Patch('productos/:productId/remover')
+  async removerProductoDeAlmacen(@Param('productId') productId: string) {
+    return this.almacenesService.removerProductoDeAlmacen(productId);
   }
 
   @Get('buscar')
   async buscarProductoPorNombre(
-    @Query('nombre') nombre: string,@Query('storeId') storeId?: string) {
+    @Query('nombre') nombre: string, @Query('storeId') storeId?: string) {
     return this.almacenesService.buscarProductoPorNombre(nombre, storeId);
   }
 
@@ -64,7 +76,7 @@ export class AlmacenesController {
 
   @Put(':id')
   async editarAlmacen(
-    @Param('id') id: string,@Body() body: { name?: string;}) {
+    @Param('id') id: string, @Body() body: { name?: string; }) {
     return this.almacenesService.editarAlmacen(id, body);
   }
 
