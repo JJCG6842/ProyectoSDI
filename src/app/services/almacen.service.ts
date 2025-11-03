@@ -26,11 +26,24 @@ export class AlmacenesService {
     return this.http.get<Almacen>(`${this.apiUrl}/${id}/productos`);
   }
 
-  agregarProductoAAlmacen(storeId: string, producto: Producto): Observable<Producto> {
-    return this.http.post<Producto>(`${this.apiUrl}/${storeId}/productos`, producto);
+  agregarProductoAAlmacen(storeId: string, productId: string) {
+    return this.http.post(`${this.apiUrl}/${storeId}/productos/${productId}`, {});
   }
 
+  removerProductoDeAlmacen(productId: string) {
+    return this.http.patch(`${this.apiUrl}/productos/${productId}/remover`, {});
+  }
 
+  buscarProductoPorNombreEnAlmacen(storeId: string, nombre: string) {
+  return this.http.get<any[]>(`${this.apiUrl}/${storeId}/productos/buscar`, {
+    params: { nombre }
+  });
+}
+
+  obtenerAlmacenPorId(storeId: string) {
+    return this.http.get<{ id: string, name: string }>(`${this.apiUrl}/almacenes/${storeId}`);
+  }
+  
   buscarProducto(nombre: string, storeId?: string): Observable<Producto[]> {
     const params = storeId ? `?nombre=${nombre}&storeId=${storeId}` : `?nombre=${nombre}`;
     return this.http.get<Producto[]>(`${this.apiUrl}/buscar${params}`);

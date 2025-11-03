@@ -1,10 +1,10 @@
-<h2 mat-dialog-title>Añadir producto:</h2>
+<h2 mat-dialog-title  style="font-size: 29px;">Añadir producto:</h2>
 
 
 <mat-dialog-content>
     <div class="content1">
   <p class="enter">Ingrese Producto:</p>
-<input type="text" placeholder="Buscar producto...">
+<input type="text" placeholder="Buscar producto..." [(ngModel)]="searchTerm">
 
 <button class="boton1" (click)="search()">
   <mat-icon fontIcon="search" class="icon-btn"></mat-icon>
@@ -25,14 +25,14 @@
            </tr>
          </thead>
          <tbody>
-          <tr >
-            <th></th>   
-             <th><img></th>
-             <th></th>
-             <th></th>
-             <th>S/.</th>
+          <tr *ngFor="let producto of productos">
+             <th>{{producto.name}}</th>   
+             <th><img [src]="producto.image" alt="Imagen" width="50"></th>
+             <th>{{producto.status}}</th>
+             <th>{{producto.quantity}}</th>
+             <th>S/.{{ producto.price | number: '1.2-2' }}</th>
              <th>
-               <button class="add"><mat-icon aria-hidden="false" fontIcon="add"></mat-icon></button>
+               <button class="add" (click)="add(producto)"><mat-icon aria-hidden="false" fontIcon="add"></mat-icon></button>
              </th>
            </tr>
          </tbody>

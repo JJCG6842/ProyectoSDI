@@ -1,5 +1,5 @@
 <div class="header-row">
-  <h1>Control de inventario - Almacen 1:</h1>
+  <h1>Control de inventario:</h1>
     <div class="botons">
         <button class="add" (click)="addProduct()">
             <mat-icon fontIcon="add" class="icon-btn"></mat-icon>
@@ -12,12 +12,12 @@
 </div>
 
 <div class="content1">
-  <p class="enter">Ingrese categoria:</p>
-<input type="text" placeholder="Buscar categoria..." >
+  <p class="enter">Ingrese Producto:</p>
+<input type="text" placeholder="Buscar producto..." [(ngModel)]="searchTerm" >
 
 <div class="c2">
   <div class="botons">
-    <button class="boton1">
+    <button class="boton1" (click)="searchProduct()">
       <mat-icon fontIcon="search" class="icon-btn"></mat-icon>
       Buscar
     </button>
@@ -55,19 +55,23 @@
            </tr>
          </thead>
          <tbody>
-          <tr >
-            <th></th>   
-             <th><img  alt="Imagen" width="50"></th>
-             <th></th>
-             <th></th>
-             <th></th>
-             <th></th>
-             <th>
-               <button class="view" ><mat-icon aria-hidden="false" fontIcon="visibility"></mat-icon></button>
-               <button class="delete"><mat-icon aria-hidden="false" fontIcon="close"></mat-icon></button>
-             </th>
-           </tr>
-         </tbody>
+            <tr *ngFor="let producto of productos">
+              <td>{{ producto.name }}</td>
+              <td><img [src]="producto.image" alt="Imagen" width="50"></td>
+              <td>4</td>
+              <td>{{ producto.quantity }}</td>
+              <td>0</td>
+              <td>S/.{{ producto.price | number: '1.2-2' }}</td>
+              <td>
+                <button class="view"><mat-icon fontIcon="visibility"></mat-icon></button>
+                <button class="delete" (click)="eraseProduct(producto.id)"><mat-icon fontIcon="close"></mat-icon></button>
+              </td>
+            </tr>
+
+            <tr *ngIf="productos.length === 0">
+              <td colspan="6" style="text-align:center; color: gray;">No hay productos en este almacén xd</td>
+            </tr>
+        </tbody>
       </table>
 </div>
 
