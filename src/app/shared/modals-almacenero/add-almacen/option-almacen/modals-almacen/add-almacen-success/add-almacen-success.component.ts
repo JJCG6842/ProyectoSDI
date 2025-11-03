@@ -3,11 +3,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-delete-almacen-success',
+  selector: 'app-add-almacen-success',
   imports: [MatButtonModule,MatDialogModule],
-  templateUrl: './delete-almacen-success.component.html',
-  styleUrl: './delete-almacen-success.component.scss'
+  templateUrl: './add-almacen-success.component.html',
+  styleUrl: './add-almacen-success.component.scss'
 })
-export class DeleteAlmacenSuccessComponent {
+export class AddAlmacenSuccessComponent {
 
 }

@@ -23,7 +23,8 @@ export class Almacen2AlmaceneroComponent {
 
   addProduct(){
     const dialogRef = this.dialog.open(AddProductStoreComponent, {
-          width: '70%',
+          width: '1300px',
+          maxWidth: 'none',
           panelClass:'custom-dialog-container'
         });
     

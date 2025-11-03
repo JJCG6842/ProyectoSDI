@@ -3,12 +3,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-delete-user-confirm',
+  selector: 'app-delete-usuario-confirm',
   imports: [MatButtonModule, MatDialogModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './delete-user-confirm.component.html',
-  styleUrl: './delete-user-confirm.component.scss'
+  templateUrl: './delete-usuario-confirm.component.html',
+  styleUrl: './delete-usuario-confirm.component.scss'
 })
-export class DeleteUserConfirmComponent {
+export class DeleteUsuarioConfirmComponent {
 
 }

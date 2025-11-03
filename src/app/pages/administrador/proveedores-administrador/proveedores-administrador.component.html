@@ -8,10 +8,10 @@
 
 <div class="content1">
   <p class="enter">Buscar proveedor:</p>
-<input type="text" placeholder="Ingrese proveedor..." >
+<input type="text" placeholder="Ingrese proveedor..." [(ngModel)]="searchTerm">
 
 <div class="botons">
-  <button class="boton1" >
+  <button class="boton1" (click)="search()">
   <mat-icon fontIcon="search" class="icon-btn" ></mat-icon>
   Buscar
 </button>
@@ -28,19 +28,21 @@
              <th>Nro °</th>
              <th>Nombre</th>
              <th>Telefono</th>
-             <th>Dirección</th>
+             <th>Descripción</th>
+             <th>Fecha de creación</th>
              <th>Acciones</th>
            </tr>
          </thead>
          <tbody>
-          <tr>   
-             <th>1</th>
-             <th>Compusur EIRL</th>
-             <th>987654321</th>
-             <th>Jr.Bellido N°112</th>
+          <tr *ngFor="let proveedor of proveedores; let i = index">   
+             <th>{{i + 1}}</th>
+             <th>{{proveedor.name}}</th>
+             <th>{{proveedor.phone}}</th>
+             <th>{{proveedor.description}}</th>
+             <th>{{proveedor.createdAt | date:'dd-MM-yyyy'}}</th>
              <th>
-               <button class="edit" (click)="editSupplier()"><mat-icon aria-hidden="false" fontIcon="edit"></mat-icon></button>
-               <button class="delete" (click)="deleteSupplier()"><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
+               <button class="edit" (click)="editSupplier(proveedor)"><mat-icon aria-hidden="false" fontIcon="edit"></mat-icon></button>
+               <button class="delete" (click)="deleteSupplier(proveedor.id!)"><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
              </th>
            </tr>
          </tbody>

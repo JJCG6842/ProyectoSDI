@@ -63,7 +63,7 @@ export const routes: Routes = [
         component: AlmacenAlmaceneroComponent
       },
       {
-        path: 'almacenes-section-almacenero',
+        path: 'almacenes-section-almacenero/:id',
         component: Almacen2AlmaceneroComponent
       },
       

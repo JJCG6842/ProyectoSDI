@@ -1,24 +1,28 @@
 <h2 mat-dialog-title>Seleccione almacén:</h2>
 
 <mat-dialog-content>
+  <form [formGroup]="formAlmacen">
+    <h3>Nombre del Almacén:</h3>
+    <mat-form-field appearance="fill">
+      <mat-label>Nombre:</mat-label>
+      <mat-select formControlName="id">
+        <mat-option *ngFor="let almacen of almacenes" [value]="almacen.id">
+          {{ almacen.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
 
-    <form [formGroup]="formAlmacen">
-        <h3>Nombre del Almacén:</h3>
-        <mat-form-field appearance="fill">
-        <mat-label>Nombre:</mat-label>
-            <mat-select matInput formControlName="name">
-                <mat-option value="Almacen 1">Almacen 1</mat-option>
-                <mat-option value="Almacen 2">Almacen 2</mat-option>
-            </mat-select>
-        </mat-form-field>
-    <div [hidden]="name.valid || name.pristine" class="error">
-            <span *ngIf="name.errors?.['required']">El campo es requerido</span>
+    <div [hidden]="id.valid || id.pristine" class="error">
+      <span *ngIf="id.errors?.['required']">Debe seleccionar un almacén</span>
     </div>
-    </form>
-
+  </form>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-    <button mat-flat-button (click)="eliminar()" style="background-color: red; color: white;">Eliminar Almacén</button>
-    <button mat-flat-button mat-dialog-close style="background-color: blue; color: white;">Cancelar</button>
+  <button mat-flat-button (click)="eliminar()" style="background-color: red; color: white;">
+    Eliminar Almacén
+  </button>
+  <button mat-flat-button mat-dialog-close style="background-color: blue; color: white;">
+    Cancelar
+  </button>
 </mat-dialog-actions>

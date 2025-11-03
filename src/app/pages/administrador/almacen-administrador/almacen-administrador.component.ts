@@ -13,6 +13,9 @@ import { Router } from '@angular/router';
 export class AlmacenAdministradorComponent {
   constructor(private router: Router,){}
 
+  
+
+
   almacen(){
     this.router.navigate(['/administrador/almacenes-section-administrador'])
   }

@@ -42,7 +42,7 @@
              <th>{{usuario.nombre}}</th>
              <th>{{ ocultarPassword(usuario.password) }}</th>
              <th>{{usuario.role}}</th>
-             <th>{{usuario.createdAt | date:'yyyy-MM-dd'}}</th>
+             <th>{{usuario.createdAt | date:'dd-MM-yyyy'}}</th>
              <th>
                <button class="edit" (click)="editUser(usuario)"><mat-icon aria-hidden="false" fontIcon="edit"></mat-icon></button>
                <button class="delete" (click)="deleteUser(usuario.id!)"><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>

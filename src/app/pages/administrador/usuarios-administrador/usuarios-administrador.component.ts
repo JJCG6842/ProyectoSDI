@@ -6,10 +6,10 @@ import { FormsModule } from '@angular/forms';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import { AddUserComponent } from '../../../shared/modals-administrador/add-user/add-user.component';
 import { editUserComponent } from '../../../shared/modals-administrador/edit-user/edit-user.component';
-import { DeleteUserConfirmComponent } from '../../../shared/modals-administrador/delete-user/delete-user-confirm/delete-user-confirm.component';
+import { DeleteUsuarioConfirmComponent } from '../../../shared/modals-administrador/modals/delete-usuario-confirm/delete-usuario-confirm.component';
 import { Usuario } from '../../../interface/usuario.interface';
 import { UsuarioService } from '../../../services/usuario.service';
-import { DeleteUserSuccessComponent } from '../../../shared/modals-administrador/delete-user/delete-user-success/delete-user-success.component';
+import { DeleteUsuarioSuccessComponent } from '../../../shared/modals-administrador/modals/delete-usuario-success/delete-usuario-success.component';
 
 @Component({
   selector: 'app-usuarios-administrador',
@@ -80,7 +80,7 @@ export class UsuariosAdministradorComponent implements OnInit{
   }
 
   deleteUser(id: string){
-    const dialogRef = this.dialog.open(DeleteUserConfirmComponent,{
+    const dialogRef = this.dialog.open(DeleteUsuarioConfirmComponent,{
       width: '400px',
       disableClose:true,
     });
@@ -89,7 +89,7 @@ export class UsuariosAdministradorComponent implements OnInit{
       if(confirmado){
         this.usuarioService.eliminarUsuario(id).subscribe({
           next: () => {
-            this.dialog.open(DeleteUserSuccessComponent,{
+            this.dialog.open(DeleteUsuarioSuccessComponent,{
               width: '400px',
               disableClose: true,
             });

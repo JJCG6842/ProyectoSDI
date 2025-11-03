@@ -13,6 +13,7 @@ export interface Producto {
   model: string;
   categoryId: string;
   subcategoryId: string;
+  storeId?: string;
   createAt: Date;
   updateAt: Date;
   category?: Categoria;

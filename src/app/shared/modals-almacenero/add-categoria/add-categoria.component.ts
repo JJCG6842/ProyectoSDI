@@ -13,8 +13,7 @@ import { CreateCategorySuccessComponent } from '../option-categoria/create-categ
 @Component({
   selector: 'app-add-categoria',
   imports: [MatDialogModule, MatFormFieldModule, MatSelectModule, MatInput, MatButtonModule,TextFieldModule, CommonModule,
-    FormsModule, ReactiveFormsModule
-  ],
+    FormsModule, ReactiveFormsModule],
   templateUrl: './add-categoria.component.html',
   styleUrl: './add-categoria.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
