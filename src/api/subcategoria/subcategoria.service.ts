@@ -76,4 +76,22 @@ export class SubcategoriaService {
         await this.findOne(id);
         return this.prisma.subcategory.delete({where: {id}});
     }
+
+    async searchMarcaByName(term: string) {
+        const marcas = await this.prisma.marca.findMany({
+            where: {
+                name: { contains: term, mode: 'insensitive' }, 
+            },
+            include: {
+                category: { select: { id: true, name: true } }, 
+                products: true, 
+            },
+  });
+
+  if (marcas.length === 0) {
+    throw new NotFoundException(`No se encontraron marcas con: ${term}`);
+  }
+
+  return marcas;
+}
 }

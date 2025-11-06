@@ -7,9 +7,11 @@ import { SubcategoriaModule } from './api/subcategoria/subcategoria.module';
 import { UsuarioModule } from './api/usuario/usuario.module';
 import { ProveedoresModule } from './api/proveedores/proveedores.module';
 import { AlmacenesModule } from './api/almacenes/almacenes.module';
+import { MarcaModule } from './api/marca/marca.module';
+
 
 @Module({
-  imports: [CategoriaModule, ProductosModule, SubcategoriaModule, UsuarioModule,ProveedoresModule, AlmacenesModule],
+  imports: [CategoriaModule, ProductosModule, SubcategoriaModule, UsuarioModule,ProveedoresModule, AlmacenesModule, MarcaModule],
   controllers: [AppController],
   providers: [AppService],
 })

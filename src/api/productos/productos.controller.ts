@@ -31,6 +31,17 @@ export class ProductosController {
     return this.productoService.findOne(id);
   }
 
+  @Get('buscar/categoria/id/:id')
+    findByCategoryId(@Param('id') id: string) {
+    return this.productoService.findByCategoryId(id);
+  }
+
+  @Get('buscar/marca/id/:id')
+    findByMarcaId(@Param('id') id: string) {
+    return this.productoService.findByMarcaId(id);
+  }
+
+
   @Post()
   create(
     @Body()
@@ -38,7 +49,7 @@ export class ProductosController {
       image: string;
       name: string;
       description: string;
-      marca: string;
+      marcaId: string;
       price: number;
       quantity: number;
       status: ProductStatus;
@@ -58,7 +69,7 @@ export class ProductosController {
       image: string;
       name: string;
       description: string;
-      marca: string;
+      marcaId: string;
       price: number;
       quantity: number;
       status: ProductStatus;

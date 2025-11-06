@@ -25,6 +25,7 @@ model Category {
   subcategories Subcategory[]
   products      Products[]
   entrance      Entrance[]
+  marcas        Marca[] 
 }
 
 model Subcategory {
@@ -39,12 +40,23 @@ model Subcategory {
   category    Category   @relation(fields: [categoryId], references: [id])
 }
 
+model Marca {
+  id String @id @default(uuid())
+  name String
+  description String
+  categoryId  String
+  createAt    DateTime   @default(now())
+  updateAt    DateTime   @updatedAt
+  category    Category @relation(fields: [categoryId], references: [id])
+  products    Products[]
+}
+
 model Products {
   id            String        @id @default(uuid())
   image         String
   name          String
   description   String
-  marca         String
+  marcaId       String?
   price         Float
   quantity      Int
   status        ProductStatus
@@ -54,7 +66,8 @@ model Products {
   storeId       String?       
   category      Category      @relation(fields: [categoryId], references: [id])
   subcategory   Subcategory   @relation(fields: [subcategoryId], references: [id])
-  store         Store?        @relation(fields: [storeId], references: [id]) 
+  store         Store?        @relation(fields: [storeId], references: [id])
+  marca         Marca?         @relation(fields: [marcaId], references: [id])
   entrances     Entrance[]
   createAt      DateTime      @default(now())
   updateAt      DateTime      @updatedAt

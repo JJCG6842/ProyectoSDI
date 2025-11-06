@@ -14,6 +14,9 @@ export class ProductosService {
         subcategory: {
           select: { id: true, name: true },
         },
+        marca: {
+          select: {id: true, name: true}
+        }
       },
     });
   }
@@ -24,6 +27,7 @@ export class ProductosService {
       include: {
         category: { select: { id: true, name: true } },
         subcategory: { select: { id: true, name: true } },
+        marca: { select: { id: true, name: true } },
       },
     });
 
@@ -60,32 +64,34 @@ export class ProductosService {
     include: {
       category: { select: { id: true, name: true } },
       subcategory: { select: { id: true, name: true } },
+      marca: {select: {id: true, name: true}}
     },
   });
 }
 
 
-  async findMarca(marca: string) {
+  async findMarca(name: string) {
   return this.prisma.products.findMany({
     where: {
       marca: {
-        contains: marca,
-        mode: 'insensitive',
+        name: { contains: name, mode: 'insensitive' },
       },
     },
     include: {
       category: { select: { id: true, name: true } },
       subcategory: { select: { id: true, name: true } },
+      marca: { select: { id: true, name: true } }, 
     },
   });
 }
+
 
 
   async create(data: {
     image: string;
     name: string;
     description: string;
-    marca: string;
+    marcaId: string;
     price: number;
     quantity: number;
     status: ProductStatus;
@@ -112,7 +118,7 @@ export class ProductosService {
       image: string;
       name: string;
       description: string;
-      marca: string;
+      marcaId: string;
       price: number;
       quantity: number;
       status: ProductStatus;
@@ -148,4 +154,27 @@ export class ProductosService {
     await this.findOne(id);
     return this.prisma.products.delete({ where: { id } });
   }
+
+  async findByCategoryId(categoryId: string) {
+  return this.prisma.products.findMany({
+    where: { categoryId },
+    include: {
+      category: { select: { id: true, name: true } },
+      subcategory: { select: { id: true, name: true } },
+      marca: { select: { id: true, name: true } },
+    },
+  });
+}
+
+async findByMarcaId(marcaId: string) {
+  return this.prisma.products.findMany({
+    where: { marcaId },
+    include: {
+      category: { select: { id: true, name: true } },
+      subcategory: { select: { id: true, name: true } },
+      marca: { select: { id: true, name: true } },
+    },
+  });
+}
+
 }
