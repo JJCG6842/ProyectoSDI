@@ -6,34 +6,32 @@ import { Categoria } from '../interface/categoria.interface';
 @Injectable({
   providedIn: 'root',
 })
+export class CategoriaService {
+  private apiUrl = "http://localhost:3000/categoria";
 
-export class CategoriaService{
-    private apiUrl = "http://localhost:3000/categoria";
+  constructor(private http: HttpClient) {}
 
-    constructor(private http: HttpClient) {}
+  getCategorias(): Observable<Categoria[]> {
+    return this.http.get<Categoria[]>(this.apiUrl);
+  }
 
-    getCategorias():Observable<Categoria[]>{
-        return this.http.get<Categoria[]>(this.apiUrl);
-    }
+  getCategoriaPorNombre(name: string): Observable<Categoria> {
+    return this.http.get<Categoria>(`${this.apiUrl}/nombre/${name}`);
+  }
 
-    getCategoriaPorNombre(name: string): Observable<Categoria> {
-        return this.http.get<Categoria>(`${this.apiUrl}/nombre/${name}`)
-    }
-
-    buscarCategoria(term: string): Observable<Categoria[]> {
-        return this.http.get<Categoria[]>(`${this.apiUrl}/buscar/${term}`);
-    }
+  buscarCategoria(term: string): Observable<Categoria[]> {
+    return this.http.get<Categoria[]>(`${this.apiUrl}/buscar/${term}`);
+  }
     
-    crearCategoria(data: Categoria): Observable<Categoria> {
+  crearCategoria(data: Categoria): Observable<Categoria> {
     return this.http.post<Categoria>(this.apiUrl, data);
-    }
+  }
 
-    actualizarCategoria(id:string, data: Categoria): Observable<Categoria> {
-      return this.http.put<Categoria>(`${this.apiUrl}/${id}`, data);
-    }
+  actualizarCategoria(id: string, data: Categoria): Observable<Categoria> {
+    return this.http.put<Categoria>(`${this.apiUrl}/${id}`, data);
+  }
 
-    eliminarCategoriaporId(id: string): Observable<void>{
-      return this.http.delete<void>(`${this.apiUrl}/${id}`);
-    }
-    
+  eliminarCategoriaporId(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }

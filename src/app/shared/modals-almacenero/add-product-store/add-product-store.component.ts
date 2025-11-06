@@ -8,6 +8,7 @@ import { ProductoService } from '../../../services/producto.service';
 import { AlmacenesService } from '../../../services/almacen.service';
 import { AddProductStoreConfirmComponent } from '../add-product-store-confirm/add-product-store-confirm.component';
 import { MatButtonModule } from '@angular/material/button';
+import { AddProductStoreSuccessComponent } from '../add-product-store-success/add-product-store-success.component';
 
 @Component({
   selector: 'app-add-product-store',
@@ -21,13 +22,13 @@ export class AddProductStoreComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   readonly reload = inject(ChangeDetectorRef);
   readonly productoService = inject(ProductoService);
-  readonly almacenesService = inject(AlmacenesService); // ✅ INYECTAR SERVICIO DE ALMACÉN
-  readonly dialogRef = inject(MatDialogRef<AddProductStoreComponent>); // ✅ INYECTAR REFERENCIA AL MODAL
+  readonly almacenesService = inject(AlmacenesService);
+  readonly dialogRef = inject(MatDialogRef<AddProductStoreComponent>); 
 
   isloading = false;
   searchTerm: string = '';
   productos: Producto[] = [];
-  storeId!: string; // 🏬 almacén actual
+  storeId!: string; 
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
 
@@ -85,11 +86,11 @@ export class AddProductStoreComponent implements OnInit {
       
       this.almacenesService.agregarProductoAAlmacen(this.storeId, producto.id).subscribe({
         next: (productoActualizado) => {
-          console.log('✅ Producto registrado en el almacén:', productoActualizado);
+          this.dialog.open(AddProductStoreSuccessComponent);
           this.dialogRef.close(productoActualizado);
         },
         error: (err) => {
-          console.error('❌ Error al registrar producto en el almacén:', err);
+          console.error('Error al registrar producto en el almacén:', err);
         },
       });
     }

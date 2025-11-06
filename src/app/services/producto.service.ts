@@ -29,9 +29,7 @@ export class ProductoService {
   }
 
   buscarPorCategoria(nombreCategoria: string): Observable<Producto[]> {
-    return this.http.get<Producto[]>(
-      `${this.apiUrl}/buscar/categoria/${nombreCategoria}`
-    );
+    return this.http.get<Producto[]>(`${this.apiUrl}/buscar/categoria/${nombreCategoria}`);
   }
 
   buscarPorMarca(marca: string): Observable<Producto[]> {
@@ -49,4 +47,13 @@ export class ProductoService {
   eliminarProducto(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+
+  buscarPorCategoriaId(id: string): Observable<Producto[]> {
+    return this.http.get<Producto[]>(`${this.apiUrl}/buscar/categoria/id/${id}`);
+  }
+
+  buscarPorMarcaId(id: string): Observable<Producto[]> {
+    return this.http.get<Producto[]>(`${this.apiUrl}/buscar/marca/id/${id}`);
+  }
+
 }

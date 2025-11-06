@@ -1,0 +1,42 @@
+<h2 mat-dialog-title>Editar Marca</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="formMarca">
+    <h3>Nombre de la marca:</h3>
+    <mat-form-field appearance="fill">
+      <mat-label>Nombre:</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+    <div [hidden]="name.valid || name.pristine" class="error">
+            <span *ngIf="name.errors?.['required']">El campo es requerido</span>
+    </div>
+
+    <h3>Descripción de la marca:</h3>
+    <mat-form-field appearance="fill">
+      <mat-label>Descripción:</mat-label>
+      <textarea matInput rows="4" formControlName="description"></textarea>
+    </mat-form-field>
+    <div [hidden]="description.valid || description.pristine" class="error">
+            <span *ngIf="description.errors?.['required']">El campo es requerido</span>
+    </div>
+
+
+    <h3>Categoria:</h3>
+    <mat-form-field appearance="fill">
+        <mat-label>Categorias:</mat-label>
+        <mat-select formControlName="category">
+            <mat-option *ngFor="let cat of categorias" [value]="cat.id">
+              {{cat.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <div [hidden]="category.valid || category.pristine" class="error">
+            <span *ngIf="category.errors?.['required']">El campo es requerido</span>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-flat-button [mat-dialog-close]="true" style="background-color: blue;" (click)="editar()">Editar</button>
+    <button mat-flat-button mat-dialog-close style="background-color: red;">Cancelar</button>
+</mat-dialog-actions>

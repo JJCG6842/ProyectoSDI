@@ -11,10 +11,18 @@ import { DeleteProductConfirmComponent } from '../../../shared/modals-almacenero
 import { DeleteProductSuccessComponent } from '../../../shared/modals-almacenero/add-producto/modals-producto/delete-product-success/delete-product-success.component';
 import { EditProductComponent } from '../../../shared/modals-almacenero/add-producto/edit-product/edit-product.component';
 import { ViewProductComponent } from '../../../shared/modals-almacenero/add-producto/view-product/view-product.component';
+import { Categoria } from '../../../interface/categoria.interface';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { CategoriaService } from '../../../services/categoria.service';
+import { Marca } from '../../../interface/marca.interface';
+import { MatSelectModule } from '@angular/material/select';
+import { MarcaService } from '../../../services/marca.service';
 
 @Component({
   selector: 'app-productos-almacenero',
-  imports: [MatIconModule, MatExpansionModule, MatDialogModule, CommonModule,FormsModule],
+  imports: [MatIconModule, MatExpansionModule, MatDialogModule, CommonModule,FormsModule,MatFormFieldModule,
+    MatSelectModule
+  ],
   templateUrl: './productos-almacenero.component.html',
   styleUrl: './productos-almacenero.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,11 +34,18 @@ export class ProductosAlmaceneroComponent implements OnInit{
   readonly productoService = inject(ProductoService);
   isloading = false;
   searchTerm: string = '';
-
+  selectCategoryId: string = '';
+  selectMarcaId: string = '';
+  categorias: Categoria[] = [];
   productos: Producto[] = [];
+  marcas: Marca[] = [];
+
+  constructor (private categoriaService: CategoriaService, private marcaService: MarcaService){}
 
   ngOnInit(): void {
     this.cargarProductos();
+    this.cargarCategorias();
+    this.cargarMarca();
   }
 
   cargarProductos(){
@@ -46,6 +61,27 @@ export class ProductosAlmaceneroComponent implements OnInit{
       }
     })
   }
+
+cargarCategorias() {
+  this.categoriaService.getCategorias().subscribe({
+    next: (res) => {
+      this.categorias = res;
+      console.log('Categorias:', res); 
+    },
+    error: (err) => console.error('Error al cargar categorías', err),
+  });
+}
+
+cargarMarca() {
+  this.marcaService.getMarcas().subscribe({
+    next: (res) => {
+      this.marcas = res;
+      console.log('Marcas:', res); 
+    },
+    error: (err) => console.error('Error al cargar marcas', err),
+  });
+}
+
 
   addProduct(){
     const dialogRef = this.dialog.open(AddProductoComponent,{
@@ -142,5 +178,49 @@ export class ProductosAlmaceneroComponent implements OnInit{
 
   }
 
+
+filtrarPorCategoria() {
+  if (!this.selectCategoryId) {
+    this.cargarProductos(); 
+    return;
+  }
+
+  this.productoService.buscarPorCategoriaId(this.selectCategoryId).subscribe({
+    next: (res) => {
+      this.productos = res;
+      this.reload.markForCheck();
+    },
+    error: (err) => {
+      console.error('Error al filtrar por categoría', err);
+      this.productos = [];
+    },
+  });
+}
+
+filtrarPorMarca() {
+  if (!this.selectMarcaId) {
+    this.cargarProductos(); 
+    return;
+  }
+
+  this.productoService.buscarPorMarcaId(this.selectMarcaId).subscribe({
+    next: (res) => {
+      this.productos = res;
+      this.reload.markForCheck();
+    },
+    error: (err) => {
+      console.error('Error al filtrar por marca', err);
+      this.productos = [];
+    },
+  });
+}
+
+onSearchTermChange(term: string) {
+  this.searchTerm = term.trim();
+
+  if (!this.searchTerm) {
+    this.cargarProductos();
+  }
+}
   
 }

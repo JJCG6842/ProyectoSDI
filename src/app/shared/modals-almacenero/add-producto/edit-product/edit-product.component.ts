@@ -12,6 +12,8 @@ import { CategoriaService } from '../../../../services/categoria.service';
 import { Categoria } from '../../../../interface/categoria.interface';
 import { SubcategoriaService } from '../../../../services/subcategoria.service';
 import { Subcategoria } from '../../../../interface/subcategoria.interface';
+import { Marca } from '../../../../interface/marca.interface';
+import { MarcaService } from '../../../../services/marca.service';
 import { Producto } from '../../../../interface/producto.interface';
 import { EditProductSuccessComponent } from '../modals-producto/edit-product-success/edit-product-success.component';
 
@@ -26,10 +28,12 @@ export class EditProductComponent {
   formProduct!:  FormGroup;
   categorias: Categoria[] = [];
   subcategorias: Subcategoria[] = [];
+  marcas: Marca[] = [];
 
   constructor(private fb:FormBuilder, private productoService: ProductoService, 
     private dialogRef: MatDialogRef<EditProductComponent>, private dialog: MatDialog,
     private categoriaService: CategoriaService,private subcategoriaService : SubcategoriaService,
+    private marcaService: MarcaService,
     @Inject(MAT_DIALOG_DATA) public data: Producto){
     this.formProduct = this.fb.group({
       name: ['', Validators.required],
@@ -47,12 +51,13 @@ export class EditProductComponent {
   ngOnInit(): void{
     this.cargarCategorias();
     this.cargarSubcategorias();
+    this.cargarMarca();
 
     if (this.data) {
     this.formProduct.patchValue({
       name: this.data.name,
       description: this.data.description,
-      marca: this.data.marca,
+      marca: this.data.marcaId,
       model: this.data.model,
       image: this.data.image,
       category: this.data.categoryId,
@@ -75,7 +80,7 @@ export class EditProductComponent {
   }
 
   cargarSubcategorias(){
-    this.subcategoriaService.getSubcategoria().subscribe({
+    this.subcategoriaService.getSubcategorias().subscribe({
       next: (subcategorys) => {
         this.subcategorias = subcategorys;
       },
@@ -83,6 +88,17 @@ export class EditProductComponent {
         console.error('error al cargar subcategorias', fail)
       },
     });
+  }
+
+  cargarMarca(){
+    this.marcaService.getMarcas().subscribe({
+      next: (marcas) => {
+        this.marcas = marcas
+      },
+      error: (err) =>{
+        console.error('Error al cargar marcas', err)
+      }
+    })
   }
 
   get name(){
@@ -134,7 +150,7 @@ export class EditProductComponent {
   const updatedProduct = {
     name: this.name.value,
     description: this.description.value,
-    marca: this.marca.value,
+    marcaId: this.marca.value,
     model: this.model.value,
     image: this.image.value,
     price: this.price.value,

@@ -3,18 +3,15 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Subcategoria } from '../interface/subcategoria.interface';
 
-
-
 @Injectable({
   providedIn: 'root'
 })
 export class SubcategoriaService {
-
   private apiUrl = "http://localhost:3000/subcategoria";
 
   constructor(private http: HttpClient){}
 
-  getSubcategoria(): Observable<Subcategoria[]>{
+  getSubcategorias(): Observable<Subcategoria[]>{
     return this.http.get<Subcategoria[]>(this.apiUrl);
   }
 
@@ -23,10 +20,18 @@ export class SubcategoriaService {
   }
 
   buscarSubcategoria(term: string): Observable<Subcategoria[]>{
-    return this.http.get<Subcategoria[]>(`${this.apiUrl}/buscar/${term}`)
+    return this.http.get<Subcategoria[]>(`${this.apiUrl}/buscar/${term}`);
   }
 
-  crearSubcategoria(subcategoria: { name: string; description: string; categoryId: string}): Observable<Subcategoria>{
+  getSubcategoriasByCategoryId(categoryId: string): Observable<Subcategoria[]> {
+    return this.http.get<Subcategoria[]>(`${this.apiUrl}/categoria/${categoryId}`);
+  }
+
+  getSubcategoriasByCategoryName(categoryName: string): Observable<Subcategoria[]> {
+    return this.http.get<Subcategoria[]>(`${this.apiUrl}/categoria/nombre/${categoryName}`);
+  }
+
+  crearSubcategoria(subcategoria: { name: string; description: string; categoryId: string }): Observable<Subcategoria>{
     return this.http.post<Subcategoria>(this.apiUrl, subcategoria);
   }
 

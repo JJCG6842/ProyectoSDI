@@ -16,15 +16,19 @@
         </div>
 
         <div class="form-field">
-        <h3>Marca del producto:</h3>
-            <mat-form-field appearance="fill">
-            <mat-label>Marca:</mat-label>
-            <input matInput formControlName="marca">
-            </mat-form-field>
-        <div [hidden]="marca.valid || marca.pristine" class="error">
-            <span *ngIf="marca.errors?.['required']">El campo es requerido</span>
-        </div>
-        </div>
+                <h3>Marca del producto:</h3>
+                <mat-form-field appearance="fill">
+                    <mat-label>Marca:</mat-label>
+                    <mat-select formControlName="marca">
+                        <mat-option *ngFor="let marca of marcas" [value]="marca.id">
+                            {{marca.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <div [hidden]="marca.valid || marca.pristine" class="error">
+                    <span *ngIf="marca.errors?.['required']">El campo es requerido</span>
+                </div>
+            </div>
             
         <div class="form-field">
         <h3>Modelo del producto:</h3>

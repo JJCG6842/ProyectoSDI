@@ -12,6 +12,8 @@ import { CategoriaService } from '../../../services/categoria.service';
 import { Categoria } from '../../../interface/categoria.interface';
 import { SubcategoriaService } from '../../../services/subcategoria.service';
 import { Subcategoria } from '../../../interface/subcategoria.interface';
+import { Marca } from '../../../interface/marca.interface';
+import { MarcaService } from '../../../services/marca.service';
 import { CreateProductSuccessComponent } from './modals-producto/create-product-success/create-product-success.component';
 
 @Component({
@@ -27,10 +29,11 @@ export class AddProductoComponent implements OnInit{
   formProduct!:  FormGroup;
   categorias: Categoria[] = [];
   subcategorias: Subcategoria[] = [];
+  marcas: Marca[] = [];
 
   constructor(private fb:FormBuilder, private productoService: ProductoService, 
     private dialogRef: MatDialogRef<AddProductoComponent>, private dialog: MatDialog,
-    private categoriaService: CategoriaService,private subcategoriaService : SubcategoriaService){
+    private categoriaService: CategoriaService,private subcategoriaService : SubcategoriaService, private marcaService:MarcaService){
     this.formProduct = this.fb.group({
       name: ['', Validators.required],
       description: ['',Validators.required],
@@ -47,6 +50,7 @@ export class AddProductoComponent implements OnInit{
   ngOnInit(): void{
     this.cargarCategorias();
     this.cargarSubcategorias();
+    this.cargarMarcas();
   }
 
   cargarCategorias(){
@@ -61,13 +65,22 @@ export class AddProductoComponent implements OnInit{
   }
 
   cargarSubcategorias(){
-    this.subcategoriaService.getSubcategoria().subscribe({
+    this.subcategoriaService.getSubcategorias().subscribe({
       next: (subcategorys) => {
         this.subcategorias = subcategorys;
       },
       error: (fail) =>{
         console.error('error al cargar subcategorias', fail)
       },
+    });
+  }
+
+  cargarMarcas() {
+    this.marcaService.getMarcas().subscribe({
+      next: (marca) => {
+        this.marcas = marca;
+      },
+      error: (err) => console.error('Error al cargar marcas', err)
     });
   }
 
@@ -123,13 +136,13 @@ export class AddProductoComponent implements OnInit{
       image: formValue.image,
       name: formValue.name,
       description: formValue.description,
-      marca: formValue.marca,
       price: Number(formValue.price),
       quantity: Number(formValue.quantity),
       status, 
       model: formValue.model,
       categoryId: formValue.category,
-      subcategoryId: formValue.subcategory
+      subcategoryId: formValue.subcategory,
+      marcaId: formValue.marca
     }
 
     this.productoService.crearProducto(newProduct).subscribe({

@@ -1,4 +1,5 @@
 import { Categoria } from "./categoria.interface";
+import { Marca } from "./marca.interface";
 import { Subcategoria } from "./subcategoria.interface";
 
 export interface Producto {
@@ -6,7 +7,7 @@ export interface Producto {
   image: string;
   name: string;
   description: string;
-  marca: string;
+  marcaId: string;
   price: number;
   quantity: number;
   status: 'Instock' | 'Outstock';
@@ -18,4 +19,5 @@ export interface Producto {
   updateAt: Date;
   category?: Categoria;
   subcategory?: Subcategoria
+  marca?: Marca
 }

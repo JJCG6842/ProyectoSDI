@@ -14,6 +14,7 @@ import { Almacen2AlmaceneroComponent } from './pages/almacenero/almacen-2-almace
 import { KardexAlmaceneroComponent } from './pages/almacenero/kardex-almacenero/kardex-almacenero.component';
 import { EntradasAlmaceneroComponent } from './pages/almacenero/entradas-almacenero/entradas-almacenero.component';
 import { SalidasAlmaceneroComponent } from './pages/almacenero/salidas-almacenero/salidas-almacenero.component';
+import { MarcaAlmaceneroComponent } from './pages/almacenero/marca-almacenero/marca-almacenero.component';
 
 import { InicioAdministradorComponent } from './pages/administrador/inicio-administrador/inicio-administrador.component';
 import { CategoriaAdministradorComponent } from './pages/administrador/categoria-administrador/categoria-administrador.component';
@@ -53,6 +54,10 @@ export const routes: Routes = [
       {
         path: 'subcategoria',
         component: SubcategoriaAlmaceneroComponent
+      },
+      {
+        path: 'marcas',
+        component: MarcaAlmaceneroComponent
       },
       {
         path: 'productos-almacenero',

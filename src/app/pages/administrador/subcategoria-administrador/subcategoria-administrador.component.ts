@@ -30,7 +30,7 @@ export class SubcategoriaAdministradorComponent {
   
 
   obtenerSubcategoria(){
-    this.subcategoriaService.getSubcategoria().subscribe({
+    this.subcategoriaService.getSubcategorias().subscribe({
       next: (obtener) =>{
         this.subcategorias = obtener;
         this.isloading = false;
@@ -69,6 +69,8 @@ export class SubcategoriaAdministradorComponent {
       }
     })
   }
+
+  
 
 
   page1(){

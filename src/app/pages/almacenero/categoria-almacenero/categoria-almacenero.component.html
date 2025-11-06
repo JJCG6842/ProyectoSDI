@@ -10,7 +10,7 @@
 
 <div class="content1">
   <p class="enter">Ingrese categoria:</p>
-<input type="text" placeholder="Buscar categoria..." [(ngModel)]="searchTerm">
+  <input type="text" placeholder="Buscar categoría..." [(ngModel)]="searchTerm" (ngModelChange)="onSearchTermChange($event)">
 
 <div class="botons">
   <button class="boton1" (click)="search()">
@@ -21,6 +21,10 @@
 
 <button class="boton1" (click)="page2()">
 Subcategorias
+</button>
+
+<button class="boton1" (click)="page3()" style="width: 140px;">
+Marcas
 </button>
 </div>
 

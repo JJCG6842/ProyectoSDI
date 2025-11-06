@@ -14,14 +14,7 @@ import { DeleteProductStoreSuccessComponent } from '../../../shared/modals-almac
 
 @Component({
   selector: 'app-almacen-2-almacenero',
-  imports: [
-    MatIconModule,
-    MatDialogModule,
-    MatButtonModule,
-    CommonModule,
-    FormsModule,
-    MatExpansionModule
-  ],
+  imports: [MatIconModule,MatDialogModule,MatButtonModule,CommonModule,FormsModule,MatExpansionModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './almacen-2-almacenero.component.html',
   styleUrl: './almacen-2-almacenero.component.scss'
@@ -87,10 +80,10 @@ export class Almacen2AlmaceneroComponent implements OnInit {
       this.almacenesService.removerProductoDeAlmacen(productoId).subscribe({
         next: (res) => {
           this.dialog.open(DeleteProductStoreSuccessComponent, {
-            width: '300px',
+            width: '400px',
             data: { producto: res }
           });
-          this.cargarProductosDelAlmacen(); // 🔄 Refresca la lista
+          this.cargarProductosDelAlmacen(); 
         },
         error: (err) => console.error('Error al remover producto del almacén:', err)
       });

@@ -125,6 +125,14 @@ export class CategoriaAlmaceneroComponent implements OnInit{
     });
   }
 
+  onSearchTermChange(term: string) {
+  this.searchTerm = term.trim();
+
+  if (!this.searchTerm) {
+    this.obtenerCategorias();
+  }
+}
+
   //solo un filtado automatico :/
   onSearchChange(){
     const term = this.searchTerm.trim();
@@ -149,5 +157,9 @@ export class CategoriaAlmaceneroComponent implements OnInit{
 
   page2(){
     this.router.navigate(['/almacenero/subcategoria'])
+  }
+
+  page3(){
+    this.router.navigate(['/almacenero/marcas'])
   }
 }

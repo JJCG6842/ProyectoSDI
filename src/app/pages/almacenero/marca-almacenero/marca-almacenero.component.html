@@ -1,14 +1,14 @@
 <div class="header-row">
-  <h1>Subcategorias</h1>
-  <button class="add" (click)="addSubcategory()">
+  <h1>Marcas</h1>
+  <button class="add" (click)="addMarca()">
     <mat-icon fontIcon="add" class="icon-btn"></mat-icon>
-    Agregar Subcategoría
+    Agregar Marca
   </button>
 </div>
 
 <div class="content1">
-  <p class="enter">Ingrese subcategoria:</p>
-  <input type="text" placeholder="Buscar subcategoria..." [(ngModel)]="searchTerm" (ngModelChange)="onSearchTermChange($event)">
+  <p class="enter">Ingrese marca:</p>
+  <input type="text" placeholder="Buscar marca..." [(ngModel)]="searchTerm" (ngModelChange)="onSearchTermChange($event)">
 
   <div class="botons-column">
     <div class="botons">
@@ -32,7 +32,9 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-    </div>
+    </div> 
+
+
   </div>
 </div>
 
@@ -41,23 +43,25 @@
     <thead>
       <tr>   
         <th>Nro °</th>
-        <th>Subcategoria</th>
-        <th>Descripcion de la subcategoria</th>
+        <th>Nombre de marca</th>
+        <th>Descripcion de la marca</th>
         <th>Categoria</th>
+        <th>Fecha de creación</th>
         <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let sub of subcategoriasFiltrada; let i = index">   
-        <th>{{ i + 1 }}</th>
-        <th>{{sub.name}}</th>
-        <th>{{sub.description}}</th>
-        <th>{{sub.category.name}}</th>
+      <tr *ngFor="let marca of marcaFiltrada; let i = index">   
+        <th>{{i + 1}}</th>
+        <th>{{marca.name}}</th>
+        <th>{{marca.description}}</th>
+        <th>{{marca.category.name}}</th>
+        <th>{{marca.createAt | date:'dd-MM-yyyy'}}</th>
         <th>
-          <button class="edit" (click)="editSubcategory(sub)">
+          <button class="edit" (click)="editMarca(marca)">
             <mat-icon aria-hidden="false" fontIcon="edit"></mat-icon>
           </button>
-          <button class="delete" (click)="deleteSubcategory(sub.id!)">
+          <button class="delete" (click)="deleteMarca(marca.id!)">
             <mat-icon aria-hidden="false" fontIcon="delete"></mat-icon>
           </button>
         </th>
