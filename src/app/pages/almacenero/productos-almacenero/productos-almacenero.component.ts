@@ -21,8 +21,7 @@ import { MarcaService } from '../../../services/marca.service';
 @Component({
   selector: 'app-productos-almacenero',
   imports: [MatIconModule, MatExpansionModule, MatDialogModule, CommonModule,FormsModule,MatFormFieldModule,
-    MatSelectModule
-  ],
+    MatSelectModule],
   templateUrl: './productos-almacenero.component.html',
   styleUrl: './productos-almacenero.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

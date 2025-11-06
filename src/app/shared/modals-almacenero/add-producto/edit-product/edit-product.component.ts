@@ -63,7 +63,6 @@ export class EditProductComponent {
       category: this.data.categoryId,
       subcategory: this.data.subcategoryId,
       price: this.data.price,
-      quantity: this.data.quantity,
     });
   }
   }
@@ -133,10 +132,6 @@ export class EditProductComponent {
     return this.formProduct.get('price') as FormControl;
   }
 
-  get quantity(){
-    return this.formProduct.get('quantity') as FormControl;
-  }
-
   editProduct(){
     if (this.formProduct.invalid) {
     this.formProduct.markAllAsTouched();
@@ -154,7 +149,6 @@ export class EditProductComponent {
     model: this.model.value,
     image: this.image.value,
     price: this.price.value,
-    quantity: this.quantity.value,
     status,
     categoryId: this.category.value,
     subcategoryId: this.subcategory.value,

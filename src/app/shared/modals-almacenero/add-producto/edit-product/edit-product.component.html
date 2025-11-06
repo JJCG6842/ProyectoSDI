@@ -95,18 +95,6 @@
         </div>
 
         <div class="form-field">
-        <h3>Cantidad de productos:</h3>
-            <mat-form-field appearance="fill">
-            <mat-label>Cantidad:</mat-label>
-            <input matInput formControlName="quantity" type="number">
-            </mat-form-field>
-        <div [hidden]="quantity.valid || quantity.pristine" class="error">
-            <span *ngIf="quantity.errors?.['required']">El campo es requerido</span>
-            <span *ngIf="quantity.errors?.['min']">en serio? :/</span>
-        </div>
-        </div>
-
-        <div class="form-field">
         <h3>Descripción del producto:</h3>
         <mat-form-field appearance="fill">
             <mat-label>Descripción:</mat-label>

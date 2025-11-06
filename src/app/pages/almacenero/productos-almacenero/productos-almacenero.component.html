@@ -55,7 +55,7 @@
              <th>Imagen</th>
              <th>Marca</th>
              <th>Estado</th>
-             <th>Cantidad</th>
+             <th>Categoria</th>
              <th>Precio</th>
              <th>Acciones</th>
            </tr>
@@ -66,7 +66,7 @@
              <th><img [src]="producto.image" alt="Imagen" width="50"></th>
              <th>{{producto.marca?.name}}</th>
              <th>{{producto.status}}</th>
-             <th>{{producto.quantity}}</th>
+             <th>{{producto.category?.name}}</th>
              <th>S/.{{ producto.price | number: '1.2-2' }}</th>
              <th>
                <button class="edit" (click)="editProduct(producto)"><mat-icon aria-hidden="false" fontIcon="edit"></mat-icon></button>

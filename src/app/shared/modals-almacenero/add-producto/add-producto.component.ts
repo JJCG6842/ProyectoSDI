@@ -43,7 +43,6 @@ export class AddProductoComponent implements OnInit{
       category: ['',Validators.required],
       subcategory: ['', Validators.required],
       price: ['', [Validators.required,Validators.min(1)]],
-      quantity: ['', [Validators.required,Validators.min(0)]],
     });
   }
 
@@ -117,9 +116,6 @@ export class AddProductoComponent implements OnInit{
     return this.formProduct.get('price') as FormControl;
   }
 
-  get quantity(){
-    return this.formProduct.get('quantity') as FormControl;
-  }
 
   addProduct(){
     if(this.formProduct.invalid){
@@ -132,12 +128,10 @@ export class AddProductoComponent implements OnInit{
     const status: 'Instock' | 'Outstock' = formValue.quantity === 0 ? 'Outstock' : 'Instock';
 
     const newProduct = {
-      partnumber: formValue.partnumber,
       image: formValue.image,
       name: formValue.name,
       description: formValue.description,
       price: Number(formValue.price),
-      quantity: Number(formValue.quantity),
       status, 
       model: formValue.model,
       categoryId: formValue.category,
