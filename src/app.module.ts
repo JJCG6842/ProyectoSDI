@@ -11,7 +11,7 @@ import { MarcaModule } from './api/marca/marca.module';
 
 
 @Module({
-  imports: [CategoriaModule, ProductosModule, SubcategoriaModule, UsuarioModule,ProveedoresModule, AlmacenesModule, MarcaModule],
+  imports: [CategoriaModule, ProductosModule, SubcategoriaModule, UsuarioModule,ProveedoresModule,MarcaModule],
   controllers: [AppController],
   providers: [AppService],
 })
