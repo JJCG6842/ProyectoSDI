@@ -16,7 +16,7 @@ h1 {
 }
 
 input{
-    width: 950px;
+    width: 840px;
     height: 45px;
     font-size: 24px;
     position: relative;
@@ -40,7 +40,7 @@ input{
     height: 56px;
     position: relative;
     left: 100px;
-    bottom: -70px;
+    bottom: -66px;
     cursor: pointer;
     background-color: #045CFF;
     border: none;
@@ -53,6 +53,8 @@ input{
 .botons{
   display: flex;
   gap: 10px;
+  position: relative;
+  right: 40px;
 }
 
 .icon{
@@ -99,61 +101,5 @@ input{
   border-bottom: 1px solid #ddd;
 }
 
-.add{
-    width: 280px;
-    height: 65px;
-    background-color: #045CFF;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    font-size: 24px;
-    font-weight: 500;
-    cursor: pointer;
-}
 
-.edit{
-  padding: 8px 16px;
-  margin-right: 10px; 
-  width: 60px;
-  height: 48px;
-  border: none;
-  border-radius: 8px;
-  color: white;
-  font-size: 16px;
-  padding: 10px 0;
-  cursor: pointer;
-  background: rgb(33, 83, 247);
-}
 
-.delete{
-  padding: 8px 16px;
-  margin-right: 10px; 
-  width: 60px;
-  height: 48px;
-  border: none;
-  border-radius: 8px;
-  color: white;
-  font-size: 16px;
-  padding: 10px 0;
-  cursor: pointer;
-  background: rgb(252, 0, 0);
-}
-
-.edit:hover{
-    background: rgb(59, 102, 245);
-}
-
-.delete:hover{
-    background: rgb(243, 47, 47);
-}
-
-.add:hover{
-    background: rgb(59, 102, 245);
-}
-
-.textarea{
-  resize: none;
-  height: 100px;
-  width: 100%;
-  box-sizing: border-box;
-}

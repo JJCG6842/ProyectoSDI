@@ -20,6 +20,10 @@
 <button class="boton1" (click)="page2()">
 Subcategorias
 </button>
+
+<button class="boton1" (click)="page3()" style="width: 140px;">
+Marcas
+</button>
 </div>
 
 </div> 
@@ -42,8 +46,7 @@ Subcategorias
              <th>{{i + 1}}</th>
              <th>{{categoria.name}}</th>
              <th>{{categoria.description}}</th>
-             <th>{{categoria.createdAt}}</th>
-             
+             <th>{{categoria.createAt | date:'dd-MM-yyyy'}}</th>
            </tr>
          </tbody>
       </table>

@@ -9,8 +9,8 @@ import { SubcategoriaAlmaceneroComponent } from './pages/almacenero/subcategoria
 import { AddSubcategoriaComponent } from './shared/modals-almacenero/add-subcategoria/add-subcategoria.component';
 import { AddProductoComponent } from './shared/modals-almacenero/add-producto/add-producto.component';
 import { AdministradorComponent } from './components/administrador/administrador.component';
-import { AlmacenAlmaceneroComponent } from './pages/almacenero/almacen-almacenero/almacen-almacenero.component';
-import { Almacen2AlmaceneroComponent } from './pages/almacenero/almacen-2-almacenero/almacen-2-almacenero.component';
+import { ControlInventarioComponent } from './pages/almacenero/control-inventario/control-inventario.component';
+import { ProveedorAlmaceneroComponent } from './pages/almacenero/proveedor-almacenero/proveedor-almacenero.component';
 import { KardexAlmaceneroComponent } from './pages/almacenero/kardex-almacenero/kardex-almacenero.component';
 import { EntradasAlmaceneroComponent } from './pages/almacenero/entradas-almacenero/entradas-almacenero.component';
 import { SalidasAlmaceneroComponent } from './pages/almacenero/salidas-almacenero/salidas-almacenero.component';
@@ -20,13 +20,13 @@ import { InicioAdministradorComponent } from './pages/administrador/inicio-admin
 import { CategoriaAdministradorComponent } from './pages/administrador/categoria-administrador/categoria-administrador.component';
 import { SubcategoriaAdministradorComponent } from './pages/administrador/subcategoria-administrador/subcategoria-administrador.component';
 import { ProductosAdministradorComponent } from './pages/administrador/productos-administrador/productos-administrador.component';
-import { AlmacenAdministradorComponent } from './pages/administrador/almacen-administrador/almacen-administrador.component';
-import { Almacen2AdministradorComponent } from './pages/administrador/almacen-2-administrador/almacen-2-administrador.component';
+import { MarcaAdministradorComponent } from './pages/administrador/marca-administrador/marca-administrador.component';
 import { KardexAdministradorComponent } from './pages/administrador/kardex-administrador/kardex-administrador.component';
 import { EntradasAdministradorComponent } from './pages/administrador/entradas-administrador/entradas-administrador.component';
 import { SalidasAdministradorComponent } from './pages/administrador/salidas-administrador/salidas-administrador.component';
 import { ProveedoresAdministradorComponent } from './pages/administrador/proveedores-administrador/proveedores-administrador.component';
 import { UsuariosAdministradorComponent } from './pages/administrador/usuarios-administrador/usuarios-administrador.component';
+import { ControlInventarioAdministradorComponent } from './pages/administrador/control-inventario-administrador/control-inventario-administrador.component';
 
 export const routes: Routes = [
   {
@@ -63,14 +63,6 @@ export const routes: Routes = [
         path: 'productos-almacenero',
         component: ProductosAlmaceneroComponent
       },
-      {
-        path: 'almacenes-almacenero',
-        component: AlmacenAlmaceneroComponent
-      },
-      {
-        path: 'almacenes-section-almacenero/:id',
-        component: Almacen2AlmaceneroComponent
-      },
       
       {
         path: '',
@@ -88,6 +80,14 @@ export const routes: Routes = [
       {
         path: 'add-producto',
         component: AddProductoComponent
+      },
+      {
+        path: 'panel-inventario',
+        component: ControlInventarioComponent
+      },
+      {
+        path: 'proveedor-almacenero',
+        component: ProveedorAlmaceneroComponent
       },
       {
         path: 'kardex-almacenero',
@@ -126,16 +126,16 @@ export const routes: Routes = [
         component: SubcategoriaAdministradorComponent
       },
       {
+        path: 'marca-administrador',
+        component: MarcaAdministradorComponent
+      },
+      {
         path: 'productos-administrador',
         component: ProductosAdministradorComponent
       },
       {
-        path: 'almacenes-administrador',
-        component: AlmacenAdministradorComponent
-      },
-      {
-        path: 'almacenes-section-administrador',
-        component: Almacen2AdministradorComponent
+        path: 'panel-inventario-administrador',
+        component: ControlInventarioAdministradorComponent
       },
 
       {

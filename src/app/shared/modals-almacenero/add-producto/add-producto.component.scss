@@ -1,16 +1,23 @@
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr; 
   gap: 20px;
 }
-  
-mat-form-field {
-  flex: 1 1 48%; 
-  min-width: 280px; 
+
+.form-field {
+  width: 100%;
 }
 
-textarea{
-  width: 450px;
+mat-form-field {
+  width: 100%; 
+}
+
+#descripcion {
+  grid-column: 1 / -1; 
+}
+
+textarea {
+  width: 100%;  
   resize: none;
 }
 

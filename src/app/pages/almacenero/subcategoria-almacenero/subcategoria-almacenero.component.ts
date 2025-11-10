@@ -41,7 +41,6 @@ export class SubcategoriaAlmaceneroComponent implements OnInit{
   ngOnInit(): void {
       this.obtenerSubcategoria();
       this.cargarCategorias();
-      
   }
 
   cargarCategorias() {

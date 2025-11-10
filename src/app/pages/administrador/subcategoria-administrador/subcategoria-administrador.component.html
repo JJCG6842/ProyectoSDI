@@ -4,21 +4,34 @@
 
 <div class="content1">
   <p class="enter">Ingrese subcategoria:</p>
-<input type="text" placeholder="Buscar subcategoria..." [(ngModel)]="searchTerm">
+  <input type="text" placeholder="Buscar subcategoria..." [(ngModel)]="searchTerm" (ngModelChange)="onSearchTermChange($event)">
 
-<div class="botons">
-  <button class="boton1" (click)="search()">
-  <mat-icon fontIcon="search" class="icon-btn"></mat-icon>
-  Buscar
-</button>
+  <div class="botons-column">
+    <div class="botons">
+      <button class="boton1" (click)="search()">
+        <mat-icon fontIcon="search" class="icon-btn"></mat-icon>
+        Buscar
+      </button>
 
+      <button class="boton1" (click)="page1()">
+        Categorias
+      </button>
+    </div>
 
-<button class="boton1" (click)="page1()">
-Categorias
-</button>
+    <div class="filter-section">
+      <mat-form-field appearance="fill">
+        <mat-label>Filtrar por categoría</mat-label>
+        <mat-select [(value)]="selectCategoryId" (selectionChange)="filtrarPorCategoria()">
+          <mat-option value="">Todas</mat-option>
+          <mat-option *ngFor="let cat of categorias" [value]="cat.id">
+            {{ cat.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    
+  </div>
 </div>
-
-</div> 
 
 
 
@@ -34,12 +47,12 @@ Categorias
            </tr>
          </thead>
          <tbody>
-          <tr *ngFor="let subcategorias of subcategorias; let i = index">   
+          <tr *ngFor="let sub of subcategoriasFiltrada; let i = index">   
              <th>{{ i + 1 }}</th>
-             <th>{{subcategorias.name}}</th>
-             <th>{{subcategorias.description}}</th>
-             <th>{{subcategorias.category.name}}</th>
-             <th>{{subcategorias.createdAt}}</th>
+             <th>{{sub.name}}</th>
+             <th>{{sub.description}}</th>
+             <th>{{sub.category.name}}</th>
+             <th>{{sub.createAt | date:'dd-MM-yyyy'}}</th>
            </tr>
          </tbody>
       </table>

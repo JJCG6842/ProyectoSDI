@@ -1,0 +1,15 @@
+mat-form-field {
+  flex: 1 1 48%; 
+  min-width: 180px; 
+  width: 100%;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 16px; 
+}
+
+.error{
+  color: red;
+}

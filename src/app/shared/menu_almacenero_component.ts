@@ -110,8 +110,13 @@ export class menuAlmaceneroComponent{
   },
   {
     icon:'storage',
-    label: 'Almacenes',
-    route: '/almacenero/almacenes-almacenero'
+    label: 'Control de inventario',
+    route: '/almacenero/panel-inventario'
+  },
+  {
+    icon: 'group',
+    label: 'Proveedores',
+    route: '/almacenero/proveedor-almacenero'
   },
   {
     icon: 'article',

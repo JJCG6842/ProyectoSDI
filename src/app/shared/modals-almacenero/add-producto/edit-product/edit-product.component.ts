@@ -44,7 +44,6 @@ export class EditProductComponent {
       category: ['',Validators.required],
       subcategory: ['', Validators.required],
       price: ['', [Validators.required,Validators.min(1)]],
-      quantity: ['', [Validators.required,Validators.min(0)]],
     });
   }
 

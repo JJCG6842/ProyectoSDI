@@ -9,6 +9,22 @@ h1 {
   font-size: 46px;
 }
 
+.add{
+    width: 280px;
+    height: 65px;
+    background-color: #045CFF;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 24px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.add:hover{
+    background: rgb(59, 102, 245);
+}
+
 .icon{
     font-size: 35px;  
     height: 30px;
@@ -93,6 +109,20 @@ input{
   border-bottom: 1px solid #ddd;
 }
 
+.edit{
+  padding: 8px 16px;
+  margin-right: 10px; 
+  width: 60px;
+  height: 48px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  padding: 10px 0;
+  cursor: pointer;
+  background: rgb(33, 83, 247);
+}
+
 .view{
   padding: 8px 16px;
   margin-right: 10px; 
@@ -107,25 +137,33 @@ input{
   background: rgb(1, 255, 1);
 }
 
+.delete{
+  padding: 8px 16px;
+  margin-right: 10px; 
+  width: 60px;
+  height: 48px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  padding: 10px 0;
+  cursor: pointer;
+  background: rgb(252, 0, 0);
+}
+
+.edit:hover{
+    background: rgb(59, 102, 245);
+}
+
 .view:hover{
     background: rgb(52, 250, 52)
 }
 
-mat-expansion-panel{
-    width: 200px;
+.delete:hover{
+    background: rgb(243, 47, 47);
 }
 
-mat-expansion-panel-header{
-    background: #045CFF;
-}
 
-mat-panel-title {
-  background: #045CFF;
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 23px;
-}
 
 .miniselect{
     display: flex;

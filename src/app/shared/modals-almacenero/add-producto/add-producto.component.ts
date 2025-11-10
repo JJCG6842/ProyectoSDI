@@ -50,7 +50,32 @@ export class AddProductoComponent implements OnInit{
     this.cargarCategorias();
     this.cargarSubcategorias();
     this.cargarMarcas();
+
+    this.subcategory.disable();
+
+    this.category.valueChanges.subscribe(categoryId => {
+    if (categoryId) {
+      this.subcategory.enable();
+      this.cargarSubcategoriasPorCategoria(categoryId);
+    } else {
+      this.subcategory.reset();
+      this.subcategory.disable();
+      this.subcategorias = [];
+    }
+  });
   }
+
+  cargarSubcategoriasPorCategoria(categoryId: string) {
+  this.subcategoriaService.getSubcategoriasPorCategoriaId(categoryId).subscribe({
+    next: (subs) => {
+      this.subcategorias = subs;
+    },
+    error: (err) => {
+      console.error('Error al cargar subcategorías', err);
+      this.subcategorias = [];
+    }
+  });
+}
 
   cargarCategorias(){
     this.categoriaService.getCategorias().subscribe({
@@ -133,6 +158,7 @@ export class AddProductoComponent implements OnInit{
       description: formValue.description,
       price: Number(formValue.price),
       status, 
+      quantity: formValue.quantity,
       model: formValue.model,
       categoryId: formValue.category,
       subcategoryId: formValue.subcategory,

@@ -1,4 +1,4 @@
-<h1>Bienvenido, Usuario 01</h1>
+<h1>Bienvenido, {{usuarioNombre}}</h1>
 
 <div class="container">
 <mat-card class="example-card" appearance="outlined">
@@ -9,7 +9,7 @@
         </div>
     </mat-card-header>
     <mat-card-content>
-        <div class="count">8</div>
+        <div class="count">{{totalEntradas}}</div>
     </mat-card-content>
 </mat-card>
 
@@ -22,7 +22,7 @@
         </div>
     </mat-card-header>
     <mat-card-content>
-        <div class="count">5</div>
+        <div class="count">{{totalSalidas}}</div>
     </mat-card-content>
 </mat-card>
 
@@ -34,20 +34,44 @@
         </div>
     </mat-card-header>
     <mat-card-content>
-        <div class="count">18</div>
+        <div class="count">{{totalProductos}}</div>
+    </mat-card-content>
+</mat-card>
+
+<mat-card class="example-card" appearance="outlined">
+    <mat-card-header>
+        Total de proveedores
+        <div class="logo4" style="background-color: orange;">
+            <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="groups"></mat-icon>
+        </div>
+    </mat-card-header>
+    <mat-card-content>
+        <div class="count">{{totalProveedores}}</div>
     </mat-card-content>
 </mat-card>
 
 
 <mat-card class="example-card" appearance="outlined">
     <mat-card-header>
-        Total de almacenes
-        <div class="logo4">
-            <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="storage"></mat-icon>
+        Importe entradas
+        <div class="logo4" style="background-color: rgb(47, 255, 134);">
+            <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="attach_money"></mat-icon>
         </div>
     </mat-card-header>
     <mat-card-content>
-        <div class="count">4</div>
+        <div class="count">S/.{{totalMontoEntradas}}</div>
+    </mat-card-content>
+</mat-card>
+
+<mat-card class="example-card" appearance="outlined">
+    <mat-card-header>
+        Importe salidas
+        <div class="logo4" style="background-color: rgb(245, 72, 72);">
+            <mat-icon aria-hidden="false" aria-label="Icono de dinero" fontIcon="attach_money"></mat-icon>
+        </div>
+    </mat-card-header>
+    <mat-card-content>
+        <div class="count">S/.{{totalMontoSalidas}}</div>
     </mat-card-content>
 </mat-card>
 

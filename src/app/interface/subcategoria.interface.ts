@@ -3,7 +3,7 @@ export interface Subcategoria {
     name: string;
     description: string;
     categoryId: string;
-    createdAt?: string;
+    createAt?: string;
     updateAt?: string;
     category: {
         id:string;

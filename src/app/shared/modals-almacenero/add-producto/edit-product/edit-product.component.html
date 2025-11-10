@@ -4,18 +4,18 @@
     <form [formGroup]="formProduct">
         <div class="form-grid">
 
-        <div class="form-field">
-        <h3>Nombre del producto:</h3>
-        <mat-form-field appearance="fill">
-            <mat-label>Nombre:</mat-label>
-            <input matInput formControlName="name">
-        </mat-form-field>
-        <div [hidden]="name.valid || name.pristine" class="error">
-            <span *ngIf="name.errors?.['required']">El campo es requerido</span>
-        </div>
-        </div>
+            <div class="form-field">
+                <h3>Nombre del producto:</h3>
+                <mat-form-field appearance="fill">
+                    <mat-label>Nombre:</mat-label>
+                    <input matInput formControlName="name">
+                </mat-form-field>
+                <div [hidden]="name.valid || name.pristine" class="error">
+                    <span *ngIf="name.errors?.['required']">El campo es requerido</span>
+                </div>
+            </div>
 
-        <div class="form-field">
+            <div class="form-field">
                 <h3>Marca del producto:</h3>
                 <mat-form-field appearance="fill">
                     <mat-label>Marca:</mat-label>
@@ -29,82 +29,85 @@
                     <span *ngIf="marca.errors?.['required']">El campo es requerido</span>
                 </div>
             </div>
-            
-        <div class="form-field">
-        <h3>Modelo del producto:</h3>
-            <mat-form-field appearance="fill">
-            <mat-label>Modelo:</mat-label>
-            <input matInput formControlName="model">
-            </mat-form-field>
-        <div [hidden]="model.valid || model.pristine" class="error">
-            <span *ngIf="model.errors?.['required']">El campo es requerido</span>
-        </div>
-        </div>
 
-        <div class="form-field">
-        <h3>Imagen del producto:</h3>
-            <mat-form-field appearance="fill">
-            <mat-label>Imagen:</mat-label>
-            <input matInput formControlName="image">
-            </mat-form-field>
-        <div [hidden]="image.valid || image.pristine" class="error">
-            <span *ngIf="image.errors?.['required']">El campo es requerido</span>
-        </div>
-        </div>
+            <div class="form-field">
+                <h3>Modelo del producto:</h3>
+                <mat-form-field appearance="fill">
+                    <mat-label>Modelo:</mat-label>
+                    <input matInput formControlName="model">
+                </mat-form-field>
+                <div [hidden]="model.valid || model.pristine" class="error">
+                    <span *ngIf="model.errors?.['required']">El campo es requerido</span>
+                </div>
+            </div>
 
-        <div class="form-field">
-        <h3>Categoria del producto:</h3>
-            <mat-form-field appearance="fill">
-            <mat-label>Categoria:</mat-label>
-            <mat-select formControlName="category">
-                <mat-option *ngFor="let cat of categorias" [value]="cat.id">
-                    {{cat.name}}
-                </mat-option>
-            </mat-select>
-            </mat-form-field>
-        <div [hidden]="category.valid || category.pristine" class="error">
-            <span *ngIf="category.errors?.['required']">El campo es requerido</span>
-        </div>
-        </div>
+            <div class="form-field">
+                <h3>Imagen del producto:</h3>
+                <mat-form-field appearance="fill">
+                    <mat-label>Imagen:</mat-label>
+                    <input matInput formControlName="image">
+                </mat-form-field>
+                <div [hidden]="image.valid || image.pristine" class="error">
+                    <span *ngIf="image.errors?.['required']">El campo es requerido</span>
+                </div>
+            </div>
 
-        <div class="form-field">
-        <h3>Subcategoria del producto:</h3>
-            <mat-form-field appearance="fill">
-            <mat-label>Subcategoria:</mat-label>
-            <mat-select matInput formControlName="subcategory">
-                <mat-option *ngFor="let subcat of subcategorias" [value]="subcat.id">
-                    {{subcat.name}}
-                </mat-option>
-            </mat-select>
-            </mat-form-field>
-        <div [hidden]="subcategory.valid || subcategory.pristine" class="error">
-            <span *ngIf="subcategory.errors?.['required']">El campo es requerido</span>
-        </div>
-        </div>
+            <div class="form-field">
+                <h3>Categoria del producto:</h3>
+                <mat-form-field appearance="fill">
+                    <mat-label>Categoria:</mat-label>
+                    <mat-select formControlName="category">
+                        <mat-option *ngFor="let cat of categorias" [value]="cat.id">
+                            {{cat.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <div [hidden]="category.valid || category.pristine" class="error">
+                    <span *ngIf="category.errors?.['required']">El campo es requerido</span>
+                </div>
+            </div>
 
-        <div class="form-field">
-        <h3>Precio del producto:</h3>
-            <mat-form-field appearance="fill">
-            <mat-label>Precio:</mat-label>
-            <input matInput formControlName="price" type="number">
-            </mat-form-field>
-        <div [hidden]="price.valid || price.pristine" class="error">
-            <span *ngIf="price.errors?.['required']">El campo es requerido</span>
-            <span *ngIf="price.errors?.['min']">El producto no debe ser gratis :v</span>
-        </div>
-        </div>
+            <div class="form-field">
+                <h3>Subcategoria del producto:</h3>
+                <mat-form-field appearance="fill">
+                    <mat-label>Subcategoria:</mat-label>
+                    <mat-select formControlName="subcategory" [disabled]="subcategory.disabled">
+                        <mat-option *ngFor="let subcat of subcategorias" [value]="subcat.id">
+                            {{subcat.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <div [hidden]="subcategory.valid || subcategory.pristine" class="error">
+                    <span *ngIf="subcategory.errors?.['required']">El campo es requerido</span>
+                </div>
+            </div>
 
-        <div class="form-field">
-        <h3>Descripción del producto:</h3>
-        <mat-form-field appearance="fill">
-            <mat-label>Descripción:</mat-label>
-            <input matInput formControlName="description">
-        </mat-form-field>
-        <div [hidden]="description.valid || description.pristine" class="error">
-            <span *ngIf="description.errors?.['required']">El campo es requerido</span>
-        </div>
-        </div>
-        
+            <div class="form-field">
+                <h3>Precio del producto:</h3>
+                <mat-form-field appearance="fill">
+                    <mat-label>Precio:</mat-label>
+                    <input matInput formControlName="price" type="number">
+                </mat-form-field>
+                <div [hidden]="price.valid || price.pristine" class="error">
+                    <span *ngIf="price.errors?.['required']">El campo es requerido</span>
+                    <span *ngIf="price.errors?.['min']">El producto no debe ser gratis :v</span>
+                </div>
+            </div>
+
+            <div class="form-field"></div>
+
+            <div class="form-field" id="descripcion">
+                <h3>Descripción del producto:</h3>
+                <mat-form-field appearance="fill">
+                    <mat-label>Descripción:</mat-label>
+                    <textarea matInput rows="4" formControlName="description"></textarea>
+                </mat-form-field>
+                <div [hidden]="description.valid || description.pristine" class="error">
+                    <span *ngIf="description.errors?.['required']">El campo es requerido</span>
+                </div>
+            </div>
+
+
         </div>
     </form>
 </mat-dialog-content>

@@ -14,28 +14,29 @@
 
 <div class="miniselect">
 
-  <mat-accordion>
-  <mat-expansion-panel>
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        Categorias
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <p style="cursor: pointer;">Computadora</p>
-    <p style="cursor: pointer;">Laptop</p>
-  </mat-expansion-panel>
-</mat-accordion>
+  <div class="filter-section">
+  <mat-form-field appearance="fill">
+    <mat-label>Filtrar por categoría</mat-label>
+    <mat-select [(value)]="selectCategoryId" (selectionChange)="filtrarPorCategoria()">
+      <mat-option value="">Todas</mat-option>
+      <mat-option *ngFor="let cat of categorias" [value]="cat.id">
+        {{ cat.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
 
-<mat-accordion>
-  <mat-expansion-panel>
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        Marca
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <p style="cursor: pointer;">HP</p>
-  </mat-expansion-panel>
-</mat-accordion>
+<div class="filter-section">
+  <mat-form-field appearance="fill">
+    <mat-label>Filtrar por marca</mat-label>
+    <mat-select [(value)]="selectMarcaId" (selectionChange)="filtrarPorMarca()">
+      <mat-option value="">Todas</mat-option>
+      <mat-option *ngFor="let marca of marcas" [value]="marca.id">
+        {{ marca.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
 
 </div>
 

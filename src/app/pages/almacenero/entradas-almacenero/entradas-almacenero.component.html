@@ -2,7 +2,7 @@
   <h1>Gestión de entradas:</h1>
     <div class="botons">
         <button class="entrance" (click)="kardex()">
-            Kardex del sistema
+            Panel de Inventario
         </button> 
         <button class="salida" (click)="salidas()">
             Gestión de salidas
@@ -45,16 +45,15 @@
            </tr>
          </thead>
          <tbody>
-          <tr>
-             <th>29/10/2025</th>   
-             <th>Notebook Gaming MSI Thin 15</th>
-             <th>Compusur EIRL</th>
-             <th>4</th>
-             <th>S/.1234</th>
-             <th>S/.4936</th>
+          <tr *ngFor="let entrada of entradas">
+             <th>{{entrada.createdAt | date:'dd/MM/yyyy'}}</th>   
+             <th>{{entrada.product.name}}</th>
+             <th>{{entrada.supplier?.name}}</th>
+             <th>{{entrada.quantity}}</th>
+             <th>S/.{{entrada.product.price | number:'1.2-2'}}</th>
+             <th>S/.{{ entrada.product.price * entrada.quantity | number:'1.2-2' }}</th>
              <th>
-                 <button class="view" ><mat-icon aria-hidden="false" fontIcon="visibility"></mat-icon></button>
-                 <button class="delete" (click)="eraseEntrada()"><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
+              <button class="delete" (click)="eraseEntrada(entrada.id)"><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
              </th>
            </tr>
          </tbody>

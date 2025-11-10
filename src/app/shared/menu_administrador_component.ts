@@ -110,8 +110,8 @@ export class menuAdministradorComponent{
   },
   {
     icon:'storage',
-    label: 'Almacenes',
-    route: '/administrador/almacenes-administrador'
+    label: 'Control de inventario',
+    route: '/administrador/panel-inventario-administrador'
   },
   {
     icon: 'article',

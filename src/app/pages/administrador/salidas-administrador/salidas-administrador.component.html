@@ -2,9 +2,9 @@
   <h1>Gestión de salidas:</h1>
     <div class="botons">
         <button class="kardex-boton" (click)="kardex()">
-            Kardex del sistema
+            Panel de Inventario
         </button> 
-        <button class="entrance" (click)="salidas()">
+        <button class="entrance" (click)="entradas()">
             Gestión de entradas
         </button>
     </div>
@@ -21,8 +21,6 @@
   Buscar
 </button>
 
-
-
 </div>
 
 </div> 
@@ -38,20 +36,16 @@
              <th>Cantidad</th>
              <th>Precio</th>
              <th>Monto total</th>
-             <th>Acciones</th>
            </tr>
          </thead>
          <tbody>
-          <tr>
-             <th>29/10/2025</th>   
-             <th>Notebook Gaming MSI Thin 15</th>
-             <th>Compusur EIRL</th>
-             <th>4</th>
-             <th>S/.1234</th>
-             <th>S/.4936</th>
-             <th>
-                 <button class="view" ><mat-icon aria-hidden="false" fontIcon="visibility"></mat-icon></button>
-             </th>
+          <tr *ngFor="let salida of salidas">
+             <th>{{salida.createdAt | date:'dd/MM/yyyy'}}</th>   
+             <th>{{salida.product.name}}/th>
+             <th>{{salida.supplier?.name}}</th>
+             <th>{{salida.quantity}}</th>
+             <th>S/.{{salida.product.price | number:'1.2-2'}}</th>
+             <th>S/.{{ salida.product.price * salida.quantity | number:'1.2-2' }}</th>
            </tr>
          </tbody>
       </table>

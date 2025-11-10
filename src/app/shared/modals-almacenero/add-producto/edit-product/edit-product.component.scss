@@ -1,12 +1,24 @@
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr; 
   gap: 20px;
 }
-  
+
+.form-field {
+  width: 100%;
+}
+
 mat-form-field {
-  flex: 1 1 48%; 
-  min-width: 280px; 
+  width: 100%; 
+}
+
+#descripcion {
+  grid-column: 1 / -1; 
+}
+
+textarea {
+  width: 100%;  
+  resize: none;
 }
 
 .error {

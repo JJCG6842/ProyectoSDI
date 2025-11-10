@@ -71,4 +71,8 @@ export class CategoriaAdministradorComponent implements OnInit{
   page2(){
     this.router.navigate(['/administrador/subcategoria-administrador'])
   }
+
+  page3(){
+    this.router.navigate(['/administrador/marca-administrador'])
+  }
 }

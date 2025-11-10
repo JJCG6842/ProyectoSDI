@@ -15,6 +15,10 @@ export class SubcategoriaService {
     return this.http.get<Subcategoria[]>(this.apiUrl);
   }
 
+  getSubcategoriasPorCategoriaId(categoryId: string): Observable<Subcategoria[]> {
+    return this.http.get<Subcategoria[]>(`http://localhost:3000/subcategoria/categoria/${categoryId}`);
+  }
+
   getSubcategoriaByName(name: string): Observable<Subcategoria>{
     return this.http.get<Subcategoria>(`${this.apiUrl}/nombre/${name}`);
   }

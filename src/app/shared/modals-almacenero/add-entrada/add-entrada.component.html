@@ -3,13 +3,13 @@
 <mat-dialog-content>
     <form [formGroup]="formEntrance">
         
-
-        
         <h3>Seleccione el producto:</h3>
         <mat-form-field appearance="fill">
             <mat-label>Producto:</mat-label>
             <mat-select formControlName="product">
-            <mat-option value="Notebook Gaming MSI Thin 15">Notebook Gaming MSI Thin 15</mat-option>
+            <mat-option *ngFor="let product of productos" [value]="product.id">
+                {{product.name}}
+            </mat-option>
         </mat-select>
         </mat-form-field>
         <div [hidden]="product.valid || product.pristine" class="error">
@@ -20,9 +20,9 @@
         <mat-form-field appearance="fill">
             <mat-label>Proveedor:</mat-label>
             <mat-select formControlName="provider">
-            <mat-option value="Compusur EIRL">Compusur EIRL</mat-option>
-            <mat-option value="Deltron">Deltron</mat-option>
-            <mat-option value="Perú Compras">Perú Compras</mat-option>
+            <mat-option *ngFor="let prov of proveedores" [value]="prov.id">
+                {{prov.name}}
+            </mat-option>
         </mat-select>
         </mat-form-field>
         <div [hidden]="provider.valid || provider.pristine" class="error">
@@ -46,6 +46,6 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-    <button mat-flat-button  style="background-color: blue; color: white;">Realizar entrada</button>
+    <button mat-flat-button  style="background-color: blue; color: white;" (click)="addEntrance()">Realizar entrada</button>
     <button mat-flat-button mat-dialog-close style="background-color: red; color: white;">Cancelar</button>
 </mat-dialog-actions>

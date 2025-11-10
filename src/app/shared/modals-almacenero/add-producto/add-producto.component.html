@@ -71,7 +71,7 @@
                 <h3>Subcategoria del producto:</h3>
                 <mat-form-field appearance="fill">
                     <mat-label>Subcategoria:</mat-label>
-                    <mat-select matInput formControlName="subcategory">
+                    <mat-select formControlName="subcategory" [disabled]="subcategory.disabled">
                         <mat-option *ngFor="let subcat of subcategorias" [value]="subcat.id">
                             {{subcat.name}}
                         </mat-option>
@@ -94,7 +94,9 @@
                 </div>
             </div>
 
-            <div class="">
+            <div class="form-field"></div>
+
+            <div class="form-field" id="descripcion">
                 <h3>Descripción del producto:</h3>
                 <mat-form-field appearance="fill">
                     <mat-label>Descripción:</mat-label>
