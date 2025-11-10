@@ -24,8 +24,7 @@ model Category {
   updateAt      DateTime      @updatedAt
   subcategories Subcategory[]
   products      Products[]
-  entrance      Entrance[]
-  marcas        Marca[] 
+  marcas        Marca[]
 }
 
 model Subcategory {
@@ -34,20 +33,19 @@ model Subcategory {
   description String
   categoryId  String
   products    Products[]
-  entrance    Entrance[]
   createAt    DateTime   @default(now())
   updateAt    DateTime   @updatedAt
   category    Category   @relation(fields: [categoryId], references: [id])
 }
 
 model Marca {
-  id String @id @default(uuid())
-  name String
+  id          String     @id @default(uuid())
+  name        String
   description String
   categoryId  String
   createAt    DateTime   @default(now())
   updateAt    DateTime   @updatedAt
-  category    Category @relation(fields: [categoryId], references: [id])
+  category    Category   @relation(fields: [categoryId], references: [id])
   products    Products[]
 }
 
@@ -57,41 +55,20 @@ model Products {
   name          String
   description   String
   marcaId       String?
+  quantity      Float         @default(0)
   price         Float
-  status        ProductStatus @default(Instock)
+  status        ProductStatus @default(Outstock)
   model         String
   categoryId    String
   subcategoryId String
-  storeId       String?       
+  storeId       String?
+  entrances     Entrance[]
+  salidas       Salida[]
   category      Category      @relation(fields: [categoryId], references: [id])
   subcategory   Subcategory   @relation(fields: [subcategoryId], references: [id])
-  marca         Marca?         @relation(fields: [marcaId], references: [id])
-  inventory     Inventory[]
-  entrances     Entrance[]
+  marca         Marca?        @relation(fields: [marcaId], references: [id])
   createAt      DateTime      @default(now())
   updateAt      DateTime      @updatedAt
-}
-
-model Store {
-  id          String     @id @default(uuid())
-  name        String   
-  location    String? 
-  inventory   Inventory[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-}
-
-model Inventory {
-  id        String    @id @default(uuid())
-  productId String
-  storeId   String
-  quantity  Int       @default(0)
-  product   Products  @relation(fields: [productId], references: [id])
-  store     Store     @relation(fields: [storeId], references: [id])
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
-  @@unique([productId, storeId])
 }
 
 model Supplier {
@@ -100,24 +77,29 @@ model Supplier {
   phone       Int
   description String
   entrances   Entrance[]
+  salidas     Salida[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 }
 
 model Entrance {
-  id            String      @id @default(uuid())
-  quantity      Int
-  unitPrice     Float
-  productId     String
-  supplierId    String
-  categoryId    String
-  subcategoryId String
-  product       Products    @relation(fields: [productId], references: [id])
-  supplier      Supplier    @relation(fields: [supplierId], references: [id])
-  category      Category    @relation(fields: [categoryId], references: [id])
-  subcategory   Subcategory @relation(fields: [subcategoryId], references: [id])
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  id         String    @id @default(uuid())
+  productId  String
+  quantity   Float
+  supplierId String?
+  createdAt  DateTime  @default(now())
+  product    Products  @relation(fields: [productId], references: [id])
+  supplier   Supplier? @relation(fields: [supplierId], references: [id])
+}
+
+model Salida {
+  id         String    @id @default(uuid())
+  productId  String
+  quantity   Float
+  supplierId String?
+  createdAt  DateTime  @default(now())
+  product    Products  @relation(fields: [productId], references: [id])
+  supplier   Supplier? @relation(fields: [supplierId], references: [id])
 }
 
 enum ProductStatus {

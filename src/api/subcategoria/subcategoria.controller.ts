@@ -1,5 +1,6 @@
 import { Controller , Get, Post, Put, Delete, Param, Body} from '@nestjs/common';
 import { SubcategoriaService } from './subcategoria.service';
+import { CategoriaService } from '../categoria/categoria.service';
 
 @Controller('subcategoria')
 export class SubcategoriaController {
@@ -8,6 +9,11 @@ export class SubcategoriaController {
     @Get()
     getAll(){
         return this.subcategoriaservice.findAll();
+    }
+
+    @Get('categoria/:categoryId')
+        getByCategory(@Param('categoryId') categoryId: string){
+        return this.subcategoriaservice.findByCategoryId(categoryId);
     }
 
     @Get('nombre/:name')

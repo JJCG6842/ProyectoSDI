@@ -6,12 +6,14 @@ import { CategoriaModule } from './api/categoria/categoria.module';
 import { SubcategoriaModule } from './api/subcategoria/subcategoria.module';
 import { UsuarioModule } from './api/usuario/usuario.module';
 import { ProveedoresModule } from './api/proveedores/proveedores.module';
-import { AlmacenesModule } from './api/almacenes/almacenes.module';
 import { MarcaModule } from './api/marca/marca.module';
+import { EntradaModule } from './api/entrada/entrada.module';
+import { SalidaModule } from './api/salida/salida.module';
+import { KardexModule } from './api/kardex/kardex.module';
 
 
 @Module({
-  imports: [CategoriaModule, ProductosModule, SubcategoriaModule, UsuarioModule,ProveedoresModule,MarcaModule],
+  imports: [CategoriaModule, ProductosModule, SubcategoriaModule, UsuarioModule,ProveedoresModule,MarcaModule, EntradaModule, SalidaModule, KardexModule],
   controllers: [AppController],
   providers: [AppService],
 })

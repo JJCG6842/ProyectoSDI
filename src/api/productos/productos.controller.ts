@@ -51,6 +51,7 @@ export class ProductosController {
       description: string;
       marcaId: string;
       price: number;
+      quantity: number;
       status: ProductStatus;
       model: string;
       categoryId: string;
@@ -70,6 +71,7 @@ export class ProductosController {
       description: string;
       marcaId: string;
       price: number;
+      quantity: number;
       status: ProductStatus;
       model: string;
       categoryId: string;

@@ -23,6 +23,12 @@ export class SubcategoriaService {
         return subcategory;
     }
 
+    async findByCategoryId(categoryId: string) {
+        return this.prisma.subcategory.findMany({
+            where: { categoryId },
+        });
+    }
+
     async searchByName(term:string){
         const subcategory = await this.prisma.subcategory.findMany({
             where: {

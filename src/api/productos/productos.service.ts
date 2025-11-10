@@ -91,6 +91,7 @@ export class ProductosService {
     description: string;
     marcaId: string;
     price: number;
+    quantity: number;
     status: ProductStatus;
     model: string;
     categoryId: string;
@@ -117,6 +118,7 @@ export class ProductosService {
       description: string;
       marcaId: string;
       price: number;
+      quantity: number;
       status: ProductStatus;
       model: string;
       categoryId: string;

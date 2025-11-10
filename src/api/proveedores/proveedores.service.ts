@@ -8,31 +8,14 @@ export class ProveedoresService {
 
   async findAll() {
     return this.prisma.supplier.findMany({
-      include: {
-        entrances: {
-          include: {
-            product: { select: { id: true, name: true } },
-            category: { select: { id: true, name: true } },
-            subcategory: { select: { id: true, name: true } },
-          },
-        },
-      },
+
     });
   }
-
 
   async findOne(id: string) {
     const supplier = await this.prisma.supplier.findUnique({
       where: { id },
-      include: {
-        entrances: {
-          include: {
-            product: { select: { id: true, name: true } },
-            category: { select: { id: true, name: true } },
-            subcategory: { select: { id: true, name: true } },
-          },
-        },
-      },
+      
     });
 
     if (!supplier) throw new NotFoundException('Proveedor no encontrado');
@@ -43,7 +26,6 @@ export class ProveedoresService {
   async findName(name: string) {
     const supplier = await this.prisma.supplier.findFirst({
       where: { name: { equals: name, mode: 'insensitive' } },
-      include: { entrances: true },
     });
 
     if (!supplier) throw new NotFoundException(`No se encontró el proveedor: ${name}`);
@@ -54,7 +36,6 @@ export class ProveedoresService {
   async searchByName(term: string) {
     const suppliers = await this.prisma.supplier.findMany({
       where: { name: { contains: term, mode: 'insensitive' } },
-      include: { entrances: true },
     });
 
     if (suppliers.length === 0)

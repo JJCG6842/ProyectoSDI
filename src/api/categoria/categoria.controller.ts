@@ -10,7 +10,6 @@ export class CategoriaController {
         return this.categoriaService.findAll();
     }
 
-
     @Get('nombre/:name')
     getName(@Param('name') name: string) {
         return this.categoriaService.findName(name);
