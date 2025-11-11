@@ -16,6 +16,11 @@ export class EntradaController {
     return this.entradasService.getEntradaPorId(id);
   }
 
+  @Get('buscar/producto/:term')
+    buscarPorProducto(@Param('term') term: string) {
+    return this.entradasService.searchByProductName(term);
+  }
+
   @Post()
   crearEntrada(
     @Body()body: {productId: string;quantity: number;supplierId?: string;},

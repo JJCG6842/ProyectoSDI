@@ -31,6 +31,25 @@ export class SalidaService {
     return salida;
   }
 
+  async searchByProductName(term: string) {
+  if (!term.trim()) {
+    throw new BadRequestException('El término de búsqueda no puede estar vacío');
+  }
+
+  return this.prisma.salida.findMany({
+    where: {
+      product: {
+        name: { contains: term, mode: 'insensitive' }, 
+      },
+    },
+    include: {
+      product: { select: { id: true, name: true, price: true, quantity: true } },
+      supplier: { select: { id: true, name: true, phone: true, description: true } },
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+}
+
   async createSalida(data: { productId: string; quantity: number; supplierId?: string }) {
     if (data.quantity <= 0) {
       throw new BadRequestException('La cantidad debe ser mayor a cero');

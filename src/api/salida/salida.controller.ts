@@ -15,6 +15,11 @@ export class SalidaController {
     return this.salidaService.getSalidaPorId(id);
   }
 
+  @Get('buscar/producto/:term')
+    buscarPorProducto(@Param('term') term: string) {
+    return this.salidaService.searchByProductName(term);
+  }
+
   @Post()
   crearSalida(
     @Body()

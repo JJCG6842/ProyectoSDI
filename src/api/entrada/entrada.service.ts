@@ -31,6 +31,28 @@ export class EntradaService {
     return entrada;
   }
 
+  async searchByProductName(term: string) {
+  if (!term.trim()) {
+    throw new BadRequestException('El término de búsqueda no puede estar vacío');
+  }
+
+  return this.prisma.entrance.findMany({
+    where: {
+      product: {
+        name: {
+          contains: term,
+          mode: 'insensitive',
+        },
+      },
+    },
+    include: {
+      product: { select: { id: true, name: true, price: true, quantity: true } },
+      supplier: { select: { id: true, name: true, phone: true, description: true } },
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+}
+
   async createEntrada(data: {
     productId: string;
     quantity: number;
