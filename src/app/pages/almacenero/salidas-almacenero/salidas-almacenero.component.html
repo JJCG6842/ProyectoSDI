@@ -13,10 +13,10 @@
 
 <div class="content1">
   <p class="enter">Buscar producto:</p>
-<input type="text" placeholder="Ingrese producto...">
+<input type="text" placeholder="Ingrese producto..." [(ngModel)]="searchTerm" (ngModelChange)="onSearchTermChange($event)">
 
 <div class="botons" style="bottom: 5px;">
-  <button class="boton1">
+  <button class="boton1" (click)="search()">
   <mat-icon fontIcon="search" class="icon-btn" ></mat-icon>
   Buscar
 </button>
@@ -47,11 +47,11 @@ Generar salida
          <tbody>
           <tr *ngFor="let salida of salidas">
              <th>{{salida.createdAt | date:'dd/MM/yyyy'}}</th>   
-             <th>{{salida.product.name}}/th>
+             <th>{{salida.product.name}}</th>
              <th>{{salida.supplier?.name}}</th>
              <th>{{salida.quantity}}</th>
              <th>S/.{{salida.product.price | number:'1.2-2'}}</th>
-             <th>S/.{{ salida.product.price * salida.quantity | number:'1.2-2' }}</th>
+             <th>S/.{{ salida.product.price * salida.quantity | number:'1.2-2' }} </th>
              <th>
                  <button class="delete" (click)="eraseSalida(salida.id)"><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
              </th>
@@ -59,3 +59,5 @@ Generar salida
          </tbody>
       </table>
 </div>
+
+<br><br><br><br>

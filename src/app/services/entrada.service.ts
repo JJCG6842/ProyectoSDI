@@ -19,6 +19,10 @@ export class EntradaService {
     return this.http.get<Entrada>(`${this.apiUrl}/${id}`);
   }
 
+  buscarPorProducto(term: string): Observable<Entrada[]> {
+    return this.http.get<Entrada[]>(`${this.apiUrl}/buscar/producto/${term}`);
+  }
+
   crearEntrada(data: {
     productId: string;
     quantity: number;

@@ -20,6 +20,10 @@ export class SalidaService {
     return this.http.get<Salida>(`${this.apiUrl}/${id}`);
   }
 
+  buscarPorProducto(term: string): Observable<Salida[]> {
+    return this.http.get<Salida[]>(`${this.apiUrl}/buscar/producto/${term}`);
+  }
+
   createSalida(data: { productId: string; quantity: number; supplierId?: string }): Observable<Salida> {
     return this.http.post<Salida>(this.apiUrl, data);
   }

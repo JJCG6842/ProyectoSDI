@@ -13,10 +13,10 @@
 
 <div class="content1">
   <p class="enter">Buscar producto:</p>
-<input type="text" placeholder="Ingrese producto...">
+<input type="text" placeholder="Ingrese producto..." [(ngModel)]="searchTerm" (ngModelChange)="onSearchTermChange($event)">
 
 <div class="botons" style="bottom: 5px;">
-  <button class="boton1">
+  <button class="boton1" (click)="search()">
   <mat-icon fontIcon="search" class="icon-btn" ></mat-icon>
   Buscar
 </button>
@@ -50,3 +50,5 @@
          </tbody>
       </table>
 </div>
+
+<br><br><br><br>

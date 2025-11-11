@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy , OnInit} from '@angular/core';
+import { Component, ChangeDetectionStrategy , OnInit,inject,ChangeDetectorRef} from '@angular/core';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -10,6 +10,8 @@ import { CommonModule } from '@angular/common';
 import { EntradaService } from '../../../services/entrada.service';
 import { SalidaService } from '../../../services/salida.service';
 import { firstValueFrom } from 'rxjs';
+import { ProductoService } from '../../../services/producto.service';
+import { Producto } from '../../../interface/producto.interface';
 import { Entrada } from '../../../interface/entrada.interface';
 import { Salida } from '../../../interface/salida.interface';
 
@@ -22,20 +24,36 @@ import { Salida } from '../../../interface/salida.interface';
 })
 export class KardexAlmaceneroComponent implements OnInit {
 
+  readonly reload = inject(ChangeDetectorRef);
   movimientos: any[] = [];
   filtroProducto = '';
   tipoFiltro: 'todos' | 'entrada' | 'salida' = 'todos';
   ordenFecha: 'asc' | 'desc' = 'desc';
   isLoading = true;
+  productos: Producto[] = [];
+  searchTerm: string = '';
 
   constructor(
-    private entradaService: EntradaService,
-    private salidaService: SalidaService,
-    private router:Router
-  ) {}
+    private entradaService: EntradaService,private salidaService: SalidaService,
+    private productoService: ProductoService,private router:Router) {}
 
   async ngOnInit() {
     await this.cargarMovimientos();
+    this.cargarProductos();
+  }
+
+  cargarProductos(){
+    this.productoService.getProductos().subscribe({
+      next: (products) => {
+        this.productos = products;
+        this.isLoading = false;
+        this.reload.markForCheck();
+      },
+      error: (err) => {
+        this.isLoading = false;
+        console.error('Error al cargar productos', err);
+      }
+    })
   }
 
   async cargarMovimientos() {
@@ -103,7 +121,29 @@ export class KardexAlmaceneroComponent implements OnInit {
   }
 
   search(){
+    const term = this.searchTerm.trim();
 
+    if(!term){
+      this.cargarProductos();
+      return;
+    }
+
+    this.isLoading = true;
+
+    this.productoService.buscarProducto(term).subscribe({
+      next: (res)=>{
+        this.productos = res;
+        this.isLoading = false;
+        this.reload.markForCheck();
+      },
+
+      error: (err) => {
+        console.error('Error en la busqueda :/', err);
+        this.productos = [];
+        this.isLoading = false;
+        this.reload.markForCheck();
+      }
+    })
   }
 
   entradas() {

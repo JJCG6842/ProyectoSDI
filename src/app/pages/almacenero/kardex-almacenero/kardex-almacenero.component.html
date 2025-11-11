@@ -4,7 +4,7 @@
 
 <div class="content1">
   <p class="enter">Ingrese Producto:</p>
-<input type="text" placeholder="Buscar producto..." >
+<input type="text" placeholder="Buscar producto..." [(ngModel)]="searchTerm">
 
 <button class="boton1" (click)="search()">
   <mat-icon fontIcon="search" class="icon-btn"></mat-icon>
