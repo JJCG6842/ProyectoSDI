@@ -33,6 +33,20 @@
               <mat-option value="asc">Más antiguas</mat-option>
             </mat-select>
           </mat-form-field>
+
+          <!-- <mat-form-field>
+          <mat-label>Filtrar por fecha</mat-label>
+            <input
+            matInput
+            [matDatepicker]="datepicker"
+            placeholder="Selecciona fecha"
+            [(ngModel)]="fechaFiltro"
+          />
+        <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
+        <mat-datepicker #datepicker></mat-datepicker>
+        </mat-form-field>
+
+        <button mat-flat-button color="primary" (click)="limpiarFiltros()">Limpiar</button> -->
         </div>
       </div>
     </div>
@@ -45,7 +59,7 @@
       <tr>
         <th>Fecha</th>
         <th>Movimiento</th>
-        <th>Proveedor</th>
+        <th>Proveedor/cliente</th>
         <th>Nombre del producto</th>
         <th>Cantidad</th>
         <th>Precio</th>

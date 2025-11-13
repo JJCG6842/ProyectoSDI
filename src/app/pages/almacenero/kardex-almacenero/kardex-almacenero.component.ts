@@ -1,6 +1,8 @@
 import { Component, ChangeDetectionStrategy , OnInit,inject,ChangeDetectorRef} from '@angular/core';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,12 +14,16 @@ import { SalidaService } from '../../../services/salida.service';
 import { firstValueFrom } from 'rxjs';
 import { ProductoService } from '../../../services/producto.service';
 import { Producto } from '../../../interface/producto.interface';
+import {provideNativeDateAdapter} from '@angular/material/core';
 import { Entrada } from '../../../interface/entrada.interface';
 import { Salida } from '../../../interface/salida.interface';
 
 @Component({
   selector: 'app-kardex-almacenero',
-  imports: [MatExpansionModule,MatIconModule,MatFormFieldModule,MatSelectModule,MatInputModule,CommonModule,FormsModule],
+  imports: [MatExpansionModule,MatIconModule,MatFormFieldModule,MatSelectModule,MatInputModule,CommonModule,FormsModule,MatDatepickerModule,
+    MatNativeDateModule
+  ],
+  providers: [provideNativeDateAdapter()],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './kardex-almacenero.component.html',
   styleUrl: './kardex-almacenero.component.scss'
@@ -29,6 +35,7 @@ export class KardexAlmaceneroComponent implements OnInit {
   filtroProducto = '';
   tipoFiltro: 'todos' | 'entrada' | 'salida' = 'todos';
   ordenFecha: 'asc' | 'desc' = 'desc';
+  fechaFiltro: Date | null = null;
   isLoading = true;
   productos: Producto[] = [];
   searchTerm: string = '';
@@ -77,7 +84,7 @@ export class KardexAlmaceneroComponent implements OnInit {
       const salidasFormateadas = (salidas ?? []).map(s => ({
         fecha: s.createdAt,
         movimiento: 'Salida',
-        proveedor: s.supplier?.name ?? '—',
+        proveedor: s.supplier?.name || s.cliente?.name || '—',
         producto: s.product?.name ?? '—',
         cantidad: s.quantity,
         precio: s.product?.price ?? 0,
@@ -103,7 +110,11 @@ export class KardexAlmaceneroComponent implements OnInit {
           this.tipoFiltro === 'todos' ||
           (this.tipoFiltro === 'entrada' && mov.movimiento === 'Entrada') ||
           (this.tipoFiltro === 'salida' && mov.movimiento === 'Salida');
-        return coincideProducto && coincideTipo;
+
+          const coincideFecha =
+          !this.fechaFiltro ||
+          new Date(mov.fecha).toDateString() === this.fechaFiltro.toDateString();
+          return coincideProducto && coincideTipo && coincideFecha;
       })
       .sort((a, b) =>
         this.ordenFecha === 'desc'
@@ -144,6 +155,14 @@ export class KardexAlmaceneroComponent implements OnInit {
         this.reload.markForCheck();
       }
     })
+  }
+
+  limpiarFiltros() {
+    this.filtroProducto = '';
+    this.tipoFiltro = 'todos';
+    this.ordenFecha = 'desc';
+    this.fechaFiltro = null; 
+    this.reload.markForCheck();
   }
 
   entradas() {
