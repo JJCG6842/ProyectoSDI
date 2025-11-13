@@ -10,7 +10,7 @@ export class SalidaService {
       include: {
         product: { select: { id: true, name: true, quantity: true, price: true } },
         supplier: { select: { id: true, name: true, phone: true, description: true } },
-        clientes: { select: { id: true, name: true, phone: true } },
+        cliente: { select: { id: true, name: true, phone: true } },
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -22,7 +22,7 @@ export class SalidaService {
       include: {
         product: { select: { id: true, name: true, quantity: true } },
         supplier: { select: { id: true, name: true } },
-        clientes: { select: { id: true, name: true, phone: true } },
+        cliente: { select: { id: true, name: true, phone: true } },
       },
     });
 
@@ -79,7 +79,7 @@ export class SalidaService {
     include: {
       product: true,
       supplier: true,
-      clientes: true,
+      cliente: true,
     },
   });
 

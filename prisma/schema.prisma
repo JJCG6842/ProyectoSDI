@@ -109,7 +109,7 @@ model Salida {
   supplierId String?
   clienteId  String?
   createdAt  DateTime  @default(now())
-  clientes   Cliente?  @relation(fields: [clienteId], references: [id])
+  cliente    Cliente?  @relation(fields: [clienteId], references: [id])
   product    Products  @relation(fields: [productId], references: [id])
   supplier   Supplier? @relation(fields: [supplierId], references: [id])
 }

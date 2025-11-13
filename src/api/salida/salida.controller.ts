@@ -27,6 +27,7 @@ export class SalidaController {
       productId: string;
       quantity: number;
       supplierId?: string;
+      clienteId?: string
     },
   ) {
     return this.salidaService.createSalida(body);
