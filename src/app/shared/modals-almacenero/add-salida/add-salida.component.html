@@ -1,51 +1,76 @@
 <h1 mat-dialog-title>Generar salida:</h1>
 
 <mat-dialog-content>
-    <form [formGroup]="formSalida">
-        
-        <h3>Seleccione el producto:</h3>
-        <mat-form-field appearance="fill">
-            <mat-label>Producto:</mat-label>
-            <mat-select formControlName="product">
-            <mat-option *ngFor="let product of productos" [value]="product.id">
-                {{product.name}}
-            </mat-option>
+  <form [formGroup]="formSalida">
+
+    <h3>Tipo de salida:</h3>
+    <mat-form-field appearance="fill">
+      <mat-label>Seleccione destino</mat-label>
+      <mat-select formControlName="tipoDestino" (selectionChange)="onTipoDestinoChange($event.value)">
+        <mat-option value="proveedor">Proveedor</mat-option>
+        <mat-option value="cliente">Cliente</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div [hidden]="formSalida.get('tipoDestino')?.valid || formSalida.get('tipoDestino')?.pristine" class="error">
+      <span *ngIf="formSalida.get('tipoDestino')?.errors?.['required']">Debe seleccionar un tipo de salida</span>
+    </div>
+
+    <h3>Seleccione el producto:</h3>
+    <mat-form-field appearance="fill">
+      <mat-label>Producto</mat-label>
+      <mat-select formControlName="product">
+        <mat-option *ngFor="let product of productos" [value]="product.id">
+          {{ product.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div [hidden]="product.valid || product.pristine" class="error">
+      <span *ngIf="product.errors?.['required']">El campo es requerido</span>
+    </div>
+
+    <div *ngIf="tipoDestino === 'proveedor'">
+      <h3>Seleccione proveedor:</h3>
+      <mat-form-field appearance="fill">
+        <mat-label>Proveedor</mat-label>
+        <mat-select formControlName="provider">
+          <mat-option *ngFor="let prov of proveedores" [value]="prov.id">
+            {{ prov.name }}
+          </mat-option>
         </mat-select>
-        </mat-form-field>
-        <div [hidden]="product.valid || product.pristine" class="error">
-            <span *ngIf="product.errors?.['required']">El campo es requerido</span>
-        </div>
+      </mat-form-field>
+      <div [hidden]="provider.valid || provider.pristine" class="error">
+        <span *ngIf="provider.errors?.['required']">El campo es requerido</span>
+      </div>
+    </div>
 
-        <h3>Seleccione proveedor:</h3>
-        <mat-form-field appearance="fill">
-            <mat-label>Proveedor:</mat-label>
-            <mat-select formControlName="provider">
-            <mat-option *ngFor="let prov of proveedores" [value]="prov.id">
-                {{prov.name}}
-            </mat-option>
+    <div *ngIf="tipoDestino === 'cliente'">
+      <h3>Seleccione cliente:</h3>
+      <mat-form-field appearance="fill">
+        <mat-label>Cliente</mat-label>
+        <mat-select formControlName="cliente">
+          <mat-option *ngFor="let cli of clientes" [value]="cli.id">
+            {{ cli.name }}
+          </mat-option>
         </mat-select>
-        </mat-form-field>
-        <div [hidden]="provider.valid || provider.pristine" class="error">
-            <span *ngIf="provider.errors?.['required']">El campo es requerido</span>
-        </div>
-      
-        <h3>Ingrese monto a retirar(salida):</h3>
-            <mat-form-field appearance="fill">
-            <mat-label>Cantidad:</mat-label>
-            <input matInput formControlName="quantity" type="number">
-            </mat-form-field>
-        <div [hidden]="quantity.valid || quantity.pristine" class="error">
-            <span *ngIf="quantity.errors?.['required']">El campo es requerido</span>
-        </div>
+      </mat-form-field>
+      <div [hidden]="cliente.valid || cliente.pristine" class="error">
+        <span *ngIf="cliente.errors?.['required']">El campo es requerido</span>
+      </div>
+    </div>
 
-        <div [hidden]="quantity.valid || quantity.pristine" class="error">
-            <span *ngIf="quantity.errors?.['min']">Debe haber almenos un producto</span>
-        </div>
-
-    </form>
+    <h3>Ingrese cantidad a retirar:</h3>
+    <mat-form-field appearance="fill">
+      <mat-label>Cantidad</mat-label>
+      <input matInput type="number" formControlName="quantity" />
+    </mat-form-field>
+    <div [hidden]="quantity.valid || quantity.pristine" class="error">
+      <span *ngIf="quantity.errors?.['required']">El campo es requerido</span>
+      <span *ngIf="quantity.errors?.['min']">Debe ser al menos 1</span>
+    </div>
+  </form>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-    <button mat-flat-button  style="background-color: blue; color: white;" (click)="addSalida()">Realizar salida</button>
-    <button mat-flat-button mat-dialog-close style="background-color: red; color: white;">Cancelar</button>
+  <button mat-flat-button style="background-color: blue; color: white" (click)="addSalida()">Realizar salida</button>
+  <button mat-flat-button mat-dialog-close style="background-color: red; color: white">Cancelar</button>
 </mat-dialog-actions>

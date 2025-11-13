@@ -8,7 +8,7 @@
 
 <div class="content1">
   <p class="enter">Buscar proveedor:</p>
-<input type="text" placeholder="Ingrese proveedor..." [(ngModel)]="searchTerm">
+<input type="text" placeholder="Ingrese proveedor..." [(ngModel)]="searchTerm" (ngModelChange)="onSearchTermChange($event)">
 
 <div class="botons">
   <button class="boton1" (click)="search()">

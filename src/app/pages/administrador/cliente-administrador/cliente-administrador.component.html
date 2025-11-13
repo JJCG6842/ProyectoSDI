@@ -1,0 +1,52 @@
+<div class="header-row">
+  <h1>Gestión de Clientes:</h1>
+  <button class="add" (click)="createCliente()">
+    <mat-icon fontIcon="add" class="icon-btn"></mat-icon>
+    Agregar cliente
+  </button>
+</div>
+
+<div class="content1">
+  <p class="enter">Buscar cliente:</p>
+<input type="text" placeholder="Ingrese cliente..." [(ngModel)]="searchTerm" (ngModelChange)="onSearchTermChange($event)">
+
+<div class="botons">
+  <button class="boton1" (click)="search()">
+  <mat-icon fontIcon="search" class="icon-btn" ></mat-icon>
+  Buscar
+</button>
+
+</div>
+
+</div> 
+
+
+<div class="table">
+     <table>
+         <thead>
+           <tr>   
+             <th>Nro °</th>
+             <th>DNI</th>
+             <th>Nombre</th>
+             <th>Telefono</th>
+             <th>Fecha de creación</th>
+             <th>Acciones</th>
+           </tr>
+         </thead>
+         <tbody>
+          <tr *ngFor="let cliente of clientes; let i = index">   
+             <th>{{i + 1}}</th>
+             <th>{{cliente.dni}}</th>
+             <th>{{cliente.name}}</th>
+             <th>{{cliente.phone}}</th>
+             <th>{{cliente.createdAt | date:'dd-MM-yyyy'}}</th>
+             <th>
+               <button class="edit" (click)="editClient(cliente)"><mat-icon aria-hidden="false" fontIcon="edit"></mat-icon></button>
+               <button class="delete" (click)="deleteCliente(cliente.id!)"><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
+             </th>
+           </tr>
+         </tbody>
+      </table>
+</div>
+
+<br><br><br><br>

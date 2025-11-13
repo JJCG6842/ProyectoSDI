@@ -124,6 +124,11 @@ export class menuAdministradorComponent{
     route: '/administrador/proveedores-administrador'
   },
   {
+    icon: 'person_add',
+    label: 'Clientes',
+    route: '/administrador/cliente-administrador'
+  },
+  {
     icon: 'person',
     label: 'Gestion de usuarios',
     route: '/administrador/usuarios-administrador'

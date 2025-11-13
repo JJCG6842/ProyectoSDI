@@ -123,6 +123,14 @@ export class ProveedoresAdministradorComponent implements OnInit{
     });
   }
 
+  onSearchTermChange(term: string) {
+  this.searchTerm = term.trim();
+
+  if (!this.searchTerm) {
+    this.obtenerSuppliers();
+  }
+}
+
   
 
 

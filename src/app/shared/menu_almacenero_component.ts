@@ -119,6 +119,11 @@ export class menuAlmaceneroComponent{
     route: '/almacenero/proveedor-almacenero'
   },
   {
+    icon: 'person_add',
+    label: 'Clientes',
+    route: '/almacenero/cliente-almacenero'
+  },
+  {
     icon: 'article',
     label: 'Kardex del sistema',
     route: '/almacenero/kardex-almacenero'

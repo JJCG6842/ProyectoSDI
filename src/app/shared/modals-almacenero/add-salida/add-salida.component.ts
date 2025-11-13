@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit ,ChangeDetectorRef} from '@angular/core';
 import { ProductoService } from '../../../services/producto.service';
 import { ProveedorService } from '../../../services/proveedor.service';
+import { ClienteService } from '../../../services/cliente.service';
+import { Cliente } from '../../../interface/cliente.interface';
 import { SalidaService } from '../../../services/salida.service';
 import { Producto } from '../../../interface/producto.interface';
 import { Proveedor } from '../../../interface/proveedor.interface';
@@ -26,14 +28,18 @@ export class AddSalidaComponent implements OnInit{
   formSalida!:  FormGroup;
   productos: Producto[] = [];
   proveedores: Proveedor[] = [];
+  clientes: Cliente[] = [];
   isloading = false;
+  tipoDestino: 'proveedor' | 'cliente' | '' = '';
 
   constructor(private fb:FormBuilder,private dialogRef: MatDialogRef<AddSalidaComponent>, private dialog: MatDialog,
     private salidaService: SalidaService, private productoService: ProductoService, private proveedorService: ProveedorService
-  ){
+  , private clienteService: ClienteService,private cd: ChangeDetectorRef){
     this.formSalida = this.fb.group({
       product: ['',Validators.required],
-      provider: ['',Validators.required],
+      tipoDestino: ['',Validators.required],
+      provider: [''],
+      cliente: [''],
       quantity: ['',[Validators.required,Validators.min(1)]]
     });
   }
@@ -54,6 +60,27 @@ export class AddSalidaComponent implements OnInit{
     })
   }
 
+  onTipoDestinoChange(tipo: string) {
+    this.tipoDestino = tipo as 'proveedor' | 'cliente';
+
+    this.formSalida.patchValue({ provider: '', cliente: '' });
+
+    if (tipo === 'proveedor') {
+      this.cargarProveedores();
+      this.formSalida.get('provider')?.setValidators([Validators.required]);
+      this.formSalida.get('cliente')?.clearValidators();
+    } else if (tipo === 'cliente') {
+      this.cargarClientes();
+      this.formSalida.get('cliente')?.setValidators([Validators.required]);
+      this.formSalida.get('provider')?.clearValidators();
+    }
+
+    this.formSalida.get('provider')?.updateValueAndValidity();
+    this.formSalida.get('cliente')?.updateValueAndValidity();
+
+    this.cd.markForCheck();
+  }
+
   cargarProveedores(){
     this.proveedorService.getProveedores().subscribe({
       next: (proveedor) => {
@@ -65,41 +92,57 @@ export class AddSalidaComponent implements OnInit{
     })
   }
 
-  get product(){
+  cargarClientes() {
+    this.clienteService.getClientes().subscribe({
+      next: (clientes) => {
+        this.clientes = clientes;
+        this.cd.markForCheck();
+      },
+      error: (err) => console.error('Error al cargar clientes', err)
+    });
+  }
+
+  get product() {
     return this.formSalida.get('product') as FormControl;
   }
-
-  get provider(){
+  get provider() {
     return this.formSalida.get('provider') as FormControl;
   }
-
-  get quantity(){
+  get cliente() {
+    return this.formSalida.get('cliente') as FormControl;
+  }
+  get quantity() {
     return this.formSalida.get('quantity') as FormControl;
   }
 
-  addSalida(){
-    if(this.formSalida.invalid){
-      this.formSalida.markAllAsTouched();
-      return;
-    }
+  addSalida() {
+  if (this.formSalida.invalid) {
+    this.formSalida.markAllAsTouched();
+    return;
+  }
 
-    const formValue = this.formSalida.value;
+  const formValue = this.formSalida.value;
 
-    const newSalida = {
-      productId: formValue.product,
-      supplierId: formValue.provider,
-      quantity: formValue.quantity
-    }
+  const newSalida: any = {
+    productId: formValue.product,
+    quantity: formValue.quantity,
+  };
 
-    this.salidaService.createSalida(newSalida).subscribe({
-      next:() => {
-        this.dialogRef.close(true);
-        this.dialog.open(AddSalidaSuccessComponent)
-      },
-      error: (error) => {
+  if (this.tipoDestino === 'proveedor') {
+    newSalida.supplierId = formValue.provider;
+  } else if (this.tipoDestino === 'cliente') {
+    newSalida.clienteId = formValue.cliente;
+  }
+
+  this.salidaService.createSalida(newSalida).subscribe({
+    next: () => {
+      this.dialogRef.close(true);
+      this.dialog.open(AddSalidaSuccessComponent);
+    },
+    error: (error) => {
       console.error('Error al generar salida:', error);
     },
-    })
-  }
+  });
+}
 
 }

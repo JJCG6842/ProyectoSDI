@@ -1,0 +1,40 @@
+<h2 mat-dialog-title>Agregar Cliente</h2>
+
+<mat-dialog-content>
+    <form [formGroup]="formCliente">
+
+        <h3>DNI del cliente:</h3>
+            <mat-form-field appearance="fill">
+                <mat-label>DNI:</mat-label>
+                <input matInput formControlName="dni" />
+            </mat-form-field>
+            <div [hidden]="dni.valid || dni.pristine" class="error">
+                <span *ngIf="dni.errors?.['required']">El campo es requerido</span>
+            </div>
+            
+
+        <h3>Nombre del cliente:</h3>
+            <mat-form-field appearance="fill">
+                <mat-label>Nombre:</mat-label>
+                <input matInput formControlName="name" />
+            </mat-form-field>
+            <div [hidden]="name.valid || name.pristine" class="error">
+                <span *ngIf="name.errors?.['required']">El campo es requerido</span>
+            </div>
+
+        <h3>Telefono del cliente:</h3>
+            <mat-form-field appearance="fill">
+                <mat-label>Telefono:</mat-label>
+                <input matInput formControlName="phone" />
+            </mat-form-field>
+            <div [hidden]="phone.valid || phone.pristine" class="error">
+                <span *ngIf="phone.errors?.['required']">El campo es requerido</span>
+            </div>
+
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-flat-button (click)="agregar()" style="background-color: blue; color: white;">Agregar</button>
+    <button mat-flat-button mat-dialog-close style="background-color: red; color: white;">Cancelar</button>
+</mat-dialog-actions>

@@ -37,7 +37,7 @@ Generar salida
            <tr>   
              <th>Fecha</th>
              <th>Nombre del producto</th>
-             <th>Proveedor</th>
+             <th>Proveedor/Cliente</th>
              <th>Cantidad</th>
              <th>Precio</th>
              <th>Monto total</th>
@@ -48,7 +48,7 @@ Generar salida
           <tr *ngFor="let salida of salidas">
              <th>{{salida.createdAt | date:'dd/MM/yyyy'}}</th>   
              <th>{{salida.product.name}}</th>
-             <th>{{salida.supplier?.name}}</th>
+             <th>{{ salida.supplier?.name || salida.cliente?.name }}</th>
              <th>{{salida.quantity}}</th>
              <th>S/.{{salida.product.price | number:'1.2-2'}}</th>
              <th>S/.{{ salida.product.price * salida.quantity | number:'1.2-2' }} </th>

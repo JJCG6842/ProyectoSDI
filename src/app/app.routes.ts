@@ -15,6 +15,7 @@ import { KardexAlmaceneroComponent } from './pages/almacenero/kardex-almacenero/
 import { EntradasAlmaceneroComponent } from './pages/almacenero/entradas-almacenero/entradas-almacenero.component';
 import { SalidasAlmaceneroComponent } from './pages/almacenero/salidas-almacenero/salidas-almacenero.component';
 import { MarcaAlmaceneroComponent } from './pages/almacenero/marca-almacenero/marca-almacenero.component';
+import { ClienteAlmaceneroComponent } from './pages/almacenero/cliente-almacenero/cliente-almacenero.component';
 
 import { InicioAdministradorComponent } from './pages/administrador/inicio-administrador/inicio-administrador.component';
 import { CategoriaAdministradorComponent } from './pages/administrador/categoria-administrador/categoria-administrador.component';
@@ -27,6 +28,7 @@ import { SalidasAdministradorComponent } from './pages/administrador/salidas-adm
 import { ProveedoresAdministradorComponent } from './pages/administrador/proveedores-administrador/proveedores-administrador.component';
 import { UsuariosAdministradorComponent } from './pages/administrador/usuarios-administrador/usuarios-administrador.component';
 import { ControlInventarioAdministradorComponent } from './pages/administrador/control-inventario-administrador/control-inventario-administrador.component';
+import { ClienteAdministradorComponent } from './pages/administrador/cliente-administrador/cliente-administrador.component';
 
 export const routes: Routes = [
   {
@@ -88,6 +90,10 @@ export const routes: Routes = [
       {
         path: 'proveedor-almacenero',
         component: ProveedorAlmaceneroComponent
+      },
+      {
+        path: 'cliente-almacenero',
+        component: ClienteAlmaceneroComponent
       },
       {
         path: 'kardex-almacenero',
@@ -153,6 +159,10 @@ export const routes: Routes = [
       {
         path: 'proveedores-administrador',
         component: ProveedoresAdministradorComponent
+      },
+      {
+        path: 'cliente-administrador',
+        component: ClienteAdministradorComponent
       },
       {
         path: 'usuarios-administrador',
