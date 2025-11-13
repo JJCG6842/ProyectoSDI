@@ -10,10 +10,11 @@ import { MarcaModule } from './api/marca/marca.module';
 import { EntradaModule } from './api/entrada/entrada.module';
 import { SalidaModule } from './api/salida/salida.module';
 import { KardexModule } from './api/kardex/kardex.module';
+import { ClienteModule } from './api/cliente/cliente.module';
 
 
 @Module({
-  imports: [CategoriaModule, ProductosModule, SubcategoriaModule, UsuarioModule,ProveedoresModule,MarcaModule, EntradaModule, SalidaModule, KardexModule],
+  imports: [CategoriaModule, ProductosModule, SubcategoriaModule, UsuarioModule,ProveedoresModule,MarcaModule, EntradaModule, SalidaModule, KardexModule, ClienteModule],
   controllers: [AppController],
   providers: [AppService],
 })
