@@ -3,44 +3,51 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Usuario } from '../interface/usuario.interface';
 
-
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root',
 })
 
-export class UsuarioService{
+export class UsuarioService {
     private apiUrl = "http://localhost:3000/usuario";
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) { }
 
-    getUsuario():Observable<Usuario[]>{
+    getUsuario(): Observable<Usuario[]> {
         return this.http.get<Usuario[]>(this.apiUrl);
     }
 
-    getUsuarioPorNombre(nombre: string): Observable<Usuario>{
+    getUsuarioPorNombre(nombre: string): Observable<Usuario> {
         return this.http.get<Usuario>(`${this.apiUrl}/nombre/${nombre}`);
     }
 
-    buscarUsuario(term: string): Observable<Usuario[]>{
+    buscarUsuario(term: string): Observable<Usuario[]> {
         return this.http.get<Usuario[]>(`${this.apiUrl}/buscar/${term}`);
     }
 
-    crearUsuario(data: Usuario): Observable<Usuario>{
+    crearUsuario(data: Usuario): Observable<Usuario> {
         return this.http.post<Usuario>(this.apiUrl, data);
     }
 
-    actualizarUsuario(id:string, data: Usuario): Observable<Usuario>{
+    actualizarUsuario(id: string, data: Usuario): Observable<Usuario> {
         return this.http.put<Usuario>(`${this.apiUrl}/${id}`, data);
     }
 
-    eliminarUsuario(id: string): Observable<void>{
+    eliminarUsuario(id: string): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/${id}`);
     }
 
     login(nombre: string, password: string): Observable<{ message: string; user: Usuario }> {
-  return this.http.post<{ message: string; user: Usuario }>(
-    `${this.apiUrl}/login`,
-    { nombre, password }
-  );
-}
+        return this.http.post<{ message: string; user: Usuario }>(
+            `${this.apiUrl}/login`,
+            { nombre, password }
+        );
+    }
+
+    habilitarUsuario(id: string): Observable<Usuario> {
+        return this.http.put<Usuario>(`${this.apiUrl}/habilitar/${id}`, {});
+    }
+
+    deshabilitarUsuario(id: string): Observable<Usuario> {
+        return this.http.put<Usuario>(`${this.apiUrl}/deshabilitar/${id}`, {});
+    }
 }

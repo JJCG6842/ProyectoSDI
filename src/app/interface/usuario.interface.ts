@@ -1,8 +1,11 @@
+export type UserStatus = 'Habilitado' | 'Deshabilitado';
+
 export interface Usuario {
     id?: string;
     nombre: string;
     password: string;
     role: 'Administrador' | 'Almacenero';
+    status?: UserStatus;
     createdAt?: string;
     updatedAt?: string;
 }

@@ -32,6 +32,7 @@
              <th>Nombre</th>
              <th>Contraseña</th>
              <th>Rol</th>
+             <th>Estado</th>
              <th>Fecha de creación</th>
              <th>Acciones</th>
            </tr>
@@ -42,9 +43,18 @@
              <th>{{usuario.nombre}}</th>
              <th>{{ ocultarPassword(usuario.password) }}</th>
              <th>{{usuario.role}}</th>
+             <th>{{usuario.status}}</th>
              <th>{{usuario.createdAt | date:'dd-MM-yyyy'}}</th>
              <th>
                <button class="edit" (click)="editUser(usuario)"><mat-icon aria-hidden="false" fontIcon="edit"></mat-icon></button>
+               <button *ngIf="usuario.status === 'Deshabilitado'" (click)="habilitar(usuario.id!)" class="edit" style="background-color: rgb(47, 255, 47);">
+                <mat-icon aria-hidden="false" fontIcon="person"></mat-icon>
+              </button>
+
+               <button *ngIf="usuario.status === 'Habilitado'" (click)="deshabilitar(usuario.id!)" class="edit" style="background-color: rgb(119, 5, 234);">
+                <mat-icon aria-hidden="false" fontIcon="hide_source"></mat-icon>
+              </button>
+
                <button class="delete" (click)="deleteUser(usuario.id!)"><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
              </th>
            </tr>

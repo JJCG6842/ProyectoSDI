@@ -128,5 +128,17 @@ export class UsuariosAdministradorComponent implements OnInit{
       }
     });
   }
+
+  habilitar(id: string) {
+  this.usuarioService.habilitarUsuario(id).subscribe(() => {
+    this.obtenerUsers();
+  });
+}
+
+deshabilitar(id: string) {
+  this.usuarioService.deshabilitarUsuario(id).subscribe(() => {
+    this.obtenerUsers();
+  });
+}
   
 }
