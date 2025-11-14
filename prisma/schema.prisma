@@ -8,12 +8,13 @@ datasource db {
 }
 
 model Users {
-  id        String   @id @default(uuid())
+  id        String     @id @default(uuid())
   nombre    String
   password  String
-  role      Role     @default(Almacenero)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  role      Role       @default(Almacenero)
+  status    UserStatus @default(Habilitado)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
 model Category {
@@ -58,6 +59,7 @@ model Products {
   quantity      Float         @default(0)
   price         Float
   status        ProductStatus @default(Outstock)
+  state         ProductState  @default(Habilitado)
   model         String
   categoryId    String
   subcategoryId String
@@ -122,4 +124,14 @@ enum ProductStatus {
 enum Role {
   Administrador
   Almacenero
+}
+
+enum UserStatus {
+  Habilitado
+  Deshabilitado
+}
+
+enum ProductState {
+  Habilitado
+  Deshabilitado
 }

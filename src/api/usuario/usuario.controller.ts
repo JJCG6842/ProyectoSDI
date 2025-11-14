@@ -28,8 +28,18 @@ export class UsuarioController {
     }
 
     @Post()
-    create(@Body() body: { nombre: string; password: string; role?: Role },) {
+    create(@Body() body: { nombre: string; password: string; role?: Role }) {
         return this.usuarioService.createUser(body);
+    }
+
+    @Put('habilitar/:id')
+    enable(@Param('id') id: string) {
+        return this.usuarioService.enableUser(id);
+    }
+
+    @Put('deshabilitar/:id')
+    disable(@Param('id') id: string) {
+        return this.usuarioService.disableUser(id);
     }
 
     @Put(':id')

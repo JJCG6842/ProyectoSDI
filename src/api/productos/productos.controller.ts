@@ -4,7 +4,7 @@ import { ProductStatus } from '@prisma/client';
 
 @Controller('productos')
 export class ProductosController {
-  constructor(private readonly productoService: ProductosService) {}
+  constructor(private readonly productoService: ProductosService) { }
 
   @Get()
   getAll() {
@@ -32,12 +32,12 @@ export class ProductosController {
   }
 
   @Get('buscar/categoria/id/:id')
-    findByCategoryId(@Param('id') id: string) {
+  findByCategoryId(@Param('id') id: string) {
     return this.productoService.findByCategoryId(id);
   }
 
   @Get('buscar/marca/id/:id')
-    findByMarcaId(@Param('id') id: string) {
+  findByMarcaId(@Param('id') id: string) {
     return this.productoService.findByMarcaId(id);
   }
 
@@ -79,6 +79,16 @@ export class ProductosController {
     }>,
   ) {
     return this.productoService.update(id, body);
+  }
+
+  @Put('habilitar/:id')
+  habilitar(@Param('id') id: string) {
+    return this.productoService.habilitarProducto(id);
+  }
+
+  @Put('deshabilitar/:id')
+  deshabilitar(@Param('id') id: string) {
+    return this.productoService.deshabilitarProducto(id);
   }
 
 

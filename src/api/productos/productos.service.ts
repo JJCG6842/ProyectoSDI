@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaClient, ProductStatus } from '@prisma/client';
+import { PrismaClient, ProductStatus, ProductState } from '@prisma/client';
 
 @Injectable()
 export class ProductosService {
@@ -7,16 +7,11 @@ export class ProductosService {
 
   async findAll() {
     return this.prisma.products.findMany({
+      where: {state: ProductState.Habilitado},
       include: {
-        category: {
-          select: { id: true, name: true },
-        },
-        subcategory: {
-          select: { id: true, name: true },
-        },
-        marca: {
-          select: { id: true, name: true }
-        }
+        category: {select: { id: true, name: true },},
+        subcategory: {select: { id: true, name: true },},
+        marca: {select: { id: true, name: true }}
       },
     });
   }
@@ -184,6 +179,24 @@ export class ProductosService {
         subcategory: { select: { id: true, name: true } },
         marca: { select: { id: true, name: true } },
       },
+    });
+  }
+
+  async habilitarProducto(id: string) {
+    await this.findOne(id);
+
+    return this.prisma.products.update({
+      where: { id },
+      data: { state: ProductState.Habilitado },
+    });
+  }
+
+  async deshabilitarProducto(id: string) {
+    await this.findOne(id);
+
+    return this.prisma.products.update({
+      where: { id },
+      data: { state: ProductState.Deshabilitado },
     });
   }
 

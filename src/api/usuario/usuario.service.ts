@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { PrismaClient, Role } from '@prisma/client';
+import { PrismaClient, Role, UserStatus } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -33,7 +33,7 @@ export class UsuarioService {
     return user;
   }
 
-  
+
   async createUser(data: { nombre: string; password: string; role?: Role }) {
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
@@ -47,7 +47,7 @@ export class UsuarioService {
     });
   }
 
-  
+
   async updateUser(
     id: string,
     data: Partial<{ nombre: string; password: string; role: Role }>,
@@ -72,14 +72,38 @@ export class UsuarioService {
     return this.prisma.users.delete({ where: { id } });
   }
 
-  
+  async enableUser(id: string) {
+    await this.findOne(id);
+
+    return this.prisma.users.update({
+      where: { id },
+      data: { status: UserStatus.Habilitado },
+      select: { id: true, nombre: true, status: true, updatedAt: true },
+    });
+  }
+
+  async disableUser(id: string) {
+    await this.findOne(id);
+
+    return this.prisma.users.update({
+      where: { id },
+      data: { status: UserStatus.Deshabilitado },
+      select: { id: true, nombre: true, status: true, updatedAt: true },
+    });
+  }
+
+
   async verifyPassword(nombre: string, password: string) {
-  const user = await this.prisma.users.findFirst({ where: { nombre } });
-  if (!user) throw new NotFoundException('Usuario no encontrado');
+    const user = await this.prisma.users.findFirst({ where: { nombre } });
+    if (!user) throw new NotFoundException('Usuario no encontrado');
 
-  const valid = await bcrypt.compare(password, user.password);
-  if (!valid) throw new NotFoundException('Contraseña incorrecta');
+    if( user.status === UserStatus.Deshabilitado){
+      throw new UnauthorizedException('El usuario está deshabilitado');
+    }
 
-  return { message: 'Login correcto', user };
-}
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) throw new NotFoundException('Contraseña incorrecta');
+
+    return { message: 'Login correcto', user };
+  }
 }
