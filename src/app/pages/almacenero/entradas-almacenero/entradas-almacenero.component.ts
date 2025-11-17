@@ -174,15 +174,19 @@ filtrarPorProveedor() {
   }
 
   getCantidadTotal(entrada: Entrada): number {
-    return entrada.productos?.reduce((acc, p) => acc + p.quantity, 0) ?? 0;
+    return entrada.detalles?.reduce((acc, p) => acc + p.quantity, 0) ?? 0;
   }
 
   getMontoTotal(entrada: Entrada): number {
-    return entrada.productos?.reduce((acc, p) => acc + p.quantity * p.price, 0) ?? 0;
+    return entrada.detalles?.reduce((acc, p) => acc + p.quantity * p.price, 0) ?? 0;
   }
 
   getNombreProveedor(entrada: Entrada): string {
     return entrada.supplier?.name || 'Sin proveedor';
+  }
+
+  view(id:string){
+    this.router.navigate(['almacenero/view-entrada-almacenero', id]);
   }
 
 

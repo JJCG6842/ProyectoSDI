@@ -36,12 +36,12 @@
           <tr *ngFor="let entrada of entradas; let i = index">
              <th>{{i + 1}}</th>   
              <th>{{entrada.createdAt | date: 'dd-MM-yy'}}</th>
-             <th></th>
+             <th>{{getNombreProveedor(entrada)}}</th>
              <th>{{getCantidadTotal(entrada)}}</th>
              <th>S/.{{getMontoTotal(entrada)}}</th>
              <th>
-              <button class="delete" style="background-color: rgb(1, 255, 1);"><mat-icon aria-hidden="false" fontIcon="visibility"></mat-icon></button>
-              <button class="delete"><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
+              <button class="delete" (click)="view(entrada.id)"  style="background-color: rgb(1, 255, 1);"><mat-icon aria-hidden="false" fontIcon="visibility"></mat-icon></button>
+              <button class="delete" (click)="eraseEntrada(entrada.id)"><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
              </th>
            </tr>
          </tbody>
