@@ -8,8 +8,12 @@ export class EntradaService {
     async getAllEntradas() {
     return this.prisma.entrance.findMany({
       include: {
-        product: { select: { id: true, name: true, quantity: true, price: true } },
-        supplier: { select: { id: true, name: true, phone: true, description: true } },
+        detalles: {
+          include: {
+            product: { select: { id: true, name: true, price: true } },
+          },
+        },
+        supplier: { select: { id: true, name: true, phone: true } },
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -19,88 +23,69 @@ export class EntradaService {
     const entrada = await this.prisma.entrance.findUnique({
       where: { id },
       include: {
-        product: { select: { id: true, name: true, quantity: true } },
+        detalles: {
+          include: {
+            product: { select: { id: true, name: true, price: true } },
+          },
+        },
         supplier: { select: { id: true, name: true } },
       },
     });
-
-    if (!entrada) {
-      throw new NotFoundException('Entrada no encontrada');
-    }
-
+    if (!entrada) throw new NotFoundException('Entrada no encontrada');
     return entrada;
   }
 
-  async searchByProductName(term: string) {
-  if (!term.trim()) {
-    throw new BadRequestException('El término de búsqueda no puede estar vacío');
-  }
-
-  return this.prisma.entrance.findMany({
-    where: {
-      product: {
-        name: {
-          contains: term,
-          mode: 'insensitive',
-        },
-      },
-    },
-    include: {
-      product: { select: { id: true, name: true, price: true, quantity: true } },
-      supplier: { select: { id: true, name: true, phone: true, description: true } },
-    },
-    orderBy: { createdAt: 'desc' },
-  });
-}
-
   async createEntrada(data: {
-    productId: string;
-    quantity: number;
     supplierId?: string;
+    productos: { productId: string; quantity: number; price: number }[];
   }) {
-    if (data.quantity <= 0) {
-      throw new BadRequestException('La cantidad debe ser mayor a cero');
-    }
+    if (!data.productos?.length)
+      throw new BadRequestException('Debe enviar al menos un producto');
 
-    const producto = await this.prisma.products.findUnique({
-      where: { id: data.productId },
+    const productIds = data.productos.map(p => p.productId);
+    const productos = await this.prisma.products.findMany({
+      where: { id: { in: productIds } },
     });
-    if (!producto) {
-      throw new NotFoundException('Producto no encontrado');
-    }
+
+    if (productos.length !== data.productos.length)
+      throw new NotFoundException('Uno o más productos no encontrados');
 
     const entrada = await this.prisma.entrance.create({
       data: {
-        productId: data.productId,
-        quantity: data.quantity,
         supplierId: data.supplierId,
+        detalles: {
+          create: data.productos.map(p => ({
+            productId: p.productId,
+            quantity: p.quantity,
+            price: p.price,
+            total: p.quantity * p.price,
+          })),
+        },
       },
+      include: { detalles: true },
     });
 
-    await this.prisma.products.update({
-      where: { id: data.productId },
-      data: {
-        quantity: producto.quantity + data.quantity,
-        status: 'Instock',
-      },
-    });
+    for (const p of data.productos) {
+      const producto = productos.find(pr => pr.id === p.productId);
+      if (producto) {
+        await this.prisma.products.update({
+          where: { id: p.productId },
+          data: {
+            quantity: producto.quantity + p.quantity,
+            status: 'Instock',
+          },
+        });
+      }
+    }
 
     return entrada;
   }
 
   async deleteEntrada(id: string) {
-    const entrada = await this.prisma.entrance.findUnique({
-      where: { id },
-    });
+    const entrada = await this.prisma.entrance.findUnique({ where: { id } });
+    if (!entrada) throw new NotFoundException('Entrada no encontrada');
 
-    if (!entrada) {
-      throw new NotFoundException('Entrada no encontrada');
-    }
-
-    await this.prisma.entrance.delete({
-      where: { id },
-    });
-
+    await this.prisma.entrance.delete({ where: { id } });
     return { message: 'Entrada eliminada correctamente' };
   }
 

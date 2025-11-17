@@ -8,9 +8,11 @@ export class SalidaService {
   async getAllSalidas() {
     return this.prisma.salida.findMany({
       include: {
-        product: { select: { id: true, name: true, quantity: true, price: true } },
-        supplier: { select: { id: true, name: true, phone: true, description: true } },
-        cliente: { select: { id: true, name: true, phone: true } },
+        supplier: true,
+        cliente: true,
+        detalles: {
+          include: { product: true },
+        },
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -20,95 +22,138 @@ export class SalidaService {
     const salida = await this.prisma.salida.findUnique({
       where: { id },
       include: {
-        product: { select: { id: true, name: true, quantity: true } },
-        supplier: { select: { id: true, name: true } },
-        cliente: { select: { id: true, name: true, phone: true } },
+        supplier: true,
+        cliente: true,
+        detalles: {
+          include: { product: true },
+        },
       },
     });
 
-    if (!salida) {
-      throw new NotFoundException('Salida no encontrada');
-    }
-
+    if (!salida) throw new NotFoundException('Salida no encontrada');
     return salida;
   }
 
-  async searchByProductName(term: string) {
-  if (!term.trim()) {
-    throw new BadRequestException('El término de búsqueda no puede estar vacío');
-  }
+  async filtrarSalidas(filtros: { clienteId?: string; supplierId?: string }) {
+  const { clienteId, supplierId } = filtros;
 
   return this.prisma.salida.findMany({
     where: {
-      product: {
-        name: { contains: term, mode: 'insensitive' }, 
-      },
+      ...(clienteId && { clienteId }),
+      ...(supplierId && { supplierId }),
     },
     include: {
-      product: { select: { id: true, name: true, price: true, quantity: true } },
-      supplier: { select: { id: true, name: true, phone: true, description: true } },
+      supplier: true,
+      cliente: true,
+      detalles: {
+        include: { product: true },
+      },
     },
     orderBy: { createdAt: 'desc' },
   });
 }
 
-  async createSalida(data: { productId: string; quantity: number; supplierId?: string; clienteId?: string }) {
-  if (data.quantity <= 0) {
-    throw new BadRequestException('La cantidad debe ser mayor a cero');
+  async searchByProductName(term: string) {
+    if (!term.trim()) throw new BadRequestException('El término de búsqueda no puede estar vacío');
+
+    return this.prisma.salida.findMany({
+      where: {
+        detalles: {
+          some: {
+            product: {
+              name: { contains: term, mode: 'insensitive' },
+            },
+          },
+        },
+      },
+      include: {
+        supplier: true,
+        cliente: true,
+        detalles: {
+          include: { product: true },
+        },
+      },
+    });
   }
 
-  const producto = await this.prisma.products.findUnique({
-    where: { id: data.productId },
-  });
+  async crearSalida(body: any) {
+  let { tipo, supplierId, clienteId, productos } = body;
 
-  if (!producto) {
-    throw new NotFoundException('Producto no encontrado');
+  supplierId = supplierId || null;
+  clienteId = clienteId || null;
+
+  if (!productos || !Array.isArray(productos) || productos.length === 0) {
+    throw new BadRequestException("Debe enviar al menos un producto");
   }
 
-  if (producto.quantity < data.quantity) {
-    throw new BadRequestException(`Stock insuficiente. Cantidad disponible: ${producto.quantity}`);
-  }
+  return this.prisma.$transaction(async (prisma) => {
+    // Validar stock
+    for (const item of productos) {
+      const producto = await prisma.products.findUnique({
+        where: { id: item.productId },
+      });
 
-  const salida = await this.prisma.salida.create({
-    data: {
-      productId: data.productId,
-      quantity: data.quantity,
-      supplierId: data.supplierId || null,
-      clienteId: data.clienteId || null,
-    },
-    include: {
-      product: true,
-      supplier: true,
-      cliente: true,
-    },
+      if (!producto) {
+        throw new BadRequestException(`Producto no encontrado: ${item.productId}`);
+      }
+
+      if (item.quantity <= 0) {
+        throw new BadRequestException(`Cantidad inválida para ${producto.name}`);
+      }
+
+      if (item.quantity > producto.quantity) {
+        throw new BadRequestException(`No hay suficiente stock de ${producto.name}`);
+      }
+    }
+    const salida = await prisma.salida.create({
+      data: {
+        tipo,
+        supplierId,
+        clienteId,
+        detalles: {
+          create: productos.map(item => ({
+            productId: item.productId,
+            quantity: item.quantity,
+            price: item.price,
+            total: item.price * item.quantity,
+          })),
+        },
+      },
+      include: {
+        supplier: true,
+        cliente: true,
+        detalles: { include: { product: true } },
+      },
+    });
+
+    // Actualizar stock
+    for (const item of productos) {
+      await prisma.products.update({
+        where: { id: item.productId },
+        data: { quantity: { decrement: item.quantity } },
+      });
+    }
+
+    return salida;
   });
-
-  const nuevoStock = producto.quantity - data.quantity;
-
-  await this.prisma.products.update({
-    where: { id: data.productId },
-    data: {
-      quantity: nuevoStock,
-      status: nuevoStock > 0 ? 'Instock' : 'Outstock',
-    },
-  });
-
-  return salida;
 }
 
-  async deleteSalida(id: string) {
+
+  async eliminarSalida(id: string) {
   const salida = await this.prisma.salida.findUnique({
     where: { id },
+    include: { detalles: true }
   });
 
   if (!salida) {
     throw new NotFoundException('Salida no encontrada');
   }
 
-  await this.prisma.salida.delete({
-    where: { id },
+  const eliminado = await this.prisma.salida.delete({
+    where: { id }
   });
 
-  return { message: 'Salida eliminada correctamente' };
+  return { message: 'Salida eliminada correctamente', eliminado };
 }
+
 }

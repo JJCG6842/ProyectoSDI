@@ -11,6 +11,11 @@ export class ProductosController {
     return this.productoService.findAll();
   }
 
+  @Get('inventario')
+  getAllInventory() {
+    return this.productoService.findAllInventory();
+  }
+
   @Get('buscar/nombre/:name')
   findByName(@Param('name') name: string) {
     return this.productoService.findName(name);

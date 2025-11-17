@@ -4,7 +4,7 @@ import { EntradaService } from './entrada.service';
 @Controller('entrada')
 export class EntradaController {
 
-    constructor(private readonly entradasService: EntradaService) {}
+  constructor(private readonly entradasService: EntradaService) {}
 
   @Get()
   listarEntradas() {
@@ -16,14 +16,9 @@ export class EntradaController {
     return this.entradasService.getEntradaPorId(id);
   }
 
-  @Get('buscar/producto/:term')
-    buscarPorProducto(@Param('term') term: string) {
-    return this.entradasService.searchByProductName(term);
-  }
-
   @Post()
   crearEntrada(
-    @Body()body: {productId: string;quantity: number;supplierId?: string;},
+    @Body() body: { supplierId?: string; productos: { productId: string; quantity: number; price: number }[] },
   ) {
     return this.entradasService.createEntrada(body);
   }

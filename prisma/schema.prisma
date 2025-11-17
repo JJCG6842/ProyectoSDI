@@ -64,8 +64,8 @@ model Products {
   categoryId    String
   subcategoryId String
   storeId       String?
-  entrances     Entrance[]
-  salidas       Salida[]
+  entrances     EntranceDetalle[]
+  salidas       SalidaDetalle[]
   category      Category      @relation(fields: [categoryId], references: [id])
   subcategory   Subcategory   @relation(fields: [subcategoryId], references: [id])
   marca         Marca?        @relation(fields: [marcaId], references: [id])
@@ -96,24 +96,44 @@ model Cliente {
 
 model Entrance {
   id         String    @id @default(uuid())
-  productId  String
-  quantity   Float
   supplierId String?
   createdAt  DateTime  @default(now())
-  product    Products  @relation(fields: [productId], references: [id])
+  detalles   EntranceDetalle[]
   supplier   Supplier? @relation(fields: [supplierId], references: [id])
 }
 
-model Salida {
+model EntranceDetalle {
   id         String    @id @default(uuid())
+  entranceId String
   productId  String
   quantity   Float
+  price      Float
+  total      Float
+
+  product    Products  @relation(fields: [productId], references: [id])
+  entrance   Entrance  @relation(fields: [entranceId], references: [id], onDelete: Cascade)
+}
+
+model Salida {
+  id         String           @id @default(uuid())
+  tipo       String          
   supplierId String?
   clienteId  String?
-  createdAt  DateTime  @default(now())
-  cliente    Cliente?  @relation(fields: [clienteId], references: [id])
-  product    Products  @relation(fields: [productId], references: [id])
-  supplier   Supplier? @relation(fields: [supplierId], references: [id])
+  createdAt  DateTime         @default(now())
+  detalles   SalidaDetalle[]
+  supplier   Supplier?        @relation(fields: [supplierId], references: [id])
+  cliente    Cliente?         @relation(fields: [clienteId], references: [id])
+}
+
+model SalidaDetalle {
+  id        String   @id @default(uuid())
+  salidaId  String
+  productId String
+  quantity  Float
+  price     Float
+  total     Float
+  product   Products @relation(fields: [productId], references: [id])
+  salida    Salida   @relation(fields: [salidaId], references: [id], onDelete: Cascade)
 }
 
 enum ProductStatus {

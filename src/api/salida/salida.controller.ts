@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Param, Body, NotFoundException, Query } from '@nestjs/common';
 import { SalidaService } from './salida.service';
 
 @Controller('salida')
@@ -15,26 +15,33 @@ export class SalidaController {
     return this.salidaService.getSalidaPorId(id);
   }
 
+  @Get('filtrar')
+async filtrarSalidas(
+  @Query('clienteId') clienteId?: string,
+  @Query('supplierId') supplierId?: string,
+) {
+  return this.salidaService.filtrarSalidas({ clienteId, supplierId });
+}
+
   @Get('buscar/producto/:term')
-    buscarPorProducto(@Param('term') term: string) {
+  buscarPorProducto(@Param('term') term: string) {
     return this.salidaService.searchByProductName(term);
   }
 
   @Post()
-  crearSalida(
-    @Body()
-    body: {
-      productId: string;
-      quantity: number;
-      supplierId?: string;
-      clienteId?: string
-    },
-  ) {
-    return this.salidaService.createSalida(body);
+    async crearSalida(@Body() body: any) {
+    return this.salidaService.crearSalida(body);
   }
 
   @Delete(':id')
-  eliminarSalida(@Param('id') id: string) {
-    return this.salidaService.deleteSalida(id);
+  async eliminarSalida(@Param('id') id:string){
+    const salida = await this.salidaService.eliminarSalida(id);
+    if(!salida){
+      throw new NotFoundException('Salida no encontrada');
+    }
+    return {
+      message: 'Salida eliminada correctamente',
+      salida
+    };
   }
 }

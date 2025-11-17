@@ -7,7 +7,17 @@ export class ProductosService {
 
   async findAll() {
     return this.prisma.products.findMany({
-      where: {state: ProductState.Habilitado},
+      include: {
+        category: {select: { id: true, name: true },},
+        subcategory: {select: { id: true, name: true },},
+        marca: {select: { id: true, name: true }}
+      },
+    });
+  }
+
+  async findAllInventory() {
+    return this.prisma.products.findMany({
+      where: {state: ProductState.Habilitado,},
       include: {
         category: {select: { id: true, name: true },},
         subcategory: {select: { id: true, name: true },},
@@ -33,6 +43,7 @@ export class ProductosService {
   async findName(name: string) {
     return this.prisma.products.findMany({
       where: {
+        state: ProductState.Habilitado,
         name: {
           contains: name,
           mode: 'insensitive'
@@ -49,6 +60,7 @@ export class ProductosService {
   async findCategoryName(categoryName: string) {
     return this.prisma.products.findMany({
       where: {
+        state: ProductState.Habilitado,
         category: {
           name: {
             contains: categoryName,
@@ -68,6 +80,7 @@ export class ProductosService {
   async findMarca(name: string) {
     return this.prisma.products.findMany({
       where: {
+        state: ProductState.Habilitado,
         marca: {
           name: { contains: name, mode: 'insensitive' },
         },
