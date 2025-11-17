@@ -10,7 +10,7 @@ export class EntradaService {
       include: {
         detalles: {
           include: {
-            product: { select: { id: true, name: true, price: true } },
+            product: { select: { id: true, name: true, price: true, categoryId: true } },
           },
         },
         supplier: { select: { id: true, name: true, phone: true } },
@@ -25,7 +25,7 @@ export class EntradaService {
       include: {
         detalles: {
           include: {
-            product: { select: { id: true, name: true, price: true } },
+            product: { select: { id: true, name: true, price: true, categoryId: true } },
           },
         },
         supplier: { select: { id: true, name: true } },
