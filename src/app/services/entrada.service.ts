@@ -7,7 +7,7 @@ import { Entrada } from '../interface/entrada.interface';
   providedIn: 'root',
 })
 export class EntradaService {
-  private readonly apiUrl = 'http://localhost:3000/entrada'; 
+  private readonly apiUrl = 'http://localhost:3000/entrada';
 
   constructor(private http: HttpClient) {}
 
@@ -24,9 +24,8 @@ export class EntradaService {
   }
 
   crearEntrada(data: {
-    productId: string;
-    quantity: number;
     supplierId?: string;
+    productos: { productId: string; quantity: number; price: number }[];
   }): Observable<Entrada> {
     return this.http.post<Entrada>(this.apiUrl, data);
   }

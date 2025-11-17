@@ -107,7 +107,7 @@ search(){
 }
 
 page1(){
-  this.router.navigate(['/almacenero/categoria-almacenero'])
+  this.router.navigate(['/administrador/categoria-administrador'])
 }
 
 }

@@ -46,18 +46,18 @@ export class InicioAlmaceneroComponent implements OnInit{
         this.totalProductos = productos.length;
       },
       error: (err) => console.error('Error al cargar productos:', err)
-    })
+    });
 
-    this.entradaService.getEntradas().subscribe({
-      next: (entradas: Entrada[]) => {
-        this.totalEntradas = entradas.length;
+    // this.entradaService.getEntradas().subscribe({
+    //   next: (entradas: Entrada[]) => {
+    //     this.totalEntradas = entradas.length;
 
-        this.totalMontoEntradas = entradas.reduce((total, entrada) => {
-        const precio = entrada.product?.price ?? 0;
-        return total + precio * entrada.quantity;
-      }, 0);
-      }
-    })
+    //     this.totalMontoEntradas = entradas.reduce((total, entrada) => {
+    //     const precio = entrada.product?.price ?? 0;
+    //     return total + precio * entrada.quantity;
+    //   }, 0);
+    //   }
+    // })
 
     this.proveedorService.getProveedores().subscribe({
       next: (proveedor: Proveedor[]) => {
@@ -66,18 +66,18 @@ export class InicioAlmaceneroComponent implements OnInit{
       error: (err) => console.error('Error al cargar proveedores:', err)
     })
 
-    this.salidasService.getSalidas().subscribe({
-      next: (salida: Salida[]) => {
-        this.totalSalidas = salida.length;
+    // this.salidasService.getSalidas().subscribe({
+    //   next: (salida: Salida[]) => {
+    //     this.totalSalidas = salida.length;
 
-        this.totalMontoSalidas = salida.reduce((total, salida) => {
-        const precio = salida.product?.price ?? 0;
-        return total + precio * salida.quantity;
-      }, 0);
-      },
+    //     this.totalMontoSalidas = salida.reduce((total, salida) => {
+    //     const precio = salida.product?.price ?? 0;
+    //     return total + precio * salida.quantity;
+    //   }, 0);
+    //   },
 
-      error: (err) => console.error('Error al cargar proveedores:', err)
-    });
+    //   error: (err) => console.error('Error al cargar proveedores:', err)
+    // });
 
   }
 

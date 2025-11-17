@@ -221,5 +221,18 @@ onSearchTermChange(term: string) {
     this.cargarProductos();
   }
 }
+
+habilitar(id: string){
+  this.productoService.habilitarProducto(id).subscribe(()=>{
+    this.cargarProductos();
+  });
+}
+
+deshabilitar(id: string){
+  this.productoService.deshabilitarProducto(id).subscribe(()=>{
+    this.cargarProductos();
+  });
+}
+
   
 }

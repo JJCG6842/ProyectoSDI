@@ -1,0 +1,112 @@
+<div class="header-row">
+  <h1>Generar salida:</h1>
+  <div class="botons">
+    <button class="salida" (click)="gestor()">
+      Gestión de salida
+    </button>
+    <button class="add" (click)="addProduct()">
+      <mat-icon fontIcon="add" class="icon-btn"></mat-icon>
+      Añadir producto
+    </button>
+  </div>
+
+</div>
+
+<div class="forms">
+  <form [formGroup]="formProveedor">
+
+    <div>
+      <h3>Tipo de salida:</h3>
+      <mat-form-field appearance="fill" style="width: 280px;">
+        <mat-label>Seleccione destino</mat-label>
+        <mat-select formControlName="tipoDestino" (selectionChange)="onTipoDestinoChange($event.value)">
+          <mat-option value="proveedor">Proveedor</mat-option>
+          <mat-option value="cliente">Cliente</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="tipoDestino === 'proveedor'">
+      <h3>Seleccione proveedor:</h3>
+      <mat-form-field appearance="fill" style="width: 280px;">
+        <mat-label>Proveedor</mat-label>
+        <mat-select formControlName="provider">
+          <mat-option *ngFor="let prov of proveedores" [value]="prov.id">
+            {{ prov.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="tipoDestino === 'cliente'">
+      <h3>Seleccione cliente:</h3>
+      <mat-form-field appearance="fill" style="width: 280px;">
+        <mat-label>Cliente</mat-label>
+        <mat-select formControlName="cliente">
+          <mat-option *ngFor="let cli of clientes" [value]="cli.id">
+            {{ cli.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+  </form>
+
+
+</div>
+
+<br><br>
+
+<div>
+  <h2>Salidas registradas:</h2>
+</div>
+
+<div class="table">
+  <table>
+    <thead>
+      <tr>
+        <th>Nro°</th>
+        <th>Categoria</th>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Precio</th>
+        <th>Monto total</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let salida of salidas; let i = index">
+        <th>{{ i + 1 }}</th>
+        <th>{{ salida.productCategory }}</th>
+        <th>{{ salida.productName }}</th>
+        <th>{{ salida.quantity }}</th>
+        <th>S/.{{ salida.price }}</th>
+        <th>S/.{{ salida.total }}</th>
+        <th>
+          <button class="delete" (click)="deleteSalida(i)">
+            <mat-icon aria-hidden="false" fontIcon="remove"></mat-icon>
+          </button>
+        </th>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<br><br>
+
+<div style="display: flex; gap: 30px;">
+
+  <div>
+    <h2>Monto total:</h2>
+    <h3>S/.{{totalMonto}}</h3>
+  </div>
+
+
+  <br>
+  <div>
+    <h2>Cantidad total:</h2>
+    <h3>{{totalCantidad}}</h3>
+  </div>
+</div>
+<br>
+<button class="salida" style="height: 52px; width: 220px;" (click)="realizarSalida()">Realizar salida</button>

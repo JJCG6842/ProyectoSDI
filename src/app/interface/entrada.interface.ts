@@ -3,10 +3,26 @@ import { Proveedor } from "./proveedor.interface";
 
 export interface Entrada {
   id: string;
-  productId: string;
-  quantity: number;
   supplierId?: string;
   createdAt: string;
-  product: Producto;
+  detalles: EntradaDetalle[]
   supplier?: Proveedor;
+
+  productos: {
+    productId: string;
+    productName?: string;
+    productCategory?: string;
+    quantity: number;
+    price: number;
+    total?: number;
+  }[];
+}
+
+export interface EntradaDetalle {
+  id: string;
+  productId: string;
+  quantity: number;
+  price: number;
+  total: number;
+  product: Producto;
 }

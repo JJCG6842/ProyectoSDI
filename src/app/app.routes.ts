@@ -16,6 +16,10 @@ import { EntradasAlmaceneroComponent } from './pages/almacenero/entradas-almacen
 import { SalidasAlmaceneroComponent } from './pages/almacenero/salidas-almacenero/salidas-almacenero.component';
 import { MarcaAlmaceneroComponent } from './pages/almacenero/marca-almacenero/marca-almacenero.component';
 import { ClienteAlmaceneroComponent } from './pages/almacenero/cliente-almacenero/cliente-almacenero.component';
+import { SalidaPanelComponent } from './pages/almacenero/salida-panel/salida-panel.component';
+import { ViewSalidaComponent } from './shared/modals-almacenero/add-salida/view-salida/view-salida.component';
+import { EntradaPanelComponent } from './pages/almacenero/entrada-panel/entrada-panel.component';
+import { ViewEntradaComponent } from './shared/modals-almacenero/add-entrada/view-entrada/view-entrada.component';
 
 import { InicioAdministradorComponent } from './pages/administrador/inicio-administrador/inicio-administrador.component';
 import { CategoriaAdministradorComponent } from './pages/administrador/categoria-administrador/categoria-administrador.component';
@@ -106,6 +110,22 @@ export const routes: Routes = [
       {
         path: 'salida-almacenero',
         component: SalidasAlmaceneroComponent
+      },
+      {
+        path: 'salida-panel-almacenero',
+        component: SalidaPanelComponent
+      },
+      {
+        path: 'view-salida-almacenero/:id',
+        component: ViewSalidaComponent
+      },
+      {
+        path: 'entrada-panel-almacenero',
+        component: EntradaPanelComponent
+      },
+      {
+        path: 'view-entrada-almacenero/:id',
+        component: ViewEntradaComponent
       }
     ]
   },

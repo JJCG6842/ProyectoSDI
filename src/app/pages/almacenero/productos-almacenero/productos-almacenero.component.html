@@ -65,11 +65,20 @@
             <th>{{producto.name}}</th>   
              <th><img [src]="producto.image" alt="Imagen" width="50"></th>
              <th>{{producto.marca?.name}}</th>
-             <th>{{producto.status}}</th>
+             <th>{{producto.state}}</th>
              <th>{{producto.category?.name}}</th>
              <th>S/.{{ producto.price | number: '1.2-2' }}</th>
              <th>
                <button class="edit" (click)="editProduct(producto)"><mat-icon aria-hidden="false" fontIcon="edit"></mat-icon></button>
+
+               <button *ngIf="producto.state === 'Deshabilitado'" (click)="habilitar(producto.id)"class="edit" style="background-color: rgb(47, 255, 47);">
+                  <mat-icon fontIcon="check_circle"></mat-icon>
+              </button>
+
+               <button *ngIf="producto.state === 'Habilitado'" (click)="deshabilitar(producto.id)"class="edit" style="background-color: rgb(119, 5, 234);">
+                  <mat-icon fontIcon="hide_source"></mat-icon>
+                </button>
+
                <button class="view" (click)="view(producto)"><mat-icon aria-hidden="false" fontIcon="visibility"></mat-icon></button>
                <button class="delete" (click)="eliminarProducto(producto.id!)"><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
              </th>

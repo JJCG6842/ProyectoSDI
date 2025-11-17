@@ -1,0 +1,86 @@
+<div class="header-row">
+  <h1>Generar Entrada:</h1>
+  <div class="botons">
+    <button class="salida" (click)="gestor()">
+      Gestión de entradas
+    </button>
+    <button class="add" (click)="addProduct()">
+      <mat-icon fontIcon="add" class="icon-btn"></mat-icon>
+      Añadir producto
+    </button>
+  </div>
+
+</div>
+
+<div class="forms">
+  
+    <div>
+        <h3>Seleccione Proveedor:</h3>
+        <mat-form-field appearance="fill" style="width: 280px;">
+  <mat-label>Seleccione proveedor</mat-label>
+  <mat-select [formControl]="proveedor">
+    <mat-option *ngFor="let prov of proveedores" [value]="prov.id">
+      {{ prov.name }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+    </div>
+
+</div>
+
+<br><br>
+
+<div>
+  <h2>Entradas registradas:</h2>
+</div>
+
+<div class="table">
+  <table>
+    <thead>
+      <tr>
+        <th>Nro°</th>
+        <th>Categoria</th>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Precio</th>
+        <th>Monto total</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let entrada of entradasRegistradas; let i = index">
+        <th>{{i + 1}}</th>
+        <th>{{entrada.category}}</th>
+        <th>{{entrada.productName}}</th>
+        <th>{{entrada.quantity}}</th>
+        <th>S/.{{entrada.price}}</th>
+        <th>S/.{{entrada.total}}</th>
+        <th>
+          <button class="delete" (click)="eliminarEntrada(i)">
+            <mat-icon aria-hidden="false" fontIcon="remove"></mat-icon>
+          </button>
+        </th>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<br><br>
+
+<div style="display: flex; gap: 30px;">
+
+  <div>
+    <h2>Monto total:</h2>
+    <h3>S/.{{getMontoTotal()}}</h3>
+  </div>
+
+
+  <br>
+  <div>
+    <h2>Cantidad total:</h2>
+    <h3>{{getCantidadTotal()}}</h3>
+  </div>
+</div>
+<br>
+<button class="salida" style="height: 52px; width: 220px; " (click)="realizarEntrada()">Realizar entrada</button>

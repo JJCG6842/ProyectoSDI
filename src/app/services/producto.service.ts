@@ -8,12 +8,16 @@ import { Producto } from '../interface/producto.interface';
 })
 export class ProductoService {
 
-   private apiUrl = "http://localhost:3000/productos";
+  private apiUrl = "http://localhost:3000/productos";
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getProductos(): Observable<Producto[]> {
     return this.http.get<Producto[]>(this.apiUrl);
+  }
+
+  getProductosInventario(): Observable<Producto[]> {
+    return this.http.get<Producto[]>(`${this.apiUrl}/inventario`);
   }
 
   getProductoporId(id: string): Observable<Producto> {
@@ -24,8 +28,8 @@ export class ProductoService {
     return this.http.get<Producto[]>(`${this.apiUrl}/buscar/nombre/${nombre}`);
   }
 
-  buscarProducto(term: string): Observable<Producto[]>{
-      return this.http.get<Producto[]>(`${this.apiUrl}/buscar/nombre/${term}`)
+  buscarProducto(term: string): Observable<Producto[]> {
+    return this.http.get<Producto[]>(`${this.apiUrl}/buscar/nombre/${term}`)
   }
 
   buscarPorCategoria(nombreCategoria: string): Observable<Producto[]> {
@@ -54,6 +58,14 @@ export class ProductoService {
 
   buscarPorMarcaId(id: string): Observable<Producto[]> {
     return this.http.get<Producto[]>(`${this.apiUrl}/buscar/marca/id/${id}`);
+  }
+
+  habilitarProducto(id: string): Observable<Producto> {
+    return this.http.put<Producto>(`${this.apiUrl}/habilitar/${id}`, {});
+  }
+
+  deshabilitarProducto(id: string): Observable<Producto> {
+    return this.http.put<Producto>(`${this.apiUrl}/deshabilitar/${id}`, {});
   }
 
 }

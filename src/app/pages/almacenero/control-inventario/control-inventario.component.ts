@@ -46,7 +46,7 @@ export class ControlInventarioComponent implements OnInit{
   }
 
   cargarProductos(){
-    this.productoService.getProductos().subscribe({
+    this.productoService.getProductosInventario().subscribe({
       next: (products) => {
         this.productos = products;
         this.isloading = false;

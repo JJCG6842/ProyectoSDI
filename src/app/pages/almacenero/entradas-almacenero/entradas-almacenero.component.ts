@@ -12,11 +12,18 @@ import { Producto } from '../../../interface/producto.interface';
 import { ProductoService } from '../../../services/producto.service';
 import { CommonModule } from '@angular/common';
 import { DeleteEntradaSuccessComponent } from '../../../shared/modals-almacenero/add-entrada/modals-entrada/delete-entrada-success/delete-entrada-success.component';
+import { MatFormField, MatSelect, MatOption } from "@angular/material/select";
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { ProveedorService } from '../../../services/proveedor.service';
+import { Proveedor } from '../../../interface/proveedor.interface';
 
 @Component({
   selector: 'app-entradas-almacenero',
-  imports: [MatExpansionModule, MatIconModule, MatDialogModule,CommonModule,
-    FormsModule],
+  imports: [MatExpansionModule,MatIconModule,MatDialogModule,CommonModule,FormsModule,MatFormFieldModule,MatSelectModule,
+MatInputModule
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './entradas-almacenero.component.html',
   styleUrl: './entradas-almacenero.component.scss'
@@ -29,12 +36,17 @@ export class EntradasAlmaceneroComponent implements OnInit{
   searchTerm: string = '';
   productos: Producto[] = [];
   entradas: Entrada[] = [];
+  proveedores: Proveedor[] = [];
+  entradasFiltradas: Entrada[] = [];
+  selectedProveedorId: string = '';
 
-  constructor(private router: Router, private productoService: ProductoService, private entradaService:EntradaService){}
+  constructor(private router: Router, private productoService: ProductoService, private entradaService:EntradaService, 
+    private proveedorService: ProveedorService){}
 
   ngOnInit(): void {
       this.cargarEntradas();
       this.cargarProductos();
+      this.cargarProveedores();
   }
 
   cargarProductos(){
@@ -51,19 +63,30 @@ export class EntradasAlmaceneroComponent implements OnInit{
     })
   }
 
+  cargarProveedores() {
+    this.proveedorService.getProveedores().subscribe({
+      next: (res) => {
+        this.proveedores = res;
+        this.reload.markForCheck();
+      },
+      error: (err) => console.error('Error al cargar proveedores', err)
+    });
+  }
+
   cargarEntradas() {
     this.entradaService.getEntradas().subscribe({
       next: (data) => {
-        this.entradas = data;
-        this.isloading = false;
+        this.entradas = data.map(e => ({
+          ...e,
+          productos: e.productos || []
+        }));
+        this.entradasFiltradas = [...this.entradas];
         this.reload.markForCheck();
       },
-      error: (err) => {
-        console.error('Error al cargar entradas:', err);
-        this.isloading = false;
-      },
+      error: (err) => console.error('Error al cargar entradas', err)
     });
   }
+
 
   addEntrance() {
       const dialogRef = this.dialog.open(AddEntradaComponent,{
@@ -139,12 +162,35 @@ export class EntradasAlmaceneroComponent implements OnInit{
   } 
 }
 
+filtrarPorProveedor() {
+    if (!this.selectedProveedorId) {
+      this.entradasFiltradas = [...this.entradas];
+    } else {
+      this.entradasFiltradas = this.entradas.filter(
+        e => e.supplierId === this.selectedProveedorId
+      );
+    }
+    this.reload.markForCheck();
+  }
+
+  getCantidadTotal(entrada: Entrada): number {
+    return entrada.productos?.reduce((acc, p) => acc + p.quantity, 0) ?? 0;
+  }
+
+  getMontoTotal(entrada: Entrada): number {
+    return entrada.productos?.reduce((acc, p) => acc + p.quantity * p.price, 0) ?? 0;
+  }
+
+  getNombreProveedor(entrada: Entrada): string {
+    return entrada.supplier?.name || 'Sin proveedor';
+  }
+
 
   kardex(){
     this.router.navigate(['/almacenero/panel-inventario'])
   }
 
   salidas(){
-    this.router.navigate(['/almacenero/salida-almacenero'])
+    this.router.navigate(['/almacenero/entrada-panel-almacenero'])
   }
 }

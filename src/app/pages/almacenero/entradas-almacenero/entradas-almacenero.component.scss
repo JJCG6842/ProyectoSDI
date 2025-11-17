@@ -19,7 +19,7 @@
 }
 
 .salida{
-    background-color: red;
+    background-color: rgb(102, 255, 0);
 }
 
 .botons{
@@ -148,11 +148,12 @@ input{
 }
 
 
-.view:hover{
-    background: rgb(52, 250, 52)
+.view:hover,
+.salida:hover{
+    background: rgb(92, 252, 92)
 }
 
-.delete:hover,
-.salida:hover{
+.delete:hover
+{
     background: rgb(253, 62, 62);
 }

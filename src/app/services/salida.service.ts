@@ -10,7 +10,7 @@ export class SalidaService {
 
   private apiUrl = 'http://localhost:3000/salida';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getSalidas(): Observable<Salida[]> {
     return this.http.get<Salida[]>(this.apiUrl);
@@ -20,15 +20,26 @@ export class SalidaService {
     return this.http.get<Salida>(`${this.apiUrl}/${id}`);
   }
 
+  filtrarPorClienteProveedor(clienteId?: string, supplierId?: string) {
+  let query = '?';
+  if (clienteId) query += `clienteId=${clienteId}&`;
+  if (supplierId) query += `supplierId=${supplierId}&`;
+
+  return this.http.get<Salida[]>(`${this.apiUrl}/filtrar${query}`);
+}
+
+
   buscarPorProducto(term: string): Observable<Salida[]> {
     return this.http.get<Salida[]>(`${this.apiUrl}/buscar/producto/${term}`);
   }
 
-  createSalida(data: { productId: string; quantity: number; supplierId?: string }): Observable<Salida> {
-    return this.http.post<Salida>(this.apiUrl, data);
+  createSalida(data: {
+    tipo: string; supplierId?: string; clienteId?: string; productos: { productId: string; quantity: number; price: number }[];
+  }): Observable<{ message: string; salidaId: string }> {
+    return this.http.post<{ message: string; salidaId: string }>(this.apiUrl, data);
   }
 
-  deleteSalida(id: string): Observable<{ message: string }> {
-    return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`);
+  deleteSalida(id: string): Observable<{ message: string; eliminado?: any }> {
+  return this.http.delete<{ message: string; eliminado?: any }>(`${this.apiUrl}/${id}`);
   }
 }

@@ -28,142 +28,142 @@ import { Salida } from '../../../interface/salida.interface';
   templateUrl: './kardex-almacenero.component.html',
   styleUrl: './kardex-almacenero.component.scss'
 })
-export class KardexAlmaceneroComponent implements OnInit {
+export class KardexAlmaceneroComponent  {
 
-  readonly reload = inject(ChangeDetectorRef);
-  movimientos: any[] = [];
-  filtroProducto = '';
-  tipoFiltro: 'todos' | 'entrada' | 'salida' = 'todos';
-  ordenFecha: 'asc' | 'desc' = 'desc';
-  fechaFiltro: Date | null = null;
-  isLoading = true;
-  productos: Producto[] = [];
-  searchTerm: string = '';
+  // readonly reload = inject(ChangeDetectorRef);
+  // movimientos: any[] = [];
+  // filtroProducto = '';
+  // tipoFiltro: 'todos' | 'entrada' | 'salida' = 'todos';
+  // ordenFecha: 'asc' | 'desc' = 'desc';
+  // fechaFiltro: Date | null = null;
+  // isLoading = true;
+  // productos: Producto[] = [];
+  // searchTerm: string = '';
 
-  constructor(
-    private entradaService: EntradaService,private salidaService: SalidaService,
-    private productoService: ProductoService,private router:Router) {}
+   constructor(
+     private entradaService: EntradaService,private salidaService: SalidaService,
+     private productoService: ProductoService,private router:Router) {}
 
-  async ngOnInit() {
-    await this.cargarMovimientos();
-    this.cargarProductos();
-  }
+  // async ngOnInit() {
+  //   await this.cargarMovimientos();
+  //   this.cargarProductos();
+  // }
 
-  cargarProductos(){
-    this.productoService.getProductos().subscribe({
-      next: (products) => {
-        this.productos = products;
-        this.isLoading = false;
-        this.reload.markForCheck();
-      },
-      error: (err) => {
-        this.isLoading = false;
-        console.error('Error al cargar productos', err);
-      }
-    })
-  }
+  // cargarProductos(){
+  //   this.productoService.getProductos().subscribe({
+  //     next: (products) => {
+  //       this.productos = products;
+  //       this.isLoading = false;
+  //       this.reload.markForCheck();
+  //     },
+  //     error: (err) => {
+  //       this.isLoading = false;
+  //       console.error('Error al cargar productos', err);
+  //     }
+  //   })
+  // }
 
-  async cargarMovimientos() {
-    this.isLoading = true;
-    try {
-      const [entradas, salidas] = await Promise.all([
-        firstValueFrom(this.entradaService.getEntradas()),
-        firstValueFrom(this.salidaService.getSalidas())
-      ]);
+  // async cargarMovimientos() {
+  //   this.isLoading = true;
+  //   try {
+  //     const [entradas, salidas] = await Promise.all([
+  //       firstValueFrom(this.entradaService.getEntradas()),
+  //       firstValueFrom(this.salidaService.getSalidas())
+  //     ]);
 
-      const entradasFormateadas = (entradas ?? []).map(e => ({
-        fecha: e.createdAt,
-        movimiento: 'Entrada',
-        proveedor: e.supplier?.name ?? '—',
-        producto: e.product?.name ?? '—',
-        cantidad: e.quantity,
-        precio: e.product?.price ?? 0,
-        total: e.quantity * (e.product?.price ?? 0)
-      }));
+  //     const entradasFormateadas = (entradas ?? []).map(e => ({
+  //       fecha: e.createdAt,
+  //       movimiento: 'Entrada',
+  //       proveedor: e.supplier?.name ?? '—',
+  //       producto: e.product?.name ?? '—',
+  //       cantidad: e.quantity,
+  //       precio: e.product?.price ?? 0,
+  //       total: e.quantity * (e.product?.price ?? 0)
+  //     }));
 
-      const salidasFormateadas = (salidas ?? []).map(s => ({
-        fecha: s.createdAt,
-        movimiento: 'Salida',
-        proveedor: s.supplier?.name || s.cliente?.name || '—',
-        producto: s.product?.name ?? '—',
-        cantidad: s.quantity,
-        precio: s.product?.price ?? 0,
-        total: s.quantity * (s.product?.price ?? 0)
-      }));
+  //     const salidasFormateadas = (salidas ?? []).map(s => ({
+  //       fecha: s.createdAt,
+  //       movimiento: 'Salida',
+  //       proveedor: s.supplier?.name || s.cliente?.name || '—',
+  //       producto: s.product?.name ?? '—',
+  //       cantidad: s.quantity,
+  //       precio: s.product?.price ?? 0,
+  //       total: s.quantity * (s.product?.price ?? 0)
+  //     }));
 
-      this.movimientos = [...entradasFormateadas, ...salidasFormateadas];
-      this.ordenarMovimientos();
-    } catch (error) {
-      console.error('Error al cargar movimientos:', error);
-    } finally {
-      this.isLoading = false;
-    }
-  }
+  //     this.movimientos = [...entradasFormateadas, ...salidasFormateadas];
+  //     this.ordenarMovimientos();
+  //   } catch (error) {
+  //     console.error('Error al cargar movimientos:', error);
+  //   } finally {
+  //     this.isLoading = false;
+  //   }
+  // }
 
-  get movimientosFiltrados() {
-    return this.movimientos
-      .filter(mov => {
-        const coincideProducto = mov.producto
-          .toLowerCase()
-          .includes(this.filtroProducto.toLowerCase());
-        const coincideTipo =
-          this.tipoFiltro === 'todos' ||
-          (this.tipoFiltro === 'entrada' && mov.movimiento === 'Entrada') ||
-          (this.tipoFiltro === 'salida' && mov.movimiento === 'Salida');
+  // get movimientosFiltrados() {
+  //   return this.movimientos
+  //     .filter(mov => {
+  //       const coincideProducto = mov.producto
+  //         .toLowerCase()
+  //         .includes(this.filtroProducto.toLowerCase());
+  //       const coincideTipo =
+  //         this.tipoFiltro === 'todos' ||
+  //         (this.tipoFiltro === 'entrada' && mov.movimiento === 'Entrada') ||
+  //         (this.tipoFiltro === 'salida' && mov.movimiento === 'Salida');
 
-          const coincideFecha =
-          !this.fechaFiltro ||
-          new Date(mov.fecha).toDateString() === this.fechaFiltro.toDateString();
-          return coincideProducto && coincideTipo && coincideFecha;
-      })
-      .sort((a, b) =>
-        this.ordenFecha === 'desc'
-          ? new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
-          : new Date(a.fecha).getTime() - new Date(b.fecha).getTime()
-      );
-  }
+  //         const coincideFecha =
+  //         !this.fechaFiltro ||
+  //         new Date(mov.fecha).toDateString() === this.fechaFiltro.toDateString();
+  //         return coincideProducto && coincideTipo && coincideFecha;
+  //     })
+  //     .sort((a, b) =>
+  //       this.ordenFecha === 'desc'
+  //         ? new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+  //         : new Date(a.fecha).getTime() - new Date(b.fecha).getTime()
+  //     );
+  // }
 
-  ordenarMovimientos() {
-    this.movimientos.sort((a, b) =>
-      this.ordenFecha === 'desc'
-        ? new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
-        : new Date(a.fecha).getTime() - new Date(b.fecha).getTime()
-    );
-  }
+  // ordenarMovimientos() {
+  //   this.movimientos.sort((a, b) =>
+  //     this.ordenFecha === 'desc'
+  //       ? new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+  //       : new Date(a.fecha).getTime() - new Date(b.fecha).getTime()
+  //   );
+  // }
 
-  search(){
-    const term = this.searchTerm.trim();
+  // search(){
+  //   const term = this.searchTerm.trim();
 
-    if(!term){
-      this.cargarProductos();
-      return;
-    }
+  //   if(!term){
+  //     this.cargarProductos();
+  //     return;
+  //   }
 
-    this.isLoading = true;
+  //   this.isLoading = true;
 
-    this.productoService.buscarProducto(term).subscribe({
-      next: (res)=>{
-        this.productos = res;
-        this.isLoading = false;
-        this.reload.markForCheck();
-      },
+  //   this.productoService.buscarProducto(term).subscribe({
+  //     next: (res)=>{
+  //       this.productos = res;
+  //       this.isLoading = false;
+  //       this.reload.markForCheck();
+  //     },
 
-      error: (err) => {
-        console.error('Error en la busqueda :/', err);
-        this.productos = [];
-        this.isLoading = false;
-        this.reload.markForCheck();
-      }
-    })
-  }
+  //     error: (err) => {
+  //       console.error('Error en la busqueda :/', err);
+  //       this.productos = [];
+  //       this.isLoading = false;
+  //       this.reload.markForCheck();
+  //     }
+  //   })
+  // }
 
-  limpiarFiltros() {
-    this.filtroProducto = '';
-    this.tipoFiltro = 'todos';
-    this.ordenFecha = 'desc';
-    this.fechaFiltro = null; 
-    this.reload.markForCheck();
-  }
+  // limpiarFiltros() {
+  //   this.filtroProducto = '';
+  //   this.tipoFiltro = 'todos';
+  //   this.ordenFecha = 'desc';
+  //   this.fechaFiltro = null; 
+  //   this.reload.markForCheck();
+  // }
 
   entradas() {
     this.router.navigate(['/almacenero/entrada-almacenero']);

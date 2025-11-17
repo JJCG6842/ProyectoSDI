@@ -17,6 +17,7 @@ export interface Producto {
   storeId?: string;
   createAt: Date;
   updateAt: Date;
+  state?: 'Habilitado' | 'Deshabilitado';
   category?: Categoria;
   subcategory?: Subcategoria
   marca?: Marca

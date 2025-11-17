@@ -20,7 +20,7 @@ import { Salida } from '../../../interface/salida.interface';
   templateUrl: './kardex-administrador.component.html',
   styleUrl: './kardex-administrador.component.scss'
 })
-export class KardexAdministradorComponent implements OnInit {
+export class KardexAdministradorComponent {
 
   movimientos: any[] = [];
   filtroProducto = '';
@@ -34,77 +34,77 @@ export class KardexAdministradorComponent implements OnInit {
     private router:Router
   ) {}
 
-  async ngOnInit() {
-    await this.cargarMovimientos();
-  }
+  // async ngOnInit() {
+  //   await this.cargarMovimientos();
+  // }
 
-  async cargarMovimientos() {
-    this.isLoading = true;
-    try {
-      const [entradas, salidas] = await Promise.all([
-        firstValueFrom(this.entradaService.getEntradas()),
-        firstValueFrom(this.salidaService.getSalidas())
-      ]);
+  // async cargarMovimientos() {
+  //   this.isLoading = true;
+  //   try {
+  //     const [entradas, salidas] = await Promise.all([
+  //       firstValueFrom(this.entradaService.getEntradas()),
+  //       firstValueFrom(this.salidaService.getSalidas())
+  //     ]);
 
-      const entradasFormateadas = (entradas ?? []).map(e => ({
-        fecha: e.createdAt,
-        movimiento: 'Entrada',
-        proveedor: e.supplier?.name ?? '—',
-        producto: e.product?.name ?? '—',
-        cantidad: e.quantity,
-        precio: e.product?.price ?? 0,
-        total: e.quantity * (e.product?.price ?? 0)
-      }));
+  //     const entradasFormateadas = (entradas ?? []).map(e => ({
+  //       fecha: e.createdAt,
+  //       movimiento: 'Entrada',
+  //       proveedor: e.supplier?.name ?? '—',
+  //       producto: e.product?.name ?? '—',
+  //       cantidad: e.quantity,
+  //       precio: e.product?.price ?? 0,
+  //       total: e.quantity * (e.product?.price ?? 0)
+  //     }));
 
-      const salidasFormateadas = (salidas ?? []).map(s => ({
-        fecha: s.createdAt,
-        movimiento: 'Salida',
-        proveedor: s.supplier?.name ?? '—',
-        producto: s.product?.name ?? '—',
-        cantidad: s.quantity,
-        precio: s.product?.price ?? 0,
-        total: s.quantity * (s.product?.price ?? 0)
-      }));
+  //     const salidasFormateadas = (salidas ?? []).map(s => ({
+  //       fecha: s.createdAt,
+  //       movimiento: 'Salida',
+  //       proveedor: s.supplier?.name ?? '—',
+  //       producto: s.product?.name ?? '—',
+  //       cantidad: s.quantity,
+  //       precio: s.product?.price ?? 0,
+  //       total: s.quantity * (s.product?.price ?? 0)
+  //     }));
 
-      this.movimientos = [...entradasFormateadas, ...salidasFormateadas];
-      this.ordenarMovimientos();
-    } catch (error) {
-      console.error('Error al cargar movimientos:', error);
-    } finally {
-      this.isLoading = false;
-    }
-  }
+  //     this.movimientos = [...entradasFormateadas, ...salidasFormateadas];
+  //     this.ordenarMovimientos();
+  //   } catch (error) {
+  //     console.error('Error al cargar movimientos:', error);
+  //   } finally {
+  //     this.isLoading = false;
+  //   }
+  // }
 
-  get movimientosFiltrados() {
-    return this.movimientos
-      .filter(mov => {
-        const coincideProducto = mov.producto
-          .toLowerCase()
-          .includes(this.filtroProducto.toLowerCase());
-        const coincideTipo =
-          this.tipoFiltro === 'todos' ||
-          (this.tipoFiltro === 'entrada' && mov.movimiento === 'Entrada') ||
-          (this.tipoFiltro === 'salida' && mov.movimiento === 'Salida');
-        return coincideProducto && coincideTipo;
-      })
-      .sort((a, b) =>
-        this.ordenFecha === 'desc'
-          ? new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
-          : new Date(a.fecha).getTime() - new Date(b.fecha).getTime()
-      );
-  }
+  // get movimientosFiltrados() {
+  //   return this.movimientos
+  //     .filter(mov => {
+  //       const coincideProducto = mov.producto
+  //         .toLowerCase()
+  //         .includes(this.filtroProducto.toLowerCase());
+  //       const coincideTipo =
+  //         this.tipoFiltro === 'todos' ||
+  //         (this.tipoFiltro === 'entrada' && mov.movimiento === 'Entrada') ||
+  //         (this.tipoFiltro === 'salida' && mov.movimiento === 'Salida');
+  //       return coincideProducto && coincideTipo;
+  //     })
+  //     .sort((a, b) =>
+  //       this.ordenFecha === 'desc'
+  //         ? new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+  //         : new Date(a.fecha).getTime() - new Date(b.fecha).getTime()
+  //     );
+  // }
 
-  ordenarMovimientos() {
-    this.movimientos.sort((a, b) =>
-      this.ordenFecha === 'desc'
-        ? new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
-        : new Date(a.fecha).getTime() - new Date(b.fecha).getTime()
-    );
-  }
+  // ordenarMovimientos() {
+  //   this.movimientos.sort((a, b) =>
+  //     this.ordenFecha === 'desc'
+  //       ? new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+  //       : new Date(a.fecha).getTime() - new Date(b.fecha).getTime()
+  //   );
+  // }
 
-  search(){
+  // search(){
 
-  }
+  // }
 
   entradas() {
     this.router.navigate(['/almacenero/entrada-almacenero']);

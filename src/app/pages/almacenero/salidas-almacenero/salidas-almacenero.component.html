@@ -5,54 +5,71 @@
             Panel de Inventario
         </button> 
         <button class="entrance" (click)="entradas()">
-            Gestión de entradas
+            Generar salida
         </button>
     </div>
 </div>
 
+<h2>Filtros:</h2>
+<div class="filters">
 
-<div class="content1">
-  <p class="enter">Buscar producto:</p>
-<input type="text" placeholder="Ingrese producto..." [(ngModel)]="searchTerm" (ngModelChange)="onSearchTermChange($event)">
+<mat-form-field appearance="fill">
+    <mat-label>Filtrar por</mat-label>
+    <mat-select [(value)]="selectedOpcion" (selectionChange)="onOpcionChange()">
+      <mat-option *ngFor="let op of opciones" [value]="op">{{ op }}</mat-option>
+    </mat-select>
+  </mat-form-field>
 
-<div class="botons" style="bottom: 5px;">
-  <button class="boton1" (click)="search()">
-  <mat-icon fontIcon="search" class="icon-btn" ></mat-icon>
-  Buscar
-</button>
+  <mat-form-field *ngIf="selectedOpcion === 'Cliente'" appearance="fill">
+    <mat-label>Seleccionar Cliente</mat-label>
+    <mat-select [(value)]="selectedClienteId" (selectionChange)="filtrarSalidas()">
+      <mat-option value="">Todos</mat-option>
+      <mat-option *ngFor="let c of clientes" [value]="c.id">{{ c.name }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field *ngIf="selectedOpcion === 'Proveedor'" appearance="fill">
+    <mat-label>Seleccionar Proveedor</mat-label>
+    <mat-select [(value)]="selectedProveedorId" (selectionChange)="filtrarSalidas()">
+      <mat-option value="">Todos</mat-option>
+      <mat-option *ngFor="let p of proveedores" [value]="p.id">{{ p.name }}</mat-option>
+    </mat-select>
+  </mat-form-field>
 
 
-<button class="boton1" style="width: 260px;" (click)="addSalidas()">
-    <mat-icon fontIcon="add" class="icon-btn" ></mat-icon>
-Generar salida
-</button>
+<!-- <mat-form-field>
+  <mat-label>Fecha</mat-label>
+  <input matInput [matDatepicker]="datepicker" [(ngModel)]="filterDate" (dateChange)="aplicarFiltros()">
+  <mat-datepicker #datepicker></mat-datepicker>
+  <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
+</mat-form-field> -->
+
+
 </div>
-
-</div> 
 
 
 <div class="table">
      <table>
          <thead>
-           <tr>   
-             <th>Fecha</th>
-             <th>Nombre del producto</th>
+           <tr>
+            <th>Nro°</th>
+             <th>Fecha registro</th>
              <th>Proveedor/Cliente</th>
-             <th>Cantidad</th>
-             <th>Precio</th>
+             <th>Cantidad total</th>
              <th>Monto total</th>
              <th>Acciones</th>
            </tr>
          </thead>
          <tbody>
-          <tr *ngFor="let salida of salidas">
-             <th>{{salida.createdAt | date:'dd/MM/yyyy'}}</th>   
-             <th>{{salida.product.name}}</th>
-             <th>{{ salida.supplier?.name || salida.cliente?.name }}</th>
-             <th>{{salida.quantity}}</th>
-             <th>S/.{{salida.product.price | number:'1.2-2'}}</th>
-             <th>S/.{{ salida.product.price * salida.quantity | number:'1.2-2' }} </th>
+          <tr *ngFor="let salida of salidasFiltradas; let i = index">
+            <th>{{i + 1}}</th>
+             <th>{{salida.createdAt | date: 'dd-MM-yyyy'}}</th>   
+             <th>{{ getNombreProveedorCliente(salida) }}</th>
+              <th>{{ getCantidadTotal(salida) }}</th>
+              <th>S/.{{ getMontoTotal(salida) }}</th>
+
              <th>
+                 <button class="delete" style="background-color: #19ff04" (click)="view(salida.id)"><mat-icon aria-hidden="false" fontIcon="visibility"></mat-icon></button>
                  <button class="delete" (click)="eraseSalida(salida.id)"><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
              </th>
            </tr>

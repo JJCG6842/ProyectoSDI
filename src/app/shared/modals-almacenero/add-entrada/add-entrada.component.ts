@@ -25,83 +25,56 @@ import { TextFieldModule } from '@angular/cdk/text-field';
 })
 export class AddEntradaComponent implements OnInit{
 
-  formEntrance!:  FormGroup;
+  formEntrance!: FormGroup;
   productos: Producto[] = [];
-  proveedores: Proveedor[] = [];
   isloading = false;
 
-  constructor(private fb:FormBuilder,private dialogRef: MatDialogRef<AddEntradaComponent>, private dialog: MatDialog,
-    private entradaService: EntradaService, private productoService: ProductoService, private proveedorService: ProveedorService
-  ){
+  constructor(
+    private fb: FormBuilder,
+    private dialogRef: MatDialogRef<AddEntradaComponent>,
+    private dialog: MatDialog,
+    private productoService: ProductoService,
+    private cd: ChangeDetectorRef
+  ) {
     this.formEntrance = this.fb.group({
-      product: ['',Validators.required],
-      provider: ['',Validators.required],
-      quantity: ['',[Validators.required,Validators.min(1)]]
+      product: ['', Validators.required],
+      quantity: [1, [Validators.required, Validators.min(1)]]
     });
   }
 
   ngOnInit(): void {
-      this.cargarProductos();
-      this.cargarProveedores();
+    this.cargarProductos();
   }
 
-  cargarProductos(){
-    this.productoService.getProductos().subscribe({
-      next: (products) => {
-        this.productos = products;
-      },
-      error: (fail) =>{
-        console.error('error al cargar productos', fail)
-      },
-    })
+  cargarProductos() {
+    this.productoService.getProductosInventario().subscribe({
+      next: (products) => this.productos = products,
+      error: (fail) => console.error('Error al cargar productos', fail)
+    });
   }
 
-  cargarProveedores(){
-    this.proveedorService.getProveedores().subscribe({
-      next: (proveedor) => {
-        this.proveedores = proveedor;
-      },
-      error: (fail) =>{
-        console.error('error al cargar proveedores', fail)
-      },
-    })
-  }
+  get product() { return this.formEntrance.get('product') as FormControl; }
+  get quantity() { return this.formEntrance.get('quantity') as FormControl; }
 
-  get product(){
-    return this.formEntrance.get('product') as FormControl;
-  }
-
-  get provider(){
-    return this.formEntrance.get('provider') as FormControl;
-  }
-
-  get quantity(){
-    return this.formEntrance.get('quantity') as FormControl;
-  }
-
-
-  addEntrance(){
-    if(this.formEntrance.invalid){
+  addEntrance() {
+    if (this.formEntrance.invalid) {
       this.formEntrance.markAllAsTouched();
       return;
     }
 
     const formValue = this.formEntrance.value;
+    const producto = this.productos.find(p => p.id === formValue.product);
+    if (!producto) return;
 
     const newEntrada = {
-      productId: formValue.product,
-      supplierId: formValue.provider,
-      quantity: formValue.quantity
-    }
+      productId: producto.id,
+      productName: producto.name,
+      category: producto.category?.name,
+      quantity: formValue.quantity,
+      price: producto.price,
+      total: producto.price * formValue.quantity
+    };
 
-    this.entradaService.crearEntrada(newEntrada).subscribe({
-      next:() => {
-        this.dialogRef.close(true);
-        this.dialog.open(AddEntradaSuccessComponent);
-      },
-      error: (error) => {
-      console.error('Error al generar entrada:', error);
-    },
-    })
+    this.dialogRef.close(newEntrada);
   }
 }

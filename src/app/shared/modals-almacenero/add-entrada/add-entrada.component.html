@@ -15,19 +15,6 @@
         <div [hidden]="product.valid || product.pristine" class="error">
             <span *ngIf="product.errors?.['required']">El campo es requerido</span>
         </div>
-
-        <h3>Seleccione proveedor:</h3>
-        <mat-form-field appearance="fill">
-            <mat-label>Proveedor:</mat-label>
-            <mat-select formControlName="provider">
-            <mat-option *ngFor="let prov of proveedores" [value]="prov.id">
-                {{prov.name}}
-            </mat-option>
-        </mat-select>
-        </mat-form-field>
-        <div [hidden]="provider.valid || provider.pristine" class="error">
-            <span *ngIf="provider.errors?.['required']">El campo es requerido</span>
-        </div>
       
         <h3>Ingrese monto de entrada:</h3>
             <mat-form-field appearance="fill">
@@ -46,6 +33,6 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-    <button mat-flat-button  style="background-color: blue; color: white;" (click)="addEntrance()">Realizar entrada</button>
+    <button mat-flat-button  style="background-color: blue; color: white;" (click)="addEntrance()">Agregar producto</button>
     <button mat-flat-button mat-dialog-close style="background-color: red; color: white;">Cancelar</button>
 </mat-dialog-actions>
