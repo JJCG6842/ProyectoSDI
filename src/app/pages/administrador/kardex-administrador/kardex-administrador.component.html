@@ -1,42 +1,51 @@
-<!-- <div class="header-row">
+<div class="header-row">
   <h1>Kardex del sistema:</h1>
 </div>
 
 <div class="content1">
   <p class="enter">Ingrese Producto:</p>
-<input type="text" placeholder="Buscar producto..." >
+  <input type="text" placeholder="Buscar producto..." [(ngModel)]="searchTerm">
 
-<button class="boton1" >
-  <mat-icon fontIcon="search" class="icon-btn"></mat-icon>
-  Buscar
-</button>
-</div> 
+  <button class="boton1" (click)="search()">
+    <mat-icon fontIcon="search" class="icon-btn"></mat-icon>
+    Buscar
+  </button>
+</div>
 
-  <div class="c2">
-    <div class="botons">
-      <div class="miniselect">
-        <div class="filters">
+<div class="c2">
+  <div class="botons">
+    <div class="miniselect">
+      <div class="filters">
 
-          <mat-form-field appearance="fill" >
-            <mat-label>Movimiento</mat-label>
-            <mat-select [(ngModel)]="tipoFiltro">
-              <mat-option value="todos">Todos</mat-option>
-              <mat-option value="entrada">Entradas</mat-option>
-              <mat-option value="salida">Salidas</mat-option>
-            </mat-select>
-          </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Movimiento</mat-label>
+          <mat-select [(ngModel)]="tipoFiltro">
+            <mat-option value="todos">Todos</mat-option>
+            <mat-option value="entrada">Entradas</mat-option>
+            <mat-option value="salida">Salidas</mat-option>
+          </mat-select>
+        </mat-form-field>
 
-          <mat-form-field>
-            <mat-label>Ordenar por fecha</mat-label>
-            <mat-select [(ngModel)]="ordenFecha">
-              <mat-option value="desc">Más recientes</mat-option>
-              <mat-option value="asc">Más antiguas</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
+        <mat-form-field>
+          <mat-label>Ordenar por fecha</mat-label>
+          <mat-select [(ngModel)]="ordenFecha">
+            <mat-option value="desc">Más recientes</mat-option>
+            <mat-option value="asc">Más antiguas</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Filtrar por fecha</mat-label>
+          <input matInput [matDatepicker]="datepicker" placeholder="Selecciona fecha" [(ngModel)]="fechaFiltro" />
+          <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
+          <mat-datepicker #datepicker></mat-datepicker>
+        </mat-form-field>
+
+        <button mat-flat-button color="primary" (click)="limpiarFiltros()">Limpiar</button>
       </div>
     </div>
   </div>
+</div>
 
 
 <div class="table" *ngIf="!isLoading">
@@ -45,7 +54,6 @@
       <tr>
         <th>Fecha</th>
         <th>Movimiento</th>
-        <th>Proveedor</th>
         <th>Nombre del producto</th>
         <th>Cantidad</th>
         <th>Precio</th>
@@ -56,7 +64,6 @@
       <tr *ngFor="let mov of movimientosFiltrados">
         <td>{{ mov.fecha | date: 'shortDate' }}</td>
         <td [ngStyle]="{ color: mov.movimiento === 'Entrada' ? 'green' : 'red' }">{{ mov.movimiento }}</td>
-        <td>{{ mov.proveedor }}</td>
         <td>{{ mov.producto }}</td>
         <td>{{ mov.cantidad }}</td>
         <td>S/. {{ mov.precio | number: '1.2-2' }}</td>
@@ -66,4 +73,4 @@
   </table>
 </div>
 
-<br><br><br><br> -->
+<br><br><br><br>

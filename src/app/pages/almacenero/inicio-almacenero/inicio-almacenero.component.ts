@@ -32,53 +32,62 @@ export class InicioAlmaceneroComponent implements OnInit{
     private entradaService: EntradaService,private proveedorService: ProveedorService, private salidasService: SalidaService){}
 
   ngOnInit(): void {
-
-    const storedUser = localStorage.getItem('usuario');
-      if (storedUser) {
-        const userData = JSON.parse(storedUser);
-        this.usuarioNombre = userData.nombre;
-      } else {
-        this.usuarioNombre = 'Almacenero'; 
-      }
-
-      this.productoService.getProductos().subscribe({
-      next: (productos: Producto[]) => {
-        this.totalProductos = productos.length;
-      },
-      error: (err) => console.error('Error al cargar productos:', err)
-    });
-
-    // this.entradaService.getEntradas().subscribe({
-    //   next: (entradas: Entrada[]) => {
-    //     this.totalEntradas = entradas.length;
-
-    //     this.totalMontoEntradas = entradas.reduce((total, entrada) => {
-    //     const precio = entrada.product?.price ?? 0;
-    //     return total + precio * entrada.quantity;
-    //   }, 0);
-    //   }
-    // })
-
-    this.proveedorService.getProveedores().subscribe({
-      next: (proveedor: Proveedor[]) => {
-        this.totalProveedores = proveedor.length;
-      },
-      error: (err) => console.error('Error al cargar proveedores:', err)
-    })
-
-    // this.salidasService.getSalidas().subscribe({
-    //   next: (salida: Salida[]) => {
-    //     this.totalSalidas = salida.length;
-
-    //     this.totalMontoSalidas = salida.reduce((total, salida) => {
-    //     const precio = salida.product?.price ?? 0;
-    //     return total + precio * salida.quantity;
-    //   }, 0);
-    //   },
-
-    //   error: (err) => console.error('Error al cargar proveedores:', err)
-    // });
-
+  const storedUser = localStorage.getItem('usuario');
+  if (storedUser) {
+    const userData = JSON.parse(storedUser);
+    this.usuarioNombre = userData.nombre;
+  } else {
+    this.usuarioNombre = 'Almacenero';
   }
+
+  // Productos
+  this.productoService.getProductos().subscribe({
+    next: (productos: Producto[]) => {
+      this.totalProductos = productos.length;
+    },
+    error: (err) => console.error('Error al cargar productos:', err)
+  });
+
+  // Entradas
+  this.entradaService.getEntradas().subscribe({
+    next: (entradas: Entrada[]) => {
+      this.totalEntradas = entradas.length;
+
+      this.totalMontoEntradas = entradas.reduce((totalEntrada, entrada) => {
+        // Sumar todos los detalles de cada entrada
+        const subtotalEntrada = entrada.detalles?.reduce((sum, detalle) => {
+          return sum + (detalle.quantity * (detalle.product?.price ?? 0));
+        }, 0) ?? 0;
+
+        return totalEntrada + subtotalEntrada;
+      }, 0);
+    },
+    error: (err) => console.error('Error al cargar entradas:', err)
+  });
+
+  // Proveedores
+  this.proveedorService.getProveedores().subscribe({
+    next: (proveedores: Proveedor[]) => {
+      this.totalProveedores = proveedores.length;
+    },
+    error: (err) => console.error('Error al cargar proveedores:', err)
+  });
+
+  // Salidas
+  this.salidasService.getSalidas().subscribe({
+    next: (salidas: Salida[]) => {
+      this.totalSalidas = salidas.length;
+
+      this.totalMontoSalidas = salidas.reduce((totalSalida, salida) => {
+        const subtotalSalida = salida.detalles?.reduce((sum, detalle) => {
+          return sum + (detalle.quantity * (detalle.product?.price ?? 0));
+        }, 0) ?? 0;
+
+        return totalSalida + subtotalSalida;
+      }, 0);
+    },
+    error: (err) => console.error('Error al cargar salidas:', err)
+  });
+}
 
 }

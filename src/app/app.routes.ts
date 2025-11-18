@@ -33,6 +33,8 @@ import { ProveedoresAdministradorComponent } from './pages/administrador/proveed
 import { UsuariosAdministradorComponent } from './pages/administrador/usuarios-administrador/usuarios-administrador.component';
 import { ControlInventarioAdministradorComponent } from './pages/administrador/control-inventario-administrador/control-inventario-administrador.component';
 import { ClienteAdministradorComponent } from './pages/administrador/cliente-administrador/cliente-administrador.component';
+import { ViewEntradaAdministradorComponent } from './shared/modals-administrador/view-entrada-administrador/view-entrada-administrador.component';
+import { ViewSalidaAdministradorComponent } from './shared/modals-administrador/view-salida-administrador/view-salida-administrador.component';
 
 export const routes: Routes = [
   {
@@ -187,6 +189,14 @@ export const routes: Routes = [
       {
         path: 'usuarios-administrador',
         component: UsuariosAdministradorComponent
+      },
+      {
+        path: 'view-salida-administrador/:id',
+        component: ViewSalidaAdministradorComponent
+      },
+      {
+        path: 'view-entrada-administrador/:id',
+        component: ViewEntradaAdministradorComponent
       }
     ]
   }

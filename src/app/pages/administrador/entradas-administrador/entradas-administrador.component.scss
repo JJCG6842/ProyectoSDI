@@ -19,7 +19,7 @@
 }
 
 .salida{
-    background-color: red;
+    background-color: rgb(102, 255, 0);
 }
 
 .botons{
@@ -36,7 +36,7 @@
 }
 
 input{
-    width: 900px;
+    width: 850px;
     height: 45px;
     font-size: 24px;
     position: relative;
@@ -67,6 +67,11 @@ input{
     color: white;
     font-size: 24px;
     font-weight: 500;
+}
+
+.boton1:hover,
+.entrance:hover{
+  opacity: 0.8;
 }
 
 
@@ -128,7 +133,27 @@ input{
   background: rgb(1, 255, 1);
 }
 
-.view:hover{
-    background: rgb(52, 250, 52)
+.delete{
+  padding: 8px 16px;
+  margin-right: 10px; 
+  width: 60px;
+  height: 48px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  padding: 10px 0;
+  cursor: pointer;
+  background: rgb(252, 0, 0);
 }
 
+
+.view:hover,
+.salida:hover{
+    background: rgb(92, 252, 92)
+}
+
+.delete:hover
+{
+    background: rgb(253, 62, 62);
+}

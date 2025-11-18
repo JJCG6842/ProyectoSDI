@@ -1,3 +1,4 @@
+
 .header-row {
   display: flex;
   justify-content: space-between; 
@@ -5,8 +6,13 @@
   margin-bottom: 20px;            
 }
 
-.entrance,
-.kardex-boton{
+.forms{
+  display: flex;
+  gap: 50px;
+}
+
+.add,
+.salida{
     width: 250px;
     height: 60px;
     background-color: #045CFF;
@@ -17,58 +23,6 @@
     font-weight: 500;
     cursor: pointer;
 }
-
-.entrance{
-    background-color: rgb(255, 1, 1);
-}
-
-.botons{
-  display: flex;
-  gap: 30px;
-  position: relative;
-}
-
-.enter{
-    font-size: 30px;
-    font-weight: 500;
-    position: relative;
-    top: 46px;
-}
-
-input{
-    width: 900px;
-    height: 45px;
-    font-size: 24px;
-    position: relative;
-    left: 20px;
-    bottom: -70px;
-    border-radius: 8px;
-    outline: none;
-    border-color: #A4A4A4;
-    padding-left: 20px; 
-}
-
-.content1{
-    position: relative;
-    bottom: 20px;
-    display: flex;
-}
-
-.boton1{
-    width: 180px;
-    height: 56px;
-    position: relative;
-    left: 100px;
-    bottom: -70px;
-    cursor: pointer;
-    background-color: #045CFF;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    font-size: 24px;
-    font-weight: 500;
-}
-
 
 .icon{
     font-size: 35px;  
@@ -82,6 +36,16 @@ input{
   margin-right: 12px;
   vertical-align: middle;
   bottom: 4px;
+  position: relative;
+}
+
+.salida{
+  background-color: red;
+}
+
+.botons{
+  display: flex;
+  gap: 30px;
   position: relative;
 }
 
@@ -128,12 +92,7 @@ input{
   background: rgb(252, 0, 0);
 }
 
-
-.delete:hover{
+.delete:hover,
+.salida:hover{
     background: rgb(243, 47, 47);
-}
-
-.filters{
-  display: flex;
-  gap: 30px;
 }

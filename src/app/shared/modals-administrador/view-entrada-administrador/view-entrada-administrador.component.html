@@ -1,0 +1,69 @@
+<div class="header-row">
+  <h1>Detalle de entrada</h1>
+  <div class="botons">
+    <button class="salida" (click)="gestor()">
+      Gestión de entrada
+    </button>
+    <button class="salida" style="background-color: rgb(248, 180, 34);" (click)="exportarPDF()">
+      Exportar PDF
+    </button>
+  </div>
+</div>
+
+<br>
+
+<div *ngIf="entrada">
+
+  <h2>Información general</h2>
+  <p><strong>Fecha:</strong> {{entrada.createdAt | date: 'dd-MM-yyyy'}}</p>
+
+
+  <p>
+    <strong>Proveedor:</strong> {{entrada.supplier?.name}}
+  </p>
+
+  <br>
+
+  <h2>Productos de esta entrada</h2>
+
+  <div class="table">
+    <table>
+      <thead>
+        <tr>
+          <th>N°</th>
+          <th>Categoría</th>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Precio</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let d of entrada.detalles; index as i" style="text-align: center;">
+          <td>{{i + 1}}</td>
+          <td>{{getCategoriaName(d.product.categoryId)}}</td>
+          <td>{{d.product.name}}</td>
+          <td>{{d.quantity}}</td>
+          <td>S/ {{d.price}}</td>
+          <td>S/ {{d.total}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <br>
+
+  <div style="display: flex; gap: 40px;">
+    <div>
+      <h2>Monto total:</h2>
+      <h3>S/. {{montoTotal}}</h3>
+    </div>
+
+    <div>
+      <h2>Cantidad total:</h2>
+      <h3>{{cantidadTotal}}</h3>
+    </div>
+  </div>
+
+</div>

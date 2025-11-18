@@ -1,59 +1,47 @@
-<!-- <div class="header-row">
+<div class="header-row">
   <h1>Gestión de entradas:</h1>
     <div class="botons">
         <button class="entrance" (click)="kardex()">
             Panel de Inventario
         </button> 
-        <button class="salida" (click)="salidas()">
-            Ver salidas
-        </button>
     </div>
 </div>
 
-
-<div class="content1">
-  <p class="enter">Buscar producto:</p>
-<input type="text" placeholder="Ingrese producto..." [(ngModel)]="searchTerm" (ngModelChange)="onSearchTermChange($event)">
-
-<div class="botons" style="bottom: 5px; right: 40px;">
-  <button class="boton1" (click)="search()">
-  <mat-icon fontIcon="search" class="icon-btn" ></mat-icon>
-  Buscar
-</button>
-
-
+<h2>Filtros:</h2>
+<div class="filters" >
+<mat-form-field style="width: 280px;">
+  <mat-label>Seleccionar Proveedor</mat-label>
+  <mat-select>
+    <mat-option value="Compusur EIRL">Compusur EIRL</mat-option>
+  </mat-select>
+</mat-form-field>
 </div>
-
-</div> 
-
 
 <div class="table">
      <table>
          <thead>
            <tr>   
-             <th>Fecha</th>
-             <th>Nombre del producto</th>
+             <th>Nro°</th>
+             <th>Fecha de registro</th>
              <th>Proveedor</th>
-             <th>Cantidad</th>
-             <th>Precio</th>
+             <th>Cantidad total</th>
              <th>Monto total</th>
              <th>Acciones</th>
            </tr>
          </thead>
          <tbody>
-          <tr *ngFor="let entrada of entradas">
-             <th>{{entrada.createdAt | date:'dd/MM/yyyy'}}</th>   
-             <th>{{entrada.product.name}}</th>
-             <th>{{entrada.supplier?.name}}</th>
-             <th>{{entrada.quantity}}</th>
-             <th>S/.{{entrada.product.price | number:'1.2-2'}}</th>
-             <th>S/.{{ entrada.product.price * entrada.quantity | number:'1.2-2' }}</th>
+          <tr *ngFor="let entrada of entradas; let i = index">
+             <th>{{i + 1}}</th>   
+             <th>{{entrada.createdAt | date: 'dd-MM-yy'}}</th>
+             <th>{{getNombreProveedor(entrada)}}</th>
+             <th>{{getCantidadTotal(entrada)}}</th>
+             <th>S/.{{getMontoTotal(entrada)}}</th>
              <th>
-                 <button class="view" ><mat-icon aria-hidden="false" fontIcon="visibility"></mat-icon></button>
+              <button class="delete" (click)="view(entrada.id)"  style="background-color: rgb(1, 255, 1);"><mat-icon aria-hidden="false" fontIcon="visibility"></mat-icon></button>
              </th>
            </tr>
          </tbody>
       </table>
 </div>
 
-<br><br><br><br> -->
+<br><br><br><br>
