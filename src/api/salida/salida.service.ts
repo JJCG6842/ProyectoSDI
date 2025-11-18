@@ -87,7 +87,6 @@ export class SalidaService {
   }
 
   return this.prisma.$transaction(async (prisma) => {
-    // Validar stock
     for (const item of productos) {
       const producto = await prisma.products.findUnique({
         where: { id: item.productId },
@@ -126,7 +125,6 @@ export class SalidaService {
       },
     });
 
-    // Actualizar stock
     for (const item of productos) {
       await prisma.products.update({
         where: { id: item.productId },
