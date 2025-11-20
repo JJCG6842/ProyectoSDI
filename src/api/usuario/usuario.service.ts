@@ -106,4 +106,10 @@ export class UsuarioService {
 
     return { message: 'Login correcto', user };
   }
+
+  async findByStatus(status: UserStatus) {
+  return this.prisma.users.findMany({
+    where: { status },
+  });
+}
 }

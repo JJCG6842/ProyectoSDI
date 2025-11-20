@@ -1,6 +1,6 @@
 import { Controller, Get, Put, Post, Delete, Param, Body, Query } from '@nestjs/common';
 import { ProductosService } from './productos.service';
-import { ProductStatus } from '@prisma/client';
+import { ProductStatus, ProductState } from '@prisma/client';
 
 @Controller('productos')
 export class ProductosController {
@@ -39,6 +39,16 @@ export class ProductosController {
   @Get('buscar/categoria/id/:id')
   findByCategoryId(@Param('id') id: string) {
     return this.productoService.findByCategoryId(id);
+  }
+
+  @Get('filtrar/stock/:status')
+  filtrarPorStock(@Param('status') status: ProductStatus) {
+    return this.productoService.findByStock(status);
+  }
+
+  @Get('filtrar/estado/:state')
+  filtrarPorEstado(@Param('state') state: ProductState) {
+    return this.productoService.findByState(state);
   }
 
   @Get('buscar/marca/id/:id')

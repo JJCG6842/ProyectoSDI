@@ -8,20 +8,20 @@ export class ProductosService {
   async findAll() {
     return this.prisma.products.findMany({
       include: {
-        category: {select: { id: true, name: true },},
-        subcategory: {select: { id: true, name: true },},
-        marca: {select: { id: true, name: true }}
+        category: { select: { id: true, name: true }, },
+        subcategory: { select: { id: true, name: true }, },
+        marca: { select: { id: true, name: true } }
       },
     });
   }
 
   async findAllInventory() {
     return this.prisma.products.findMany({
-      where: {state: ProductState.Habilitado,},
+      where: { state: ProductState.Habilitado, },
       include: {
-        category: {select: { id: true, name: true },},
-        subcategory: {select: { id: true, name: true },},
-        marca: {select: { id: true, name: true }}
+        category: { select: { id: true, name: true }, },
+        subcategory: { select: { id: true, name: true }, },
+        marca: { select: { id: true, name: true } }
       },
     });
   }
@@ -131,50 +131,50 @@ export class ProductosService {
   }
 
   async update(
-  id: string,
-  data: Partial<{
-    image: string;
-    name: string;
-    description: string;
-    marcaId: string;
-    price: number;
-    quantity: number;
-    status: ProductStatus;
-    model: string;
-    categoryId: string;
-    subcategoryId: string;
-  }>,
-) {
-  await this.findOne(id);
+    id: string,
+    data: Partial<{
+      image: string;
+      name: string;
+      description: string;
+      marcaId: string;
+      price: number;
+      quantity: number;
+      status: ProductStatus;
+      model: string;
+      categoryId: string;
+      subcategoryId: string;
+    }>,
+  ) {
+    await this.findOne(id);
 
-  if (data.categoryId) {
-    const category = await this.prisma.category.findUnique({
-      where: { id: data.categoryId },
+    if (data.categoryId) {
+      const category = await this.prisma.category.findUnique({
+        where: { id: data.categoryId },
+      });
+      if (!category) throw new NotFoundException('Categoría no encontrada');
+    }
+
+    if (data.subcategoryId) {
+      const subcategory = await this.prisma.subcategory.findUnique({
+        where: { id: data.subcategoryId },
+      });
+      if (!subcategory)
+        throw new NotFoundException('Subcategoría no encontrada');
+    }
+
+    if (data.quantity !== undefined) {
+      data.status =
+        data.quantity > 0
+          ? ProductStatus.Instock
+          : ProductStatus.Outstock;
+    }
+
+
+    return this.prisma.products.update({
+      where: { id },
+      data,
     });
-    if (!category) throw new NotFoundException('Categoría no encontrada');
   }
-
-  if (data.subcategoryId) {
-    const subcategory = await this.prisma.subcategory.findUnique({
-      where: { id: data.subcategoryId },
-    });
-    if (!subcategory)
-      throw new NotFoundException('Subcategoría no encontrada');
-  }
-
-  if (data.quantity !== undefined) {
-    data.status =
-      data.quantity > 0
-        ? ProductStatus.Instock
-        : ProductStatus.Outstock;
-  }
-  
-
-  return this.prisma.products.update({
-    where: { id },
-    data,
-  });
-}
 
   async delete(id: string) {
     await this.findOne(id);
@@ -220,5 +220,28 @@ export class ProductosService {
       data: { state: ProductState.Deshabilitado },
     });
   }
+
+  async findByStock(status: ProductStatus) {
+    return this.prisma.products.findMany({
+      where: { status },
+      include: {
+        category: { select: { id: true, name: true } },
+        subcategory: { select: { id: true, name: true } },
+        marca: { select: { id: true, name: true } },
+      },
+    });
+  }
+
+  async findByState(state: ProductState) {
+    return this.prisma.products.findMany({
+      where: { state },
+      include: {
+        category: { select: { id: true, name: true } },
+        subcategory: { select: { id: true, name: true } },
+        marca: { select: { id: true, name: true } },
+      },
+    });
+  }
+
 
 }
