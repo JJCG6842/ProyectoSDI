@@ -5,6 +5,8 @@ import { SalidaService } from '../../../../services/salida.service';
 import { Salida } from '../../../../interface/salida.interface';
 import { CategoriaService } from '../../../../services/categoria.service';
 import { Categoria } from '../../../../interface/categoria.interface';
+import { ViewChild } from '@angular/core';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -19,12 +21,18 @@ declare module 'jspdf' {
 @Component({
   selector: 'app-view-salida',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatPaginatorModule],
   templateUrl: './view-salida.component.html',
   styleUrls: ['./view-salida.component.scss']
 })
 export class ViewSalidaComponent implements OnInit {
 
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  pageSize = 5;
+  pageIndex = 0;
+
+  detallesPaginados: any[] = [];
   salida: Salida | null = null;
   cantidadTotal = 0;
   montoTotal = 0;
@@ -36,11 +44,11 @@ export class ViewSalidaComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private salidaService: SalidaService,
-    private categoriaService: CategoriaService   
-  ) {}
+    private categoriaService: CategoriaService
+  ) { }
 
   ngOnInit(): void {
-    this.cargarCategorias(); 
+    this.cargarCategorias();
     this.cargarSalidaById();
   }
 
@@ -69,10 +77,32 @@ export class ViewSalidaComponent implements OnInit {
         this.cantidadTotal = data.detalles.reduce((acc, d) => acc + d.quantity, 0);
         this.montoTotal = data.detalles.reduce((acc, d) => acc + d.total, 0);
 
+        this.aplicarPaginacion();
         this.cd.markForCheck();
       },
       error: (err) => console.error('Error obteniendo salida', err)
     });
+  }
+
+  aplicarPaginacion() {
+    if (!this.salida) return;
+
+    const start = this.pageIndex * this.pageSize;
+    const end = start + this.pageSize;
+
+    this.detallesPaginados = this.salida.detalles.slice(start, end);
+
+    this.cd.markForCheck();
+  }
+
+  ngAfterViewInit() {
+    if (this.paginator) {
+      this.paginator.page.subscribe(() => {
+        this.pageIndex = this.paginator.pageIndex;
+        this.pageSize = this.paginator.pageSize;
+        this.aplicarPaginacion();
+      });
+    }
   }
 
   getCategoriaName(id: string): string {

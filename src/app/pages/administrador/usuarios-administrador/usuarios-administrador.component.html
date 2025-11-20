@@ -38,8 +38,8 @@
            </tr>
          </thead>
          <tbody>
-          <tr *ngFor="let usuario of usuarios; let i = index">   
-             <th>{{i + 1}}</th>
+          <tr *ngFor="let usuario of paginatedUsuarios; let i = index">   
+             <th>{{ (pageIndex * pageSize) + i + 1 }}</th>
              <th>{{usuario.nombre}}</th>
              <th>{{ ocultarPassword(usuario.password) }}</th>
              <th>{{usuario.role}}</th>
@@ -61,6 +61,8 @@
            </tr>
          </tbody>
       </table>
+      <mat-paginator [length]="usuarios.length" [pageSize]="pageSize" [pageSizeOptions]="[5, 8, 10, 20]">
+  </mat-paginator>
 </div>
 
 <br><br><br><br>

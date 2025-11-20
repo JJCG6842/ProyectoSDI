@@ -8,39 +8,40 @@
 
 <div class="content1">
   <p class="enter">Ingrese Producto:</p>
-<input type="text" placeholder="Buscar producto..." [(ngModel)]="searchTerm" (ngModelChange)="onSearchTermChange($event)">
+  <input type="text" placeholder="Buscar producto..." [(ngModel)]="searchTerm"
+    (ngModelChange)="onSearchTermChange($event)">
 
-<button class="boton1" (click)="search()">
-  <mat-icon fontIcon="search" class="icon-btn"></mat-icon>
-  Buscar
-</button>
-</div> 
+  <button class="boton1" (click)="search()">
+    <mat-icon fontIcon="search" class="icon-btn"></mat-icon>
+    Buscar
+  </button>
+</div>
 
 <div class="miniselect">
 
-<div class="filter-section">
-  <mat-form-field appearance="fill">
-    <mat-label>Filtrar por categoría</mat-label>
-    <mat-select [(value)]="selectCategoryId" (selectionChange)="filtrarPorCategoria()">
-      <mat-option value="">Todas</mat-option>
-      <mat-option *ngFor="let cat of categorias" [value]="cat.id">
-        {{ cat.name }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-</div>
+  <div class="filter-section">
+    <mat-form-field appearance="fill">
+      <mat-label>Filtrar por categoría</mat-label>
+      <mat-select [(value)]="selectCategoryId" (selectionChange)="filtrarPorCategoria()">
+        <mat-option value="">Todas</mat-option>
+        <mat-option *ngFor="let cat of categorias" [value]="cat.id">
+          {{ cat.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 
-<div class="filter-section">
-  <mat-form-field appearance="fill">
-    <mat-label>Filtrar por marca</mat-label>
-    <mat-select [(value)]="selectMarcaId" (selectionChange)="filtrarPorMarca()">
-      <mat-option value="">Todas</mat-option>
-      <mat-option *ngFor="let marca of marcas" [value]="marca.id">
-        {{ marca.name }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-</div>
+  <div class="filter-section">
+    <mat-form-field appearance="fill">
+      <mat-label>Filtrar por marca</mat-label>
+      <mat-select [(value)]="selectMarcaId" (selectionChange)="filtrarPorMarca()">
+        <mat-option value="">Todas</mat-option>
+        <mat-option *ngFor="let marca of marcas" [value]="marca.id">
+          {{ marca.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 
 
 
@@ -48,43 +49,50 @@
 
 
 <div class="table">
-     <table>
-         <thead>
-           <tr>   
-             <th>Nombre del producto</th>
-             <th>Imagen</th>
-             <th>Marca</th>
-             <th>Estado</th>
-             <th>Categoria</th>
-             <th>Precio</th>
-             <th>Acciones</th>
-           </tr>
-         </thead>
-         <tbody>
-          <tr *ngFor="let producto of productos">
-            <th>{{producto.name}}</th>   
-             <th><img [src]="producto.image" alt="Imagen" width="50"></th>
-             <th>{{producto.marca?.name}}</th>
-             <th>{{producto.state}}</th>
-             <th>{{producto.category?.name}}</th>
-             <th>S/.{{ producto.price | number: '1.2-2' }}</th>
-             <th>
-               <button class="edit" (click)="editProduct(producto)"><mat-icon aria-hidden="false" fontIcon="edit"></mat-icon></button>
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre del producto</th>
+        <th>Imagen</th>
+        <th>Marca</th>
+        <th>Estado</th>
+        <th>Categoria</th>
+        <th>Precio</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let producto of pagedProductos">
+        <th>{{producto.name}}</th>
+        <th><img [src]="producto.image" alt="Imagen" width="50"></th>
+        <th>{{producto.marca?.name}}</th>
+        <th>{{producto.state}}</th>
+        <th>{{producto.category?.name}}</th>
+        <th>S/.{{ producto.price | number: '1.2-2' }}</th>
+        <th>
+          <button class="edit" (click)="editProduct(producto)"><mat-icon aria-hidden="false"
+              fontIcon="edit"></mat-icon></button>
 
-               <button *ngIf="producto.state === 'Deshabilitado'" (click)="habilitar(producto.id)"class="edit" style="background-color: rgb(47, 255, 47);">
-                  <mat-icon fontIcon="check_circle"></mat-icon>
-              </button>
+          <button *ngIf="producto.state === 'Deshabilitado'" (click)="habilitar(producto.id)" class="edit"
+            style="background-color: rgb(47, 255, 47);">
+            <mat-icon fontIcon="check_circle"></mat-icon>
+          </button>
 
-               <button *ngIf="producto.state === 'Habilitado'" (click)="deshabilitar(producto.id)"class="edit" style="background-color: rgb(119, 5, 234);">
-                  <mat-icon fontIcon="hide_source"></mat-icon>
-                </button>
+          <button *ngIf="producto.state === 'Habilitado'" (click)="deshabilitar(producto.id)" class="edit"
+            style="background-color: rgb(119, 5, 234);">
+            <mat-icon fontIcon="hide_source"></mat-icon>
+          </button>
 
-               <button class="view" (click)="view(producto)"><mat-icon aria-hidden="false" fontIcon="visibility"></mat-icon></button>
-               <button class="delete" (click)="eliminarProducto(producto.id!)"><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
-             </th>
-           </tr>
-         </tbody>
-      </table>
+          <button class="view" (click)="view(producto)"><mat-icon aria-hidden="false"
+              fontIcon="visibility"></mat-icon></button>
+          <button class="delete" (click)="eliminarProducto(producto.id!)"><mat-icon aria-hidden="false"
+              fontIcon="delete"></mat-icon></button>
+        </th>
+      </tr>
+    </tbody>
+  </table>
+  <mat-paginator [length]="productos.length" [pageSize]="8" [pageSizeOptions]="[8]" showFirstLastButtons>
+  </mat-paginator>
 </div>
 
 <br><br><br><br>

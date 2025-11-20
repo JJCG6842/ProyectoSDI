@@ -75,8 +75,8 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let salida of salidas; let i = index">
-        <th>{{ i + 1 }}</th>
+      <tr *ngFor="let salida of pagedSalidas; let i = index">
+        <th>{{ (pageIndex * pageSize) + i + 1 }}</th>
         <th>{{ salida.productCategory }}</th>
         <th>{{ salida.productName }}</th>
         <th>{{ salida.quantity }}</th>
@@ -90,6 +90,9 @@
       </tr>
     </tbody>
   </table>
+  <mat-paginator [length]="salidas.length" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons
+    (page)="onPageChange($event)">
+  </mat-paginator>
 </div>
 
 <br><br>

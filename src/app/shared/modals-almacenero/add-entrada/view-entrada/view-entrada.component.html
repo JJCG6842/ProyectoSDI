@@ -40,8 +40,8 @@
       </thead>
 
       <tbody>
-        <tr *ngFor="let d of entrada.detalles; index as i" style="text-align: center;">
-          <td>{{i + 1}}</td>
+        <tr *ngFor="let d of detallesPaginados; let i = index" style="text-align: center;">
+          <td>{{ (pageIndex * pageSize) + i + 1 }}</td>
           <td>{{getCategoriaName(d.product.categoryId)}}</td>
           <td>{{d.product.name}}</td>
           <td>{{d.quantity}}</td>
@@ -50,6 +50,8 @@
         </tr>
       </tbody>
     </table>
+    <mat-paginator [length]="entrada.detalles.length || 0" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]">
+    </mat-paginator>
   </div>
 
   <br>

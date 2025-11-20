@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, ChangeDetectionStrategy, inject, OnInit } from '@angular/core';
+import { Component, ChangeDetectorRef, ChangeDetectionStrategy, inject, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -6,35 +6,45 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { ProveedorService } from '../../../services/proveedor.service';
-import { Proveedor } from '../../../interface/proveedor.interface';
 import { MatOptionModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+
+import { ProveedorService } from '../../../services/proveedor.service';
 import { ProductoService } from '../../../services/producto.service';
-import { Producto } from '../../../interface/producto.interface';
+import { EntradaService } from '../../../services/entrada.service';
+
 import { AddEntradaComponent } from '../../../shared/modals-almacenero/add-entrada/add-entrada.component';
 import { AddEntradaSuccessComponent } from '../../../shared/modals-almacenero/add-entrada/modals-entrada/add-entrada-success/add-entrada-success.component';
-import { EntradaService } from '../../../services/entrada.service';
 
 @Component({
   selector: 'app-entrada-panel',
-  imports: [MatFormFieldModule, CommonModule, MatSelectModule, MatIconModule, MatDialogModule, FormsModule,
-    ReactiveFormsModule, MatOptionModule, MatInputModule
+  imports: [
+    MatFormFieldModule, CommonModule, MatSelectModule, MatIconModule,
+    MatDialogModule, FormsModule, ReactiveFormsModule,
+    MatOptionModule, MatInputModule, MatPaginatorModule
   ],
   templateUrl: './entrada-panel.component.html',
   styleUrl: './entrada-panel.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EntradaPanelComponent {
+export class EntradaPanelComponent implements OnInit, AfterViewInit {
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   readonly dialog = inject(MatDialog);
   readonly cd = inject(ChangeDetectorRef);
 
   formProveedor!: FormGroup;
   proveedores: any[] = [];
+
   entradasRegistradas: any[] = [];
+  paginadasEntradas: any[] = [];
+
+  pageSize: number = 5;
+  pageIndex: number = 0;
+
   productos: any[] = [];
-  totalCantidad: number = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -50,6 +60,23 @@ export class EntradaPanelComponent {
 
   ngOnInit(): void {
     this.cargarProveedores();
+  }
+
+  ngAfterViewInit(): void {
+    if (this.paginator) {
+      this.paginator.page.subscribe(() => {
+        this.pageIndex = this.paginator.pageIndex;
+        this.pageSize = this.paginator.pageSize;
+        this.aplicarPaginacion();
+      });
+    }
+  }
+
+  aplicarPaginacion() {
+    const start = this.pageIndex * this.pageSize;
+    const end = start + this.pageSize;
+    this.paginadasEntradas = this.entradasRegistradas.slice(start, end);
+    this.cd.markForCheck();
   }
 
   cargarProveedores() {
@@ -74,19 +101,20 @@ export class EntradaPanelComponent {
       if (result) {
         const { productId, productName, quantity, price, category } = result;
         const total = quantity * price;
+
         this.entradasRegistradas.push({ productId, productName, quantity, price, total, category });
+
+        this.pageIndex = 0;
+        this.aplicarPaginacion();
         this.cd.markForCheck();
       }
     });
   }
 
-  get totalCantidadEntradas() {
-    return this.entradasRegistradas.reduce((acc, item) => acc + item.quantity, 0);
-  }
-
   eliminarEntrada(index: number) {
-    this.entradasRegistradas.splice(index, 1);
-    this.cd.markForCheck();
+    const realIndex = (this.pageIndex * this.pageSize) + index;
+    this.entradasRegistradas.splice(realIndex, 1);
+    this.aplicarPaginacion();
   }
 
   realizarEntrada() {
@@ -115,7 +143,7 @@ export class EntradaPanelComponent {
       next: (res) => {
         this.dialog.open(AddEntradaSuccessComponent, { data: res });
         this.entradasRegistradas = [];
-
+        this.aplicarPaginacion();
         this.route.navigate(['/almacenero/entrada-almacenero']);
       },
       error: (err) => console.error('Error al crear entrada', err)

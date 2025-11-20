@@ -1,5 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EntradaService } from '../../../services/entrada.service';
 import { CategoriaService } from '../../../services/categoria.service';
@@ -17,30 +19,37 @@ declare module 'jspdf' {
 }
 
 @Component({
-  selector: 'app-view-entrada',
+  selector: 'app-view-entrada-administrador',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatPaginatorModule],
   templateUrl: './view-entrada-administrador.component.html',
   styleUrl: './view-entrada-administrador.component.scss'
 })
 export class ViewEntradaAdministradorComponent implements OnInit {
 
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  pageSize = 5;
+  pageIndex = 0;
+
+  detallesPaginados: any[] = [];
   entrada: Entrada | null = null
   cantidadTotal = 0;
   montoTotal = 0;
   categorias: Categoria[] = [];
 
+
   private cd = inject(ChangeDetectorRef);
 
   constructor(private route: ActivatedRoute,
-    private router: Router, 
-    private categoriaService: CategoriaService, 
+    private router: Router,
+    private categoriaService: CategoriaService,
     private entradaService: EntradaService) { }
 
-    ngOnInit(): void {
-      this.cargarCategorias();
-      this.cargarEntradaById();
-    }
+  ngOnInit(): void {
+    this.cargarCategorias();
+    this.cargarEntradaById();
+  }
 
   cargarCategorias() {
     this.categoriaService.getCategorias().subscribe({
@@ -52,74 +61,98 @@ export class ViewEntradaAdministradorComponent implements OnInit {
     });
   }
 
-  cargarEntradaById(){
+  cargarEntradaById() {
     const id = this.route.snapshot.paramMap.get('id');
 
-    if(!id){
+    if (!id) {
       console.error('No recibio el ID');
       return;
     }
 
     this.entradaService.getEntradaPorId(id).subscribe({
-      next: (data) =>{
+      next: (data) => {
         this.entrada = data;
 
         this.cantidadTotal = data.detalles.reduce((acc, d) => acc + d.quantity, 0);
         this.montoTotal = data.detalles.reduce((acc, d) => acc + d.total, 0);
 
+        this.aplicarPaginacion();
         this.cd.markForCheck();
       },
       error: (err) => console.error('Error al obtener categoria', err)
     });
   }
 
-  exportarPDF() {
+  aplicarPaginacion() {
   if (!this.entrada) return;
 
-  const doc = new jsPDF();
+  const start = this.pageIndex * this.pageSize;
+  const end = start + this.pageSize;
 
-  doc.setFontSize(18);
-  doc.text('Detalle de Entrada', 14, 20);
+  this.detallesPaginados = this.entrada.detalles.slice(start, end);
 
-  doc.setFontSize(12);
-  doc.text(
-    `Fecha: ${new Date(this.entrada.createdAt).toLocaleString()}`, 
-    14, 
-    35
-  );
-
-  doc.text(
-    `Proveedor: ${this.entrada.supplier?.name || 'Sin proveedor'}`,
-    14,
-    43
-  );
-
-  const rows = this.entrada.detalles.map((d, index) => [
-    index + 1,
-    this.getCategoriaName(d.product.categoryId),
-    d.product.name,
-    d.quantity,
-    `S/. ${d.price}`,
-    `S/. ${d.total}`
-  ]);
-
-  autoTable(doc, {
-    startY: 55,
-    head: [['#', 'Categoría', 'Producto', 'Cantidad', 'Precio', 'Total']],
-    body: rows,
-    theme: 'grid'
-  });
-
-  const finalY = doc.lastAutoTable.finalY + 10;
-
-  doc.setFontSize(14);
-  doc.text(`Cantidad total: ${this.cantidadTotal}`, 14, finalY);
-  doc.text(`Monto total: S/. ${this.montoTotal}`, 14, finalY + 10);
-
-  const fileName = `Entrada-${this.entrada.id}.pdf`;
-
-  doc.save(fileName);
+  this.cd.markForCheck();
 }
+
+
+
+ngAfterViewInit() {
+  if (this.paginator) {
+    this.paginator.page.subscribe(() => {
+      this.pageIndex = this.paginator.pageIndex;
+      this.pageSize = this.paginator.pageSize;
+      this.aplicarPaginacion();
+    });
+  }
+}
+
+  exportarPDF() {
+    if (!this.entrada) return;
+
+    const doc = new jsPDF();
+
+    doc.setFontSize(18);
+    doc.text('Detalle de Entrada', 14, 20);
+
+    doc.setFontSize(12);
+    doc.text(
+      `Fecha: ${new Date(this.entrada.createdAt).toLocaleString()}`,
+      14,
+      35
+    );
+
+    doc.text(
+      `Proveedor: ${this.entrada.supplier?.name || 'Sin proveedor'}`,
+      14,
+      43
+    );
+
+    const rows = this.entrada.detalles.map((d, index) => [
+      index + 1,
+      this.getCategoriaName(d.product.categoryId),
+      d.product.name,
+      d.quantity,
+      `S/. ${d.price}`,
+      `S/. ${d.total}`
+    ]);
+
+    autoTable(doc, {
+      startY: 55,
+      head: [['#', 'Categoría', 'Producto', 'Cantidad', 'Precio', 'Total']],
+      body: rows,
+      theme: 'grid'
+    });
+
+    const finalY = doc.lastAutoTable.finalY + 10;
+
+    doc.setFontSize(14);
+    doc.text(`Cantidad total: ${this.cantidadTotal}`, 14, finalY);
+    doc.text(`Monto total: S/. ${this.montoTotal}`, 14, finalY + 10);
+
+    const fileName = `Entrada-${this.entrada.id}.pdf`;
+
+    doc.save(fileName);
+  }
 
   getCategoriaName(id: string): string {
     return this.categorias.find(c => c.id === id)?.name || 'No definido';
@@ -130,4 +163,3 @@ export class ViewEntradaAdministradorComponent implements OnInit {
   }
 
 }
-

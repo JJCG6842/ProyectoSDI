@@ -27,6 +27,16 @@
   gap: 30px;
 }
 
+.instock {
+  color: rgb(5, 216, 5);
+  font-weight: bold;
+}
+
+.outstock {
+  color: red;
+  font-weight: bold;
+}
+
 .icon{
     font-size: 35px;  
     height: 30px;

@@ -1,4 +1,4 @@
-import { Component , inject, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, Inject} from '@angular/core';
+import { Component , inject, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, Inject, ViewChild} from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import { CommonModule } from '@angular/common';
@@ -11,15 +11,19 @@ import { Marca } from '../../../interface/marca.interface';
 import { MarcaService } from '../../../services/marca.service';
 import { CategoriaService } from '../../../services/categoria.service';
 import { Categoria } from '../../../interface/categoria.interface';
+import { MatPaginator,MatPaginatorModule } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-marca-administrador',
-  imports: [MatIconModule, MatDialogModule, MatButtonModule, CommonModule, FormsModule, MatFormFieldModule,MatSelectModule],
+  imports: [MatIconModule, MatDialogModule, MatButtonModule, CommonModule,
+     FormsModule, MatFormFieldModule,MatSelectModule,MatPaginatorModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './marca-administrador.component.html',
   styleUrl: './marca-administrador.component.scss'
 })
 export class MarcaAdministradorComponent implements OnInit{
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   readonly dialog = inject(MatDialog);
   readonly cd = inject(ChangeDetectorRef);
@@ -37,6 +41,19 @@ export class MarcaAdministradorComponent implements OnInit{
       this.cargarCategorias();
   }
 
+  ngAfterViewInit(): void {
+    if (this.paginator) {
+      this.paginator.pageSize = 8;
+    }
+  }
+
+  get pagedMarcas(): Marca[] {
+    if (!this.paginator) return this.marcaFiltrada;
+
+    const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+    return this.marcaFiltrada.slice(startIndex, startIndex + this.paginator.pageSize);
+  }
+
   cargarCategorias() {
     this.categoriaService.getCategorias().subscribe({
       next: (res) => {
@@ -52,6 +69,9 @@ export class MarcaAdministradorComponent implements OnInit{
       next: (obtener) =>{
         this.marcas = obtener;
         this.marcaFiltrada = obtener;
+        if (this.paginator) {
+          this.paginator.firstPage();
+        }
         this.isloading = false;
         console.log('Marcas obtenidas: ', this.marcas);
         this.cd.markForCheck()
@@ -71,6 +91,9 @@ export class MarcaAdministradorComponent implements OnInit{
         s => s.category.id === this.selectCategoryId
       );
     }
+    if (this.paginator) {
+          this.paginator.firstPage();
+        }
     this.cd.markForCheck();
   }
 

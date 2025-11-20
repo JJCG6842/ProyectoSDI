@@ -1,8 +1,11 @@
-import { Component , inject, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, Inject} from '@angular/core';
+import { Component , inject, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, Inject, ViewChild} from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import {MatButtonModule} from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -19,18 +22,22 @@ import { Categoria } from '../../../interface/categoria.interface';
 
 @Component({
   selector: 'app-subcategoria-almacenero',
-  imports: [MatIconModule, MatDialogModule, MatButtonModule, CommonModule, FormsModule, MatFormFieldModule,MatSelectModule],
+  imports: [MatIconModule, MatDialogModule, MatButtonModule, CommonModule, FormsModule, MatFormFieldModule,
+    MatSelectModule, MatPaginatorModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './subcategoria-almacenero.component.html',
   styleUrl: './subcategoria-almacenero.component.scss'
 })
 export class SubcategoriaAlmaceneroComponent implements OnInit{
 
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
   readonly dialog = inject(MatDialog);
   readonly cd = inject(ChangeDetectorRef);
   subcategoriasFiltrada: Subcategoria[] = [];
   subcategorias: Subcategoria[] = [];
   selectCategoryId: string = '';
+  dataSource!: MatTableDataSource<Subcategoria>;
   categorias: Categoria[] = [];
   isloading = false;
   searchTerm: string = '';
@@ -43,6 +50,21 @@ export class SubcategoriaAlmaceneroComponent implements OnInit{
       this.cargarCategorias();
   }
 
+  ngAfterViewInit(): void {
+    if (this.dataSource) {
+      this.dataSource.paginator = this.paginator;
+      this.paginator.pageSize = 8;
+    }
+  }
+
+  get pagedSubcategorias(): Subcategoria[] {
+    if (!this.dataSource || !this.paginator) return [];
+
+    const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+    return this.dataSource.data.slice(startIndex, startIndex + this.paginator.pageSize);
+  }
+
+
   cargarCategorias() {
     this.categoriaService.getCategorias().subscribe({
       next: (res) => {
@@ -53,30 +75,42 @@ export class SubcategoriaAlmaceneroComponent implements OnInit{
     });
   }
   
-  obtenerSubcategoria(){
+  obtenerSubcategoria() {
     this.subcategoriaService.getSubcategorias().subscribe({
-      next: (obtener) =>{
-        this.subcategorias = obtener;
-        this.subcategoriasFiltrada = obtener;
+      next: (res) => {
+        this.subcategorias = res;
+        this.subcategoriasFiltrada = res;
+
+        this.dataSource = new MatTableDataSource(this.subcategoriasFiltrada);
+
+        setTimeout(() => {
+          if (this.paginator) {
+            this.dataSource.paginator = this.paginator;
+            this.paginator.pageSize = 8;
+          }
+        });
+
         this.isloading = false;
-        console.log('Subcategorias obtenidas: ', this.subcategorias);
-        this.cd.markForCheck()
+        this.cd.markForCheck();
       },
-      error: (fail) =>{
-        console.error('Error al obtener subcategorías:', fail);
+      error: (err) => {
+        console.error('Error al obtener subcategorías:', err);
         this.isloading = false;
       }
     });
   }
 
   filtrarPorCategoria() {
-    if(!this.selectCategoryId) {
+    if (!this.selectCategoryId) {
       this.subcategoriasFiltrada = this.subcategorias;
     } else {
-      this.subcategoriasFiltrada = this.subcategorias.filter(
-        s => s.category.id === this.selectCategoryId
-      );
+      this.subcategoriasFiltrada = this.subcategorias.filter(s => s.category.id === this.selectCategoryId);
     }
+
+    this.dataSource = new MatTableDataSource(this.subcategoriasFiltrada);
+    this.paginator.firstPage();
+    this.dataSource.paginator = this.paginator;
+
     this.cd.markForCheck();
   }
 
@@ -133,37 +167,38 @@ export class SubcategoriaAlmaceneroComponent implements OnInit{
     })
   }
 
-  onSearchTermChange(term: string) {
-  this.searchTerm = term.trim();
-
-  if (!this.searchTerm) {
-    this.obtenerSubcategoria();
-  }
-}
-
   search() {
-  const term = this.searchTerm.trim();
-
-  if(!term) return;
-  
-
-  this.isloading = true;
-
-  this.subcategoriaService.buscarSubcategoria(term).subscribe({
-    next: (res) => {
-      this.subcategorias = res;
-      this.isloading = false;
-      this.filtrarPorCategoria(); 
-      this.cd.markForCheck();
-    },
-    error: (err) => {
-      console.error('Error en la búsqueda :/', err);
-      this.subcategorias = [];
-      this.isloading = false;
-      this.cd.markForCheck();
+    const term = this.searchTerm.trim();
+    if (!term) {
+      this.obtenerSubcategoria();
+      return;
     }
-  });
-}
+
+    this.subcategoriaService.buscarSubcategoria(term).subscribe({
+      next: (res) => {
+        this.subcategorias = res;
+        this.filtrarPorCategoria();
+
+        this.dataSource = new MatTableDataSource(this.subcategoriasFiltrada);
+        this.dataSource.paginator = this.paginator;
+        this.paginator.pageSize = 8;
+
+        this.cd.markForCheck();
+      },
+      error: () => {
+        this.subcategorias = [];
+        this.subcategoriasFiltrada = [];
+        //this.dataSource = new MatTableDataSource([]);
+
+        this.cd.markForCheck();
+      }
+    });
+  }
+
+  onSearchTermChange(term: string) {
+    this.searchTerm = term.trim();
+    if (!this.searchTerm) this.obtenerSubcategoria();
+  }
 
 
   page1(){

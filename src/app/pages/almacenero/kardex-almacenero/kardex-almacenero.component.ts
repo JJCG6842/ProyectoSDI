@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { EntradaService } from '../../../services/entrada.service';
 import { SalidaService } from '../../../services/salida.service';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { firstValueFrom } from 'rxjs';
 import { ProductoService } from '../../../services/producto.service';
 import { Producto } from '../../../interface/producto.interface';
@@ -21,7 +22,7 @@ import { Salida } from '../../../interface/salida.interface';
 @Component({
   selector: 'app-kardex-almacenero',
   imports: [MatExpansionModule, MatIconModule, MatFormFieldModule, MatSelectModule, MatInputModule, CommonModule, FormsModule, MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule, MatPaginatorModule
   ],
   providers: [provideNativeDateAdapter()],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,10 +33,13 @@ export class KardexAlmaceneroComponent {
 
   readonly reload = inject(ChangeDetectorRef);
   movimientos: any[] = [];
+  pageSize = 10;
+  pageIndex = 0;
   filtroProducto = '';
   tipoFiltro: 'todos' | 'entrada' | 'salida' = 'todos';
   ordenFecha: 'asc' | 'desc' = 'desc';
   fechaFiltro: Date | null = null;
+  movimientosPaginados: any[] = [];
   isLoading = true;
   productos: Producto[] = [];
   searchTerm: string = '';
@@ -64,50 +68,64 @@ export class KardexAlmaceneroComponent {
   }
 
   async cargarMovimientos() {
-  this.isLoading = true;
-  try {
-    const [entradas, salidas] = await Promise.all([
-      firstValueFrom(this.entradaService.getEntradas()),
-      firstValueFrom(this.salidaService.getSalidas())
-    ]);
+    this.isLoading = true;
+    try {
+      const [entradas, salidas] = await Promise.all([
+        firstValueFrom(this.entradaService.getEntradas()),
+        firstValueFrom(this.salidaService.getSalidas())
+      ]);
 
-    const entradasFormateadas = (entradas ?? []).flatMap(e =>
-      (e.detalles ?? []).map(d => ({
-        fecha: e.createdAt,
-        movimiento: 'Entrada',
-        proveedor: e.supplier?.name ?? '—',
-        producto: d.product?.name ?? '—',
-        cantidad: d.quantity,
-        precio: d.price ?? d.product?.price ?? 0,
-        total: d.total ?? d.quantity * (d.price ?? d.product?.price ?? 0)
-      }))
-    );
+      const entradasFormateadas = (entradas ?? []).flatMap(e =>
+        (e.detalles ?? []).map(d => ({
+          fecha: e.createdAt,
+          movimiento: 'Entrada',
+          proveedor: e.supplier?.name ?? '—',
+          producto: d.product?.name ?? '—',
+          cantidad: d.quantity,
+          precio: d.price ?? d.product?.price ?? 0,
+          total: d.total ?? d.quantity * (d.price ?? d.product?.price ?? 0)
+        }))
+      );
 
-    const salidasFormateadas = (salidas ?? []).flatMap(s =>
-      (s.detalles ?? []).map(d => ({
-        fecha: s.createdAt,
-        movimiento: 'Salida',
-        proveedor: s.supplier?.name || s.cliente?.name || '—',
-        producto: d.product?.name ?? '—',
-        cantidad: d.quantity,
-        precio: d.price ?? d.product?.price ?? 0,
-        total: d.total ?? d.quantity * (d.price ?? d.product?.price ?? 0)
-      }))
-    );
+      const salidasFormateadas = (salidas ?? []).flatMap(s =>
+        (s.detalles ?? []).map(d => ({
+          fecha: s.createdAt,
+          movimiento: 'Salida',
+          proveedor: s.supplier?.name || s.cliente?.name || '—',
+          producto: d.product?.name ?? '—',
+          cantidad: d.quantity,
+          precio: d.price ?? d.product?.price ?? 0,
+          total: d.total ?? d.quantity * (d.price ?? d.product?.price ?? 0)
+        }))
+      );
 
-    this.movimientos = [...entradasFormateadas, ...salidasFormateadas];
-    this.ordenarMovimientos();
+      this.movimientos = [...entradasFormateadas, ...salidasFormateadas];
+      this.ordenarMovimientos();
 
-  } catch (error) {
-    console.error('Error al cargar movimientos:', error);
-  } finally {
-    this.isLoading = false;
+    } catch (error) {
+      console.error('Error al cargar movimientos:', error);
+    } finally {
+      this.isLoading = false;
+      this.reload.markForCheck();
+    }
+  }
+
+  onPageChange(event: any) {
+    this.pageSize = event.pageSize;
+    this.pageIndex = event.pageIndex;
+    this.actualizarPaginacion();
     this.reload.markForCheck();
   }
-}
+
+  actualizarPaginacion() {
+    const start = this.pageIndex * this.pageSize;
+    const end = start + this.pageSize;
+
+    this.movimientosPaginados = this.movimientosFiltrados.slice(start, end);
+  }
 
   get movimientosFiltrados() {
-    return this.movimientos
+    let lista = this.movimientos
       .filter(mov => {
         const coincideProducto = mov.producto
           .toLowerCase()
@@ -127,6 +145,13 @@ export class KardexAlmaceneroComponent {
           ? new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
           : new Date(a.fecha).getTime() - new Date(b.fecha).getTime()
       );
+
+    this.movimientosPaginados = lista.slice(
+      this.pageIndex * this.pageSize,
+      this.pageIndex * this.pageSize + this.pageSize
+    );
+
+    return lista;
   }
 
   ordenarMovimientos() {
@@ -168,6 +193,9 @@ export class KardexAlmaceneroComponent {
     this.tipoFiltro = 'todos';
     this.ordenFecha = 'desc';
     this.fechaFiltro = null;
+
+    this.pageIndex = 0;
+    this.actualizarPaginacion();
     this.reload.markForCheck();
   }
 

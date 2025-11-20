@@ -44,16 +44,17 @@
       </thead>
 
       <tbody>
-        <tr *ngFor="let d of salida.detalles; index as i" style="text-align: center;">
-  <td>{{ i + 1 }}</td>
-  <td>{{getCategoriaName(d.product.categoryId)}}</td>
-  <td>{{ d.product.name }}</td>
-  <td>{{ d.quantity }}</td>
-  <td>S/ {{ d.price }}</td>
-  <td>S/ {{ d.total }}</td>
-</tr>
+        <tr *ngFor="let d of detallesPaginados; index as i" style="text-align: center;">
+          <td>{{ (pageIndex * pageSize) + i + 1 }}</td>
+          <td>{{getCategoriaName(d.product.categoryId)}}</td>
+          <td>{{ d.product.name }}</td>
+          <td>{{ d.quantity }}</td>
+          <td>S/ {{ d.price }}</td>
+          <td>S/ {{ d.total }}</td>
+        </tr>
       </tbody>
     </table>
+    <mat-paginator [length]="salida.detalles.length || 0" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
   </div>
 
   <br>
@@ -71,4 +72,3 @@
   </div>
 
 </div>
-

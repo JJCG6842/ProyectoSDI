@@ -1,5 +1,6 @@
-import { Component , inject, ChangeDetectionStrategy, OnInit, ChangeDetectorRef} from '@angular/core';
+import { Component , inject, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, ViewChild} from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import {MatButtonModule} from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -13,16 +14,21 @@ import { Cliente } from '../../../interface/cliente.interface';
 
 @Component({
   selector: 'app-cliente-administrador',
-  imports: [MatIconModule, MatDialogModule, MatButtonModule,CommonModule,FormsModule],
+  imports: [MatIconModule, MatDialogModule, MatButtonModule,CommonModule,FormsModule,MatPaginatorModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './cliente-administrador.component.html',
   styleUrl: './cliente-administrador.component.scss'
 })
 export class ClienteAdministradorComponent implements OnInit{
 
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
   readonly dialog = inject(MatDialog);
   readonly cd = inject(ChangeDetectorRef);
   clientes: Cliente[] = [];
+  paginatedClientes: Cliente[] = [];
+  pageSize = 8;
+  pageIndex = 0;
   isLoading = false;
   searchTerm: string = '';
 
@@ -32,10 +38,29 @@ export class ClienteAdministradorComponent implements OnInit{
     this.obtenerClientes();
   }
 
+  ngAfterViewInit(): void {
+    if (this.paginator) {
+      this.paginator.page.subscribe(() => {
+        this.pageIndex = this.paginator.pageIndex;
+        this.pageSize = this.paginator.pageSize;
+        this.aplicarPaginacion();
+      });
+    }
+  }
+
+  aplicarPaginacion() { 
+    const start = this.pageIndex * this.pageSize;
+    const end = start + this.pageSize;
+    this.paginatedClientes = this.clientes.slice(start, end);
+    this.cd.markForCheck();
+  }
+
   obtenerClientes(){
     this.clienteService.getClientes().subscribe({
       next: (res) => {
         this.clientes = res;
+        this.pageIndex = 0;
+        this.aplicarPaginacion();
         this.isLoading = false;
         console.log('Clientes cargados:', this.clientes);
         this.cd.markForCheck()
@@ -109,6 +134,8 @@ export class ClienteAdministradorComponent implements OnInit{
       this.clienteService.buscarCliente(term).subscribe({
         next: (res) => {
           this.clientes = res;
+          this.pageIndex = 0;
+          this.aplicarPaginacion();
           this.isLoading = false;
           this.cd.markForCheck();
         },

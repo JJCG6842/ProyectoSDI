@@ -8,7 +8,8 @@
 
 <div class="content1">
   <p class="enter">Ingrese subcategoria:</p>
-  <input type="text" placeholder="Buscar subcategoria..." [(ngModel)]="searchTerm" (ngModelChange)="onSearchTermChange($event)">
+  <input type="text" placeholder="Buscar subcategoria..." [(ngModel)]="searchTerm"
+    (ngModelChange)="onSearchTermChange($event)">
 
   <div class="botons-column">
     <div class="botons">
@@ -33,14 +34,14 @@
         </mat-select>
       </mat-form-field>
     </div>
-    
+
   </div>
 </div>
 
 <div class="table">
   <table>
     <thead>
-      <tr>   
+      <tr>
         <th>Nro °</th>
         <th>Subcategoria</th>
         <th>Descripcion de la subcategoria</th>
@@ -49,22 +50,23 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let sub of subcategoriasFiltrada; let i = index">   
-        <th>{{ i + 1 }}</th>
-        <th>{{sub.name}}</th>
-        <th>{{sub.description}}</th>
-        <th>{{sub.category.name}}</th>
+      <tr *ngFor="let sub of pagedSubcategorias; let i = index">
+        <th>{{ i + 1 + (paginator.pageIndex * paginator.pageSize) }}</th>
+        <th>{{ sub.name }}</th>
+        <th>{{ sub.description }}</th>
+        <th>{{ sub.category.name }}</th>
         <th>
           <button class="edit" (click)="editSubcategory(sub)">
-            <mat-icon aria-hidden="false" fontIcon="edit"></mat-icon>
+            <mat-icon fontIcon="edit"></mat-icon>
           </button>
           <button class="delete" (click)="deleteSubcategory(sub.id!)">
-            <mat-icon aria-hidden="false" fontIcon="delete"></mat-icon>
+            <mat-icon fontIcon="delete"></mat-icon>
           </button>
         </th>
       </tr>
     </tbody>
   </table>
+  <mat-paginator [pageSizeOptions]="[8]" [length]="subcategoriasFiltrada.length" showFirstLastButtons></mat-paginator>
 </div>
 
 <br><br><br><br>

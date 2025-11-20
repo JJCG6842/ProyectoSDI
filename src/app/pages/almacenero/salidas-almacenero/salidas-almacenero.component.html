@@ -1,19 +1,20 @@
 <div class="header-row">
   <h1>Gestión de salidas:</h1>
-    <div class="botons">
-        <button class="kardex-boton" (click)="kardex()">
-            Panel de Inventario
-        </button> 
-        <button class="entrance" (click)="entradas()">
-            Generar salida
-        </button>
-    </div>
+  <div class="botons">
+    <button class="kardex-boton" (click)="kardex()">
+      Panel de Inventario
+    </button>
+    <button class="entrance" (click)="entradas()">
+      <mat-icon fontIcon="add" class="icon-btn"></mat-icon>
+      Generar salida
+    </button>
+  </div>
 </div>
 
 <h2>Filtros:</h2>
 <div class="filters">
 
-<mat-form-field appearance="fill">
+  <mat-form-field appearance="fill">
     <mat-label>Filtrar por</mat-label>
     <mat-select [(value)]="selectedOpcion" (selectionChange)="onOpcionChange()">
       <mat-option *ngFor="let op of opciones" [value]="op">{{ op }}</mat-option>
@@ -37,7 +38,7 @@
   </mat-form-field>
 
 
-<!-- <mat-form-field>
+  <!-- <mat-form-field>
   <mat-label>Fecha</mat-label>
   <input matInput [matDatepicker]="datepicker" [(ngModel)]="filterDate" (dateChange)="aplicarFiltros()">
   <mat-datepicker #datepicker></mat-datepicker>
@@ -49,32 +50,37 @@
 
 
 <div class="table">
-     <table>
-         <thead>
-           <tr>
-            <th>Nro°</th>
-             <th>Fecha registro</th>
-             <th>Proveedor/Cliente</th>
-             <th>Cantidad total</th>
-             <th>Monto total</th>
-             <th>Acciones</th>
-           </tr>
-         </thead>
-         <tbody>
-          <tr *ngFor="let salida of salidasFiltradas; let i = index">
-            <th>{{i + 1}}</th>
-             <th>{{salida.createdAt | date: 'dd-MM-yyyy'}}</th>   
-             <th>{{ getNombreProveedorCliente(salida) }}</th>
-              <th>{{ getCantidadTotal(salida) }}</th>
-              <th>S/.{{ getMontoTotal(salida) }}</th>
+  <table>
+    <thead>
+      <tr>
+        <th>Nro°</th>
+        <th>Fecha registro</th>
+        <th>Proveedor/Cliente</th>
+        <th>Cantidad total</th>
+        <th>Monto total</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let salida of  pagedSalidas; let i = index">
+        <th>{{ (pageIndex * pageSize) + i + 1 }}</th>
+        <th>{{salida.createdAt | date: 'dd-MM-yyyy'}}</th>
+        <th>{{ getNombreProveedorCliente(salida) }}</th>
+        <th>{{ getCantidadTotal(salida) }}</th>
+        <th>S/.{{ getMontoTotal(salida) }}</th>
 
-             <th>
-                 <button class="delete" style="background-color: #19ff04" (click)="view(salida.id)"><mat-icon aria-hidden="false" fontIcon="visibility"></mat-icon></button>
-                 <button class="delete" (click)="eraseSalida(salida.id)"><mat-icon aria-hidden="false" fontIcon="delete"></mat-icon></button>
-             </th>
-           </tr>
-         </tbody>
-      </table>
+        <th>
+          <button class="delete" style="background-color: #19ff04" (click)="view(salida.id)"><mat-icon
+              aria-hidden="false" fontIcon="visibility"></mat-icon></button>
+          <button class="delete" (click)="eraseSalida(salida.id)"><mat-icon aria-hidden="false"
+              fontIcon="delete"></mat-icon></button>
+        </th>
+      </tr>
+    </tbody>
+  </table>
+  <mat-paginator [length]="salidasFiltradas.length" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]"
+    showFirstLastButtons (page)="onPageChange($event)">
+  </mat-paginator>
 </div>
 
 <br><br><br><br>

@@ -1,9 +1,10 @@
-import { Component , inject, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, Inject} from '@angular/core';
+import { Component , inject, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, Inject, ViewChild, AfterViewInit} from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import {MatDialog, MatDialogModule, MAT_DIALOG_DATA} from '@angular/material/dialog';
@@ -18,12 +19,15 @@ import { Categoria } from '../../../interface/categoria.interface';
 
 @Component({
   selector: 'app-marca-almacenero',
-  imports: [MatIconModule, MatDialogModule, MatButtonModule, CommonModule, FormsModule, MatFormFieldModule,MatSelectModule],
+  imports: [MatIconModule, MatDialogModule, MatButtonModule, CommonModule, FormsModule, MatFormFieldModule,
+    MatSelectModule, MatPaginatorModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './marca-almacenero.component.html',
   styleUrl: './marca-almacenero.component.scss'
 })
 export class MarcaAlmaceneroComponent implements OnInit{
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   readonly dialog = inject(MatDialog);
   readonly cd = inject(ChangeDetectorRef);
@@ -41,6 +45,19 @@ export class MarcaAlmaceneroComponent implements OnInit{
       this.cargarCategorias();
   }
 
+  ngAfterViewInit(): void {
+    if (this.paginator) {
+      this.paginator.pageSize = 6;
+    }
+  }
+
+  get pagedMarcas(): Marca[] {
+    if (!this.paginator) return this.marcaFiltrada;
+
+    const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+    return this.marcaFiltrada.slice(startIndex, startIndex + this.paginator.pageSize);
+  }
+
   cargarCategorias() {
     this.categoriaService.getCategorias().subscribe({
       next: (res) => {
@@ -56,6 +73,9 @@ export class MarcaAlmaceneroComponent implements OnInit{
       next: (obtener) =>{
         this.marcas = obtener;
         this.marcaFiltrada = obtener;
+        if (this.paginator) {
+          this.paginator.firstPage();
+        }
         this.isloading = false;
         console.log('Marcas obtenidas: ', this.marcas);
         this.cd.markForCheck()
@@ -74,6 +94,9 @@ export class MarcaAlmaceneroComponent implements OnInit{
       this.marcaFiltrada = this.marcas.filter(
         s => s.category.id === this.selectCategoryId
       );
+    }
+    if (this.paginator) {
+      this.paginator.firstPage();
     }
     this.cd.markForCheck();
   }

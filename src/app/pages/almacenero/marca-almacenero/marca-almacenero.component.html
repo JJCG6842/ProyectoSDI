@@ -8,7 +8,8 @@
 
 <div class="content1">
   <p class="enter">Ingrese marca:</p>
-  <input type="text" placeholder="Buscar marca..." [(ngModel)]="searchTerm" (ngModelChange)="onSearchTermChange($event)">
+  <input type="text" placeholder="Buscar marca..." [(ngModel)]="searchTerm"
+    (ngModelChange)="onSearchTermChange($event)">
 
   <div class="botons-column">
     <div class="botons">
@@ -32,7 +33,7 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-    </div> 
+    </div>
 
 
   </div>
@@ -41,7 +42,7 @@
 <div class="table">
   <table>
     <thead>
-      <tr>   
+      <tr>
         <th>Nro °</th>
         <th>Nombre de marca</th>
         <th>Descripcion de la marca</th>
@@ -51,8 +52,8 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let marca of marcaFiltrada; let i = index">   
-        <th>{{i + 1}}</th>
+      <tr *ngFor="let marca of pagedMarcas; let i = index">
+        <th>{{i + 1+ (paginator.pageIndex * paginator.pageSize)}}</th>
         <th>{{marca.name}}</th>
         <th>{{marca.description}}</th>
         <th>{{marca.category.name}}</th>
@@ -68,6 +69,8 @@
       </tr>
     </tbody>
   </table>
+  <mat-paginator [length]="marcaFiltrada.length" [pageSize]="6" [pageSizeOptions]="[6]" showFirstLastButtons>
+  </mat-paginator>
 </div>
 
 <br><br><br><br><br>

@@ -1,11 +1,12 @@
-import { Component, ChangeDetectionStrategy,inject,ChangeDetectorRef, OnInit} from '@angular/core';
-import {MatExpansionModule} from '@angular/material/expansion';
+import { Component, ChangeDetectionStrategy, inject, ChangeDetectorRef, OnInit, ViewChild } from '@angular/core';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { EntradaService } from '../../../services/entrada.service';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { Entrada } from '../../../interface/entrada.interface';
-import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddEntradaComponent } from '../../../shared/modals-almacenero/add-entrada/add-entrada.component';
 import { EraseEntradaConfirmComponent } from '../../../shared/modals-almacenero/add-entrada/modals-entrada/erase-entrada-confirm/erase-entrada-confirm.component';
 import { Producto } from '../../../interface/producto.interface';
@@ -21,14 +22,16 @@ import { Proveedor } from '../../../interface/proveedor.interface';
 
 @Component({
   selector: 'app-entradas-almacenero',
-  imports: [MatExpansionModule,MatIconModule,MatDialogModule,CommonModule,FormsModule,MatFormFieldModule,MatSelectModule,
-MatInputModule
+  imports: [MatExpansionModule, MatIconModule, MatDialogModule, CommonModule, FormsModule, MatFormFieldModule, MatSelectModule,
+    MatInputModule, MatPaginatorModule
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './entradas-almacenero.component.html',
   styleUrl: './entradas-almacenero.component.scss'
 })
-export class EntradasAlmaceneroComponent implements OnInit{
+export class EntradasAlmaceneroComponent implements OnInit {
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   readonly dialog = inject(MatDialog)
   readonly reload = inject(ChangeDetectorRef);
@@ -39,17 +42,26 @@ export class EntradasAlmaceneroComponent implements OnInit{
   proveedores: Proveedor[] = [];
   entradasFiltradas: Entrada[] = [];
   selectedProveedorId: string = '';
+  pageSize = 5;
+  pageIndex = 0;
 
-  constructor(private router: Router, private productoService: ProductoService, private entradaService:EntradaService, 
-    private proveedorService: ProveedorService){}
+  constructor(private router: Router, private productoService: ProductoService, private entradaService: EntradaService,
+    private proveedorService: ProveedorService) { }
 
   ngOnInit(): void {
-      this.cargarEntradas();
-      this.cargarProductos();
-      this.cargarProveedores();
+    this.cargarEntradas();
+    this.cargarProductos();
+    this.cargarProveedores();
   }
 
-  cargarProductos(){
+  get pagedEntradas(): Entrada[] {
+    if (!this.paginator) return this.entradasFiltradas;
+
+    const start = this.paginator.pageIndex * this.paginator.pageSize;
+    return this.entradasFiltradas.slice(start, start + this.paginator.pageSize);
+  }
+
+  cargarProductos() {
     this.productoService.getProductos().subscribe({
       next: (products) => {
         this.productos = products;
@@ -62,6 +74,8 @@ export class EntradasAlmaceneroComponent implements OnInit{
       }
     })
   }
+
+  
 
   cargarProveedores() {
     this.proveedorService.getProveedores().subscribe({
@@ -76,31 +90,31 @@ export class EntradasAlmaceneroComponent implements OnInit{
   cargarEntradas() {
     this.entradaService.getEntradas().subscribe({
       next: (data) => {
-        this.entradas = data.map(e => ({
-          ...e,
-          productos: e.productos || []
-        }));
+        this.entradas = data.map(e => ({ ...e }));
         this.entradasFiltradas = [...this.entradas];
+
+        if (this.paginator) this.paginator.firstPage();
+
         this.reload.markForCheck();
       },
-      error: (err) => console.error('Error al cargar entradas', err)
+      error: err => console.error('Error al cargar entradas', err)
     });
   }
 
 
   addEntrance() {
-      const dialogRef = this.dialog.open(AddEntradaComponent,{
-        width: '550px',
-        maxWidth: 'none',
-        panelClass:'custom-dialog-container'
-      });
+    const dialogRef = this.dialog.open(AddEntradaComponent, {
+      width: '550px',
+      maxWidth: 'none',
+      panelClass: 'custom-dialog-container'
+    });
 
-      dialogRef.afterClosed().subscribe(result => {
-        console.log(`Dialog result: ${result}`);
-        if(result){
-          this.cargarEntradas();
-        }
-      });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+      if (result) {
+        this.cargarEntradas();
+      }
+    });
   }
 
   eraseEntrada(id: string): void {
@@ -115,11 +129,11 @@ export class EntradasAlmaceneroComponent implements OnInit{
         this.isloading = true;
         this.entradaService.eliminarEntrada(id).subscribe({
           next: () => {
-            this.dialog.open(DeleteEntradaSuccessComponent,{
-                      width: '400px',
-                      disableClose: true,
+            this.dialog.open(DeleteEntradaSuccessComponent, {
+              width: '400px',
+              disableClose: true,
             });
-            this.cargarEntradas(); 
+            this.cargarEntradas();
           },
           error: (error) => {
             console.error('Error al eliminar entrada:', error);
@@ -131,38 +145,48 @@ export class EntradasAlmaceneroComponent implements OnInit{
   }
 
   search() {
-  const term = this.searchTerm.trim();
+    const term = this.searchTerm.trim();
 
-  if (!term) {
-    this.cargarEntradas();
-    return;
+    if (!term) {
+      this.cargarEntradas();
+      return;
+    }
+
+    this.isloading = true;
+
+    this.entradaService.buscarPorProducto(term).subscribe({
+      next: (res) => {
+
+        this.entradas = res;
+        this.entradasFiltradas = [...res];
+
+        if (this.paginator) this.paginator.firstPage();
+
+        this.isloading = false;
+        this.reload.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error al buscar entradas:', err);
+
+        this.entradas = [];
+        this.entradasFiltradas = [];
+
+        if (this.paginator) this.paginator.firstPage();
+
+        this.isloading = false;
+        this.reload.markForCheck();
+      },
+    });
   }
 
-  this.isloading = true;
-
-  this.entradaService.buscarPorProducto(term).subscribe({
-    next: (res) => {
-      this.entradas = res;
-      this.isloading = false;
-      this.reload.markForCheck();
-    },
-    error: (err) => {
-      console.error('Error al buscar entradas:', err);
-      this.entradas = [];
-      this.isloading = false;
-      this.reload.markForCheck();
-    },
-  });
-}
-
   onSearchTermChange(term: string) {
-  this.searchTerm = term.trim();
-  if (!this.searchTerm) {
-    this.cargarEntradas();
-  } 
-}
+    this.searchTerm = term.trim();
+    if (!this.searchTerm) {
+      this.cargarEntradas();
+    }
+  }
 
-filtrarPorProveedor() {
+  filtrarPorProveedor() {
     if (!this.selectedProveedorId) {
       this.entradasFiltradas = [...this.entradas];
     } else {
@@ -170,8 +194,17 @@ filtrarPorProveedor() {
         e => e.supplierId === this.selectedProveedorId
       );
     }
+
+    if (this.paginator) this.paginator.firstPage();
+
     this.reload.markForCheck();
   }
+
+  onPageChange(event: any) {
+  this.pageSize = event.pageSize;
+  this.pageIndex = event.pageIndex;
+  this.reload.markForCheck();
+}
 
   getCantidadTotal(entrada: Entrada): number {
     return entrada.detalles?.reduce((acc, p) => acc + p.quantity, 0) ?? 0;
@@ -185,16 +218,16 @@ filtrarPorProveedor() {
     return entrada.supplier?.name || 'Sin proveedor';
   }
 
-  view(id:string){
+  view(id: string) {
     this.router.navigate(['almacenero/view-entrada-almacenero', id]);
   }
 
 
-  kardex(){
+  kardex() {
     this.router.navigate(['/almacenero/panel-inventario'])
   }
 
-  salidas(){
+  salidas() {
     this.router.navigate(['/almacenero/entrada-panel-almacenero'])
   }
 }

@@ -46,8 +46,8 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let marca of marcaFiltrada; let i = index">   
-        <th>{{i + 1}}</th>
+      <tr *ngFor="let marca of pagedMarcas; let i = index">   
+        <th>{{i + 1+ (paginator.pageIndex * paginator.pageSize)}}</th>
         <th>{{marca.name}}</th>
         <th>{{marca.description}}</th>
         <th>{{marca.category.name}}</th>
@@ -55,6 +55,8 @@
       </tr>
     </tbody>
   </table>
+  <mat-paginator [length]="marcaFiltrada.length" [pageSize]="8" [pageSizeOptions]="[8]" showFirstLastButtons>
+  </mat-paginator>
 </div>
 
 <br><br><br><br>

@@ -7,50 +7,50 @@
 
 <div class="content1">
   <p class="enter">Ingrese categoria:</p>
-<input type="text" placeholder="Buscar categoria..." [(ngModel)]="searchTerm"
->
+  <input type="text" placeholder="Buscar categoría..." [(ngModel)]="searchTerm"
+    (ngModelChange)="onSearchTermChange($event)">
 
-<div class="botons">
-  <button class="boton1" (click)="search()">
-  <mat-icon fontIcon="search" class="icon-btn" ></mat-icon>
-  Buscar
-</button>
+  <div class="botons">
+    <button class="boton1" (click)="search()">
+      <mat-icon fontIcon="search" class="icon-btn"></mat-icon>
+      Buscar
+    </button>
 
 
-<button class="boton1" (click)="page2()">
-Subcategorias
-</button>
+    <button class="boton1" (click)="page2()">
+      Subcategorias
+    </button>
 
-<button class="boton1" (click)="page3()" style="width: 140px;">
-Marcas
-</button>
+    <button class="boton1" (click)="page3()" style="width: 140px;">
+      Marcas
+    </button>
+  </div>
+
 </div>
-
-</div> 
 
 
 
 <div class="table">
-     <table>
-         <thead>
-           <tr>   
-             <th>Nro °</th>
-             <th>Nombre</th>
-             <th>Descripcion de la categoria</th>
-             <th>Fecha de creación</th>
-             
-           </tr>
-         </thead>
-         <tbody>
-          <tr *ngFor="let categoria of categorias; let i = index">   
-             <th>{{i + 1}}</th>
-             <th>{{categoria.name}}</th>
-             <th>{{categoria.description}}</th>
-             <th>{{categoria.createAt | date:'dd-MM-yyyy'}}</th>
-           </tr>
-         </tbody>
-      </table>
-</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Nro °</th>
+        <th>Nombre</th>
+        <th>Descripcion de la categoria</th>
+        <th>Fecha de creación</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let categoria of pagedCategorias; let i = index">
+        <th>{{ i + 1 + (paginator.pageIndex * paginator.pageSize) }}</th>
+        <th>{{ categoria.name }}</th>
+        <th>{{ categoria.description }}</th>
+        <th>{{categoria.createAt | date:'dd-MM-yyyy'}}</th>
+      </tr>
+    </tbody>
+  </table>
 
+  <mat-paginator [pageSizeOptions]="[8]" showFirstLastButtons [length]="categorias.length"></mat-paginator>
+</div>
 
 <br><br><br><br>

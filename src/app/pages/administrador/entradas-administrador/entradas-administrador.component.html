@@ -1,47 +1,56 @@
 <div class="header-row">
   <h1>Gestión de entradas:</h1>
-    <div class="botons">
-        <button class="entrance" (click)="kardex()">
-            Panel de Inventario
-        </button> 
-    </div>
+  <div class="botons">
+    <button class="entrance" (click)="kardex()">
+      Panel de Inventario
+    </button>
+  </div>
 </div>
 
+
 <h2>Filtros:</h2>
-<div class="filters" >
-<mat-form-field style="width: 280px;">
-  <mat-label>Seleccionar Proveedor</mat-label>
-  <mat-select>
-    <mat-option value="Compusur EIRL">Compusur EIRL</mat-option>
-  </mat-select>
-</mat-form-field>
+<div class="filters">
+  <mat-form-field style="width: 280px;">
+    <mat-label>Seleccionar Proveedor</mat-label>
+
+    <mat-select [(ngModel)]="selectedProveedorId" (selectionChange)="filtrarPorProveedor()">
+      <mat-option value="">Todos</mat-option>
+      <mat-option *ngFor="let p of proveedores" [value]="p.id">
+        {{ p.name }}
+      </mat-option>
+    </mat-select>
+
+  </mat-form-field>
 </div>
 
 <div class="table">
-     <table>
-         <thead>
-           <tr>   
-             <th>Nro°</th>
-             <th>Fecha de registro</th>
-             <th>Proveedor</th>
-             <th>Cantidad total</th>
-             <th>Monto total</th>
-             <th>Acciones</th>
-           </tr>
-         </thead>
-         <tbody>
-          <tr *ngFor="let entrada of entradas; let i = index">
-             <th>{{i + 1}}</th>   
-             <th>{{entrada.createdAt | date: 'dd-MM-yy'}}</th>
-             <th>{{getNombreProveedor(entrada)}}</th>
-             <th>{{getCantidadTotal(entrada)}}</th>
-             <th>S/.{{getMontoTotal(entrada)}}</th>
-             <th>
-              <button class="delete" (click)="view(entrada.id)"  style="background-color: rgb(1, 255, 1);"><mat-icon aria-hidden="false" fontIcon="visibility"></mat-icon></button>
-             </th>
-           </tr>
-         </tbody>
-      </table>
+  <table>
+    <thead>
+      <tr>
+        <th>Nro°</th>
+        <th>Fecha de registro</th>
+        <th>Proveedor</th>
+        <th>Cantidad total</th>
+        <th>Monto total</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let entrada of pagedEntradas; let i = index">
+        <th>{{i + 1}}</th>
+        <th>{{entrada.createdAt | date: 'dd-MM-yy'}}</th>
+        <th>{{getNombreProveedor(entrada)}}</th>
+        <th>{{getCantidadTotal(entrada)}}</th>
+        <th>S/.{{getMontoTotal(entrada)}}</th>
+        <th>
+          <button class="delete" (click)="view(entrada.id)" style="background-color: rgb(1, 255, 1);"><mat-icon
+              aria-hidden="false" fontIcon="visibility"></mat-icon></button>
+        </th>
+      </tr>
+    </tbody>
+  </table>
+  <mat-paginator [length]="entradasFiltradas.length" [pageSize]="8" [pageSizeOptions]="[8]" showFirstLastButtons>
+  </mat-paginator>
 </div>
 
 <br><br><br><br>

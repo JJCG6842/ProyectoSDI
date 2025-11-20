@@ -1,15 +1,12 @@
-import { Component , inject, ChangeDetectionStrategy,OnInit, ChangeDetectorRef} from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, ViewChild, AfterViewInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import {MatExpansionModule} from '@angular/material/expansion';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {MatDialog, MatDialogModule} from '@angular/material/dialog';
-import { AddProductoComponent } from '../../../shared/modals-almacenero/add-producto/add-producto.component';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Producto } from '../../../interface/producto.interface';
 import { ProductoService } from '../../../services/producto.service';
-import { DeleteProductConfirmComponent } from '../../../shared/modals-almacenero/add-producto/modals-producto/delete-product-confirm/delete-product-confirm.component';
-import { DeleteProductSuccessComponent } from '../../../shared/modals-almacenero/add-producto/modals-producto/delete-product-success/delete-product-success.component';
-import { EditProductComponent } from '../../../shared/modals-almacenero/add-producto/edit-product/edit-product.component';
 import { ViewProductComponent } from '../../../shared/modals-almacenero/add-producto/view-product/view-product.component';
 import { Categoria } from '../../../interface/categoria.interface';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -20,13 +17,15 @@ import { MarcaService } from '../../../services/marca.service';
 
 @Component({
   selector: 'app-productos-administrador',
-  imports: [MatIconModule, MatExpansionModule, MatDialogModule, CommonModule,FormsModule,MatFormFieldModule,
-    MatSelectModule],
+  imports: [MatIconModule, MatExpansionModule, MatDialogModule, CommonModule, FormsModule, MatFormFieldModule,
+    MatSelectModule, MatPaginatorModule],
   templateUrl: './productos-administrador.component.html',
   styleUrl: './productos-administrador.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProductosAdministradorComponent implements OnInit{
+export class ProductosAdministradorComponent implements OnInit {
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   readonly dialog = inject(MatDialog);
   readonly reload = inject(ChangeDetectorRef);
@@ -39,7 +38,7 @@ export class ProductosAdministradorComponent implements OnInit{
   productos: Producto[] = [];
   marcas: Marca[] = [];
 
-  constructor (private categoriaService: CategoriaService, private marcaService: MarcaService){}
+  constructor(private categoriaService: CategoriaService, private marcaService: MarcaService) { }
 
   ngOnInit(): void {
     this.cargarProductos();
@@ -47,10 +46,27 @@ export class ProductosAdministradorComponent implements OnInit{
     this.cargarMarca();
   }
 
-  cargarProductos(){
+  ngAfterViewInit(): void {
+    if (this.paginator) {
+      this.paginator.pageSize = 8;
+    }
+  }
+
+  get pagedProductos(): Producto[] {
+    if (!this.paginator) return this.productos;
+
+    const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+    return this.productos.slice(startIndex, startIndex + this.paginator.pageSize);
+  }
+
+
+  cargarProductos() {
     this.productoService.getProductos().subscribe({
       next: (products) => {
         this.productos = products;
+        if (this.paginator) {
+          this.paginator.firstPage();
+        }
         this.isloading = false;
         this.reload.markForCheck();
       },
@@ -61,86 +77,30 @@ export class ProductosAdministradorComponent implements OnInit{
     })
   }
 
-cargarCategorias() {
-  this.categoriaService.getCategorias().subscribe({
-    next: (res) => {
-      this.categorias = res;
-      console.log('Categorias:', res); 
-    },
-    error: (err) => console.error('Error al cargar categorías', err),
-  });
-}
-
-cargarMarca() {
-  this.marcaService.getMarcas().subscribe({
-    next: (res) => {
-      this.marcas = res;
-      console.log('Marcas:', res); 
-    },
-    error: (err) => console.error('Error al cargar marcas', err),
-  });
-}
-
-
-  addProduct(){
-    const dialogRef = this.dialog.open(AddProductoComponent,{
-      width: '650px',
-      maxWidth: 'none',
-      panelClass:'custom-dialog-container'
+  cargarCategorias() {
+    this.categoriaService.getCategorias().subscribe({
+      next: (res) => {
+        this.categorias = res;
+        console.log('Categorias:', res);
+      },
+      error: (err) => console.error('Error al cargar categorías', err),
     });
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
-      if(result){
-        this.cargarProductos();
-      }
-    })
   }
 
-  editProduct(producto : Producto){
-    const dialogRef = this.dialog.open(EditProductComponent, {
-          width: '650px',
-          maxWidth: 'none',
-          panelClass:'custom-dialog-container',
-          data: producto
+  cargarMarca() {
+    this.marcaService.getMarcas().subscribe({
+      next: (res) => {
+        this.marcas = res;
+        console.log('Marcas:', res);
+      },
+      error: (err) => console.error('Error al cargar marcas', err),
     });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if(result === true){
-        this.cargarProductos();
-      }
-    })
   }
 
-  eliminarProducto(id: string){
-    const dialogRef = this.dialog.open(DeleteProductConfirmComponent,{
-          width: '400px',
-          disableClose:true,
-      });
-
-    dialogRef.afterClosed().subscribe((confirmado) => {
-      if(confirmado){
-        this.productoService.eliminarProducto(id).subscribe({
-          next: () => {
-            this.dialog.open(DeleteProductSuccessComponent,{
-                width: '400px',
-                disableClose: true,
-              });
-
-              this.cargarProductos();
-          },
-          error: (err) => {
-            console.error('error al eliminar el producto', err);
-          },
-        })
-      }
-    })
-  }
-
-  search(){
+  search() {
     const term = this.searchTerm.trim();
 
-    if(!term){
+    if (!term) {
       this.cargarProductos();
       return;
     }
@@ -148,8 +108,13 @@ cargarMarca() {
     this.isloading = true;
 
     this.productoService.buscarProducto(term).subscribe({
-      next: (res)=>{
+      next: (res) => {
         this.productos = res;
+
+        if (this.paginator) {
+          this.paginator.firstPage();
+        }
+
         this.isloading = false;
         this.reload.markForCheck();
       },
@@ -157,17 +122,22 @@ cargarMarca() {
       error: (err) => {
         console.error('Error en la busqueda :/', err);
         this.productos = [];
+
+        if (this.paginator) {
+          this.paginator.firstPage();
+        }
+
         this.isloading = false;
         this.reload.markForCheck();
       }
     })
   }
 
-  view(producto: Producto){
-    const dialogRef = this.dialog.open(ViewProductComponent,{
+  view(producto: Producto) {
+    const dialogRef = this.dialog.open(ViewProductComponent, {
       width: '600px',
       maxWidth: 'none',
-      panelClass:'custom-dialog-container',
+      panelClass: 'custom-dialog-container',
       data: producto
     });
 
@@ -178,48 +148,57 @@ cargarMarca() {
   }
 
 
-filtrarPorCategoria() {
-  if (!this.selectCategoryId) {
-    this.cargarProductos(); 
-    return;
+  filtrarPorCategoria() {
+    if (!this.selectCategoryId) {
+      this.cargarProductos();
+      return;
+    }
+
+    this.productoService.buscarPorCategoriaId(this.selectCategoryId).subscribe({
+      next: (res) => {
+        this.productos = res;
+        if (this.paginator) {
+        this.paginator.firstPage();
+      }
+
+        this.reload.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error al filtrar por categoría', err);
+        this.productos = [];
+      },
+    });
   }
 
-  this.productoService.buscarPorCategoriaId(this.selectCategoryId).subscribe({
-    next: (res) => {
-      this.productos = res;
-      this.reload.markForCheck();
-    },
-    error: (err) => {
-      console.error('Error al filtrar por categoría', err);
-      this.productos = [];
-    },
-  });
-}
+  filtrarPorMarca() {
+    if (!this.selectMarcaId) {
+      this.cargarProductos();
+      return;
+    }
 
-filtrarPorMarca() {
-  if (!this.selectMarcaId) {
-    this.cargarProductos(); 
-    return;
+    this.productoService.buscarPorMarcaId(this.selectMarcaId).subscribe({
+      next: (res) => {
+        this.productos = res;
+        if (this.paginator) {
+        this.paginator.firstPage();
+      }
+
+        this.reload.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error al filtrar por marca', err);
+        this.productos = [];
+      },
+    });
   }
 
-  this.productoService.buscarPorMarcaId(this.selectMarcaId).subscribe({
-    next: (res) => {
-      this.productos = res;
-      this.reload.markForCheck();
-    },
-    error: (err) => {
-      console.error('Error al filtrar por marca', err);
-      this.productos = [];
-    },
-  });
-}
+  onSearchTermChange(term: string) {
+    this.searchTerm = term.trim();
 
-onSearchTermChange(term: string) {
-  this.searchTerm = term.trim();
-
-  if (!this.searchTerm) {
-    this.cargarProductos();
+    if (!this.searchTerm) {
+      this.cargarProductos();
+    }
   }
-}
-  
+
+
 }

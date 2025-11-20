@@ -57,8 +57,7 @@ export class AddSalidaComponent implements OnInit{
   }
 
   addSalida() {
-
-    this.stockError = '';
+  this.stockError = '';
 
   if (this.formSalida.invalid) {
     this.formSalida.markAllAsTouched();
@@ -67,14 +66,20 @@ export class AddSalidaComponent implements OnInit{
 
   const formValue = this.formSalida.value;
   const producto = this.productos.find(p => p.id === formValue.product);
+
   if (!producto) return;
 
-  if( formValue.quantity > producto.quantity){
-    this.stockError = `La cantidad ingresada supero el stock disponible (${producto.quantity})`;
+  if (producto.quantity <= 0) {
+    this.stockError = `El producto "${producto.name}" no tiene stock disponible.`;
     this.cd.detectChanges();
     return;
   }
 
+  if (formValue.quantity > producto.quantity) {
+    this.stockError = `La cantidad ingresada supera el stock disponible (${producto.quantity}).`;
+    this.cd.detectChanges();
+    return;
+  }
 
   const newSalida = {
     productId: producto.id,

@@ -61,7 +61,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let mov of movimientosFiltrados">
+      <tr *ngFor="let mov of movimientosPaginados">
         <td>{{ mov.fecha | date: 'shortDate' }}</td>
         <td [ngStyle]="{ color: mov.movimiento === 'Entrada' ? 'green' : 'red' }">{{ mov.movimiento }}</td>
         <td>{{ mov.producto }}</td>
@@ -71,6 +71,9 @@
       </tr>
     </tbody>
   </table>
+  <mat-paginator [length]="movimientosFiltrados.length" [pageSize]="10" [pageSizeOptions]="[5, 10, 20]"
+    showFirstLastButtons (page)="onPageChange($event)">
+  </mat-paginator>
 </div>
 
 <br><br><br><br>

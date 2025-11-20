@@ -1,9 +1,11 @@
-import { Component , inject, ChangeDetectionStrategy, OnInit, ChangeDetectorRef} from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import {MatButtonModule} from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddUserComponent } from '../../../shared/modals-administrador/add-user/add-user.component';
 import { editUserComponent } from '../../../shared/modals-administrador/edit-user/edit-user.component';
 import { DeleteUsuarioConfirmComponent } from '../../../shared/modals-administrador/modals/delete-usuario-confirm/delete-usuario-confirm.component';
@@ -13,34 +15,59 @@ import { DeleteUsuarioSuccessComponent } from '../../../shared/modals-administra
 
 @Component({
   selector: 'app-usuarios-administrador',
-  imports: [MatIconModule, MatDialogModule, MatButtonModule,CommonModule,FormsModule],
+  imports: [MatIconModule, MatDialogModule, MatButtonModule, CommonModule,
+    FormsModule, MatPaginatorModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './usuarios-administrador.component.html',
   styleUrl: './usuarios-administrador.component.scss'
 })
-export class UsuariosAdministradorComponent implements OnInit{
+export class UsuariosAdministradorComponent implements OnInit {
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   readonly dialog = inject(MatDialog);
   readonly cd = inject(ChangeDetectorRef);
   usuarios: Usuario[] = [];
+  pageSize = 8;
+  pageIndex = 0;
+  paginatedUsuarios: Usuario[] = [];
   isLoading = false;
   searchTerm: string = '';
 
-  constructor(private usuarioService: UsuarioService){}
+  constructor(private usuarioService: UsuarioService) { }
 
   ngOnInit(): void {
     this.obtenerUsers();
   }
 
-  obtenerUsers(){
+  ngAfterViewInit(): void {
+    if (this.paginator) {
+      this.paginator.page.subscribe(() => {
+        this.pageIndex = this.paginator.pageIndex;
+        this.pageSize = this.paginator.pageSize;
+        this.aplicarPaginacion();
+      });
+    }
+  }
+
+  aplicarPaginacion() {
+    const start = this.pageIndex * this.pageSize;
+    const end = start + this.pageSize;
+    this.paginatedUsuarios = this.usuarios.slice(start, end);
+    this.cd.markForCheck();
+  }
+
+  obtenerUsers() {
     this.usuarioService.getUsuario().subscribe({
-      next:(res) =>{
+      next: (res) => {
         this.usuarios = res.filter(user => user.role === 'Almacenero');
+        this.pageIndex = 0;
+        this.aplicarPaginacion();
         this.isLoading = false;
         console.log('Usuarios cargados:', this.usuarios);
         this.cd.markForCheck()
       },
-      error: (err)=>{
+      error: (err) => {
         console.log('Error al obtener usuarios:', err);
         this.isLoading = false;
       }
@@ -48,48 +75,48 @@ export class UsuariosAdministradorComponent implements OnInit{
   }
 
   ocultarPassword(password: string): string {
-  return '*'.repeat(Math.min(password.length, 8));
-}
+    return '*'.repeat(Math.min(password.length, 8));
+  }
 
-  createUser(){
+  createUser() {
     const dialogRef = this.dialog.open(AddUserComponent, {
       width: '70%',
-      panelClass:'custom-dialog-container'
+      panelClass: 'custom-dialog-container'
     });
 
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
-      if(result){
+      if (result) {
         this.obtenerUsers();
       }
     });
   }
 
-  editUser(usuario: Usuario){
+  editUser(usuario: Usuario) {
     const dialogRef = this.dialog.open(editUserComponent, {
       width: '70%',
-      panelClass:'custom-dialog-container',
+      panelClass: 'custom-dialog-container',
       data: usuario
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if(result === true){
+      if (result === true) {
         this.obtenerUsers();
       }
     });
   }
 
-  deleteUser(id: string){
-    const dialogRef = this.dialog.open(DeleteUsuarioConfirmComponent,{
+  deleteUser(id: string) {
+    const dialogRef = this.dialog.open(DeleteUsuarioConfirmComponent, {
       width: '400px',
-      disableClose:true,
+      disableClose: true,
     });
 
     dialogRef.afterClosed().subscribe((confirmado) => {
-      if(confirmado){
+      if (confirmado) {
         this.usuarioService.eliminarUsuario(id).subscribe({
           next: () => {
-            this.dialog.open(DeleteUsuarioSuccessComponent,{
+            this.dialog.open(DeleteUsuarioSuccessComponent, {
               width: '400px',
               disableClose: true,
             });
@@ -104,10 +131,10 @@ export class UsuariosAdministradorComponent implements OnInit{
     });
   }
 
-  search(){
+  search() {
     const term = this.searchTerm.trim();
 
-    if(!term){
+    if (!term) {
       this.obtenerUsers();
       return;
     }
@@ -117,10 +144,12 @@ export class UsuariosAdministradorComponent implements OnInit{
     this.usuarioService.buscarUsuario(term).subscribe({
       next: (res) => {
         this.usuarios = res;
+        this.pageIndex = 0;
+        this.aplicarPaginacion();
         this.isLoading = false;
         this.cd.markForCheck();
       },
-      error:(err) => {
+      error: (err) => {
         console.error('Error en la busqueda :v', err);
         this.usuarios = [];
         this.isLoading = false;
@@ -130,15 +159,15 @@ export class UsuariosAdministradorComponent implements OnInit{
   }
 
   habilitar(id: string) {
-  this.usuarioService.habilitarUsuario(id).subscribe(() => {
-    this.obtenerUsers();
-  });
-}
+    this.usuarioService.habilitarUsuario(id).subscribe(() => {
+      this.obtenerUsers();
+    });
+  }
 
-deshabilitar(id: string) {
-  this.usuarioService.deshabilitarUsuario(id).subscribe(() => {
-    this.obtenerUsers();
-  });
-}
-  
+  deshabilitar(id: string) {
+    this.usuarioService.deshabilitarUsuario(id).subscribe(() => {
+      this.obtenerUsers();
+    });
+  }
+
 }
