@@ -131,42 +131,50 @@ export class ProductosService {
   }
 
   async update(
-    id: string,
-    data: Partial<{
-      image: string;
-      name: string;
-      description: string;
-      marcaId: string;
-      price: number;
-      quantity: number;
-      status: ProductStatus;
-      model: string;
-      categoryId: string;
-      subcategoryId: string;
-    }>,
-  ) {
-    await this.findOne(id);
+  id: string,
+  data: Partial<{
+    image: string;
+    name: string;
+    description: string;
+    marcaId: string;
+    price: number;
+    quantity: number;
+    status: ProductStatus;
+    model: string;
+    categoryId: string;
+    subcategoryId: string;
+  }>,
+) {
+  await this.findOne(id);
 
-    if (data.categoryId) {
-      const category = await this.prisma.category.findUnique({
-        where: { id: data.categoryId },
-      });
-      if (!category) throw new NotFoundException('Categoría no encontrada');
-    }
-
-    if (data.subcategoryId) {
-      const subcategory = await this.prisma.subcategory.findUnique({
-        where: { id: data.subcategoryId },
-      });
-      if (!subcategory)
-        throw new NotFoundException('Subcategoría no encontrada');
-    }
-
-    return this.prisma.products.update({
-      where: { id },
-      data,
+  if (data.categoryId) {
+    const category = await this.prisma.category.findUnique({
+      where: { id: data.categoryId },
     });
+    if (!category) throw new NotFoundException('Categoría no encontrada');
   }
+
+  if (data.subcategoryId) {
+    const subcategory = await this.prisma.subcategory.findUnique({
+      where: { id: data.subcategoryId },
+    });
+    if (!subcategory)
+      throw new NotFoundException('Subcategoría no encontrada');
+  }
+
+  if (data.quantity !== undefined) {
+    data.status =
+      data.quantity > 0
+        ? ProductStatus.Instock
+        : ProductStatus.Outstock;
+  }
+  
+
+  return this.prisma.products.update({
+    where: { id },
+    data,
+  });
+}
 
   async delete(id: string) {
     await this.findOne(id);

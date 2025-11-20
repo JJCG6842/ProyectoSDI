@@ -35,23 +35,23 @@ export class SalidaService {
   }
 
   async filtrarSalidas(filtros: { clienteId?: string; supplierId?: string }) {
-  const { clienteId, supplierId } = filtros;
+    const { clienteId, supplierId } = filtros;
 
-  return this.prisma.salida.findMany({
-    where: {
-      ...(clienteId && { clienteId }),
-      ...(supplierId && { supplierId }),
-    },
-    include: {
-      supplier: true,
-      cliente: true,
-      detalles: {
-        include: { product: true },
+    return this.prisma.salida.findMany({
+      where: {
+        ...(clienteId && { clienteId }),
+        ...(supplierId && { supplierId }),
       },
-    },
-    orderBy: { createdAt: 'desc' },
-  });
-}
+      include: {
+        supplier: true,
+        cliente: true,
+        detalles: {
+          include: { product: true },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
 
   async searchByProductName(term: string) {
     if (!term.trim()) throw new BadRequestException('El término de búsqueda no puede estar vacío');
@@ -77,81 +77,94 @@ export class SalidaService {
   }
 
   async crearSalida(body: any) {
-  let { tipo, supplierId, clienteId, productos } = body;
+    let { tipo, supplierId, clienteId, productos } = body;
 
-  supplierId = supplierId || null;
-  clienteId = clienteId || null;
+    supplierId = supplierId || null;
+    clienteId = clienteId || null;
 
-  if (!productos || !Array.isArray(productos) || productos.length === 0) {
-    throw new BadRequestException("Debe enviar al menos un producto");
-  }
-
-  return this.prisma.$transaction(async (prisma) => {
-    for (const item of productos) {
-      const producto = await prisma.products.findUnique({
-        where: { id: item.productId },
-      });
-
-      if (!producto) {
-        throw new BadRequestException(`Producto no encontrado: ${item.productId}`);
-      }
-
-      if (item.quantity <= 0) {
-        throw new BadRequestException(`Cantidad inválida para ${producto.name}`);
-      }
-
-      if (item.quantity > producto.quantity) {
-        throw new BadRequestException(`No hay suficiente stock de ${producto.name}`);
-      }
+    if (!productos || !Array.isArray(productos) || productos.length === 0) {
+      throw new BadRequestException("Debe enviar al menos un producto");
     }
-    const salida = await prisma.salida.create({
-      data: {
-        tipo,
-        supplierId,
-        clienteId,
-        detalles: {
-          create: productos.map(item => ({
-            productId: item.productId,
-            quantity: item.quantity,
-            price: item.price,
-            total: item.price * item.quantity,
-          })),
+
+    return this.prisma.$transaction(async (prisma) => {
+
+      // 1️⃣ Validación de productos
+      for (const item of productos) {
+        const producto = await prisma.products.findUnique({
+          where: { id: item.productId },
+        });
+
+        if (!producto)
+          throw new BadRequestException(`Producto no encontrado: ${item.productId}`);
+
+        if (item.quantity <= 0)
+          throw new BadRequestException(`Cantidad inválida para ${producto.name}`);
+
+        if (item.quantity > producto.quantity)
+          throw new BadRequestException(`No hay suficiente stock de ${producto.name}`);
+      }
+
+      const salida = await prisma.salida.create({
+        data: {
+          tipo,
+          supplierId,
+          clienteId,
+          detalles: {
+            create: productos.map(item => ({
+              productId: item.productId,
+              quantity: item.quantity,
+              price: item.price,
+              total: item.price * item.quantity,
+            })),
+          },
         },
-      },
-      include: {
-        supplier: true,
-        cliente: true,
-        detalles: { include: { product: true } },
-      },
-    });
-
-    for (const item of productos) {
-      await prisma.products.update({
-        where: { id: item.productId },
-        data: { quantity: { decrement: item.quantity } },
+        include: {
+          supplier: true,
+          cliente: true,
+          detalles: { include: { product: true } },
+        },
       });
-    }
 
-    return salida;
-  });
-}
+      for (const item of productos) {
+        const producto = await prisma.products.findUnique({
+          where: { id: item.productId },
+        });
+
+        if (!producto) {
+          throw new BadRequestException(`Producto no encontrado: ${item.productId}`);
+        }
+
+        const newQuantity = producto.quantity - item.quantity;
+
+        await prisma.products.update({
+          where: { id: item.productId },
+          data: {
+            quantity: newQuantity,
+            status: newQuantity > 0 ? 'Instock' : 'Outstock',
+          },
+        });
+      }
+
+      return salida;
+    });
+  }
 
 
   async eliminarSalida(id: string) {
-  const salida = await this.prisma.salida.findUnique({
-    where: { id },
-    include: { detalles: true }
-  });
+    const salida = await this.prisma.salida.findUnique({
+      where: { id },
+      include: { detalles: true }
+    });
 
-  if (!salida) {
-    throw new NotFoundException('Salida no encontrada');
+    if (!salida) {
+      throw new NotFoundException('Salida no encontrada');
+    }
+
+    const eliminado = await this.prisma.salida.delete({
+      where: { id }
+    });
+
+    return { message: 'Salida eliminada correctamente', eliminado };
   }
-
-  const eliminado = await this.prisma.salida.delete({
-    where: { id }
-  });
-
-  return { message: 'Salida eliminada correctamente', eliminado };
-}
 
 }
