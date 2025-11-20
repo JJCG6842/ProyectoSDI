@@ -69,7 +69,7 @@ input{
     width: 180px;
     height: 56px;
     position: relative;
-    left: 330px;
+    left: 295px;
     bottom: 26px;
     cursor: pointer;
     background-color: #045CFF;
@@ -109,20 +109,6 @@ input{
   border-bottom: 1px solid #ddd;
 }
 
-.edit{
-  padding: 8px 16px;
-  margin-right: 10px; 
-  width: 60px;
-  height: 48px;
-  border: none;
-  border-radius: 8px;
-  color: white;
-  font-size: 16px;
-  padding: 10px 0;
-  cursor: pointer;
-  background: rgb(33, 83, 247);
-}
-
 .view{
   padding: 8px 16px;
   margin-right: 10px; 
@@ -137,36 +123,22 @@ input{
   background: rgb(1, 255, 1);
 }
 
-.delete{
-  padding: 8px 16px;
-  margin-right: 10px; 
-  width: 60px;
-  height: 48px;
-  border: none;
-  border-radius: 8px;
-  color: white;
-  font-size: 16px;
-  padding: 10px 0;
-  cursor: pointer;
-  background: rgb(252, 0, 0);
-}
-
-.edit:hover{
-    background: rgb(59, 102, 245);
-}
-
 .view:hover{
     background: rgb(52, 250, 52)
 }
-
-.delete:hover{
-    background: rgb(243, 47, 47);
-}
-
-
 
 .miniselect{
     display: flex;
     gap: 30px;
     justify-content: end;
+}
+
+.estado-habilitado {
+  color: rgb(5, 245, 5); 
+  font-weight: bold;
+}
+
+.estado-deshabilitado {
+  color: red;
+  font-weight: bold;
 }

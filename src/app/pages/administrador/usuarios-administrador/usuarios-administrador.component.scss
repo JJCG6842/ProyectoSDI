@@ -164,3 +164,13 @@ input{
     position: relative;
     top: 40px;
 }
+
+.estado-habilitado {
+  color: rgb(5, 245, 5); 
+  font-weight: bold;
+}
+
+.estado-deshabilitado {
+  color: red;
+  font-weight: bold;
+}

@@ -62,7 +62,12 @@
         <th>{{producto.name}}</th>
         <th><img [src]="producto.image" alt="Imagen" width="50"></th>
         <th>{{producto.marca?.name}}</th>
-        <th>{{producto.state}}</th>
+        <th [ngClass]="{
+      'estado-habilitado': producto.state === 'Habilitado',
+      'estado-deshabilitado': producto.state === 'Deshabilitado'
+    }">
+          {{ producto.state }}
+        </th>
         <th>{{producto.category?.name}}</th>
         <th>S/.{{ producto.price | number: '1.2-2' }}</th>
         <th>

@@ -69,7 +69,7 @@ input{
     width: 180px;
     height: 56px;
     position: relative;
-    left: 330px;
+    left: 295px;
     bottom: 26px;
     cursor: pointer;
     background-color: #045CFF;
@@ -163,10 +163,18 @@ input{
     background: rgb(243, 47, 47);
 }
 
-
-
 .miniselect{
     display: flex;
     gap: 30px;
     justify-content: end;
+}
+
+.estado-habilitado {
+  color: rgb(5, 245, 5); 
+  font-weight: bold;
+}
+
+.estado-deshabilitado {
+  color: red;
+  font-weight: bold;
 }

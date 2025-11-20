@@ -37,6 +37,7 @@ export class ControlInventarioAdministradorComponent implements OnInit {
   categorias: Categoria[] = [];
   productos: Producto[] = [];
   marcas: Marca[] = [];
+  selectStock: 'Instock' | 'Outstock' | '' = '';
 
   constructor(private router: Router, private categoriaService: CategoriaService, private marcaService: MarcaService,
     private productoService: ProductoService
@@ -169,6 +170,25 @@ export class ControlInventarioAdministradorComponent implements OnInit {
         console.error('Error al filtrar por marca', err);
         this.productos = [];
       },
+    });
+  }
+
+  filtrarPorStock() {
+    if (!this.selectStock) {
+      this.cargarProductos();
+      return;
+    }
+
+    this.productoService.filtrarPorStock(this.selectStock).subscribe({
+      next: res => {
+        this.productos = res;
+        if (this.paginator) this.paginator.firstPage();
+        this.reload.markForCheck();
+      },
+      error: err => {
+        console.error('Error al filtrar por stock', err);
+        this.productos = [];
+      }
     });
   }
 

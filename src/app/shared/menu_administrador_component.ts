@@ -114,11 +114,6 @@ export class menuAdministradorComponent{
     route: '/administrador/panel-inventario-administrador'
   },
   {
-    icon: 'article',
-    label: 'Kardex del sistema',
-    route: '/administrador/kardex-administrador'
-  },
-  {
     icon: 'group',
     label: 'Proveedores',
     route: '/administrador/proveedores-administrador'
@@ -127,6 +122,11 @@ export class menuAdministradorComponent{
     icon: 'person_add',
     label: 'Clientes',
     route: '/administrador/cliente-administrador'
+  },
+  {
+    icon: 'article',
+    label: 'Kardex del sistema',
+    route: '/administrador/kardex-administrador'
   },
   {
     icon: 'person',
