@@ -40,6 +40,14 @@ export class ProductoService {
     return this.http.get<Producto[]>(`${this.apiUrl}/buscar/marca/${marca}`);
   }
 
+  filtrarPorStock(status: 'Instock' | 'Outstock'): Observable<Producto[]> {
+    return this.http.get<Producto[]>(`${this.apiUrl}/filtrar/stock/${status}`);
+  }
+
+  filtrarPorEstado(state: 'Habilitado' | 'Deshabilitado'): Observable<Producto[]> {
+    return this.http.get<Producto[]>(`${this.apiUrl}/filtrar/estado/${state}`);
+  }
+
   crearProducto(producto: Omit<Producto, 'id' | 'createAt' | 'updateAt'>): Observable<Producto> {
     return this.http.post<Producto>(this.apiUrl, producto);
   }

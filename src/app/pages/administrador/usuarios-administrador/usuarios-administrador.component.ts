@@ -8,6 +8,8 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddUserComponent } from '../../../shared/modals-administrador/add-user/add-user.component';
 import { editUserComponent } from '../../../shared/modals-administrador/edit-user/edit-user.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 import { DeleteUsuarioConfirmComponent } from '../../../shared/modals-administrador/modals/delete-usuario-confirm/delete-usuario-confirm.component';
 import { Usuario } from '../../../interface/usuario.interface';
 import { UsuarioService } from '../../../services/usuario.service';
@@ -16,7 +18,7 @@ import { DeleteUsuarioSuccessComponent } from '../../../shared/modals-administra
 @Component({
   selector: 'app-usuarios-administrador',
   imports: [MatIconModule, MatDialogModule, MatButtonModule, CommonModule,
-    FormsModule, MatPaginatorModule],
+    FormsModule, MatPaginatorModule,MatFormFieldModule,MatSelectModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './usuarios-administrador.component.html',
   styleUrl: './usuarios-administrador.component.scss'
@@ -33,6 +35,8 @@ export class UsuariosAdministradorComponent implements OnInit {
   paginatedUsuarios: Usuario[] = [];
   isLoading = false;
   searchTerm: string = '';
+  filtroEstado: '' | 'Habilitado' | 'Deshabilitado' = '';
+
 
   constructor(private usuarioService: UsuarioService) { }
 
@@ -169,5 +173,27 @@ export class UsuariosAdministradorComponent implements OnInit {
       this.obtenerUsers();
     });
   }
+
+  aplicarFiltroEstado() {
+  if (!this.filtroEstado) {
+    this.obtenerUsers(); 
+    return;
+  }
+
+  this.usuarioService.filtrarPorEstado(this.filtroEstado).subscribe({
+    next: (res) => {
+      this.usuarios = res.filter(u => u.role === 'Almacenero'); 
+      this.pageIndex = 0;
+      this.aplicarPaginacion();
+      this.cd.markForCheck();
+    },
+    error: (err) => {
+      console.error('Error al filtrar usuarios por estado', err);
+      this.usuarios = [];
+      this.aplicarPaginacion();
+      this.cd.markForCheck();
+    }
+  });
+}
 
 }

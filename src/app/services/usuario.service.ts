@@ -20,6 +20,10 @@ export class UsuarioService {
         return this.http.get<Usuario>(`${this.apiUrl}/nombre/${nombre}`);
     }
 
+    filtrarPorEstado(status: 'Habilitado' | 'Deshabilitado'): Observable<Usuario[]> {
+        return this.http.get<Usuario[]>(`${this.apiUrl}/filtrar/${status}`);
+    }
+
     buscarUsuario(term: string): Observable<Usuario[]> {
         return this.http.get<Usuario[]>(`${this.apiUrl}/buscar/${term}`);
     }

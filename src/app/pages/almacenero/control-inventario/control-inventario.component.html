@@ -23,38 +23,50 @@
         Buscar
       </button>
 
-      <div class="miniselect">
 
-        <div class="filter-section">
-          <mat-form-field appearance="fill">
-            <mat-label>Filtrar por categoría</mat-label>
-            <mat-select [(value)]="selectCategoryId" (selectionChange)="filtrarPorCategoria()">
-              <mat-option value="">Todas</mat-option>
-              <mat-option *ngFor="let cat of categorias" [value]="cat.id">
-                {{ cat.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-
-        <div class="filter-section">
-          <mat-form-field appearance="fill">
-            <mat-label>Filtrar por marca</mat-label>
-            <mat-select [(value)]="selectMarcaId" (selectionChange)="filtrarPorMarca()">
-              <mat-option value="">Todas</mat-option>
-              <mat-option *ngFor="let marca of marcas" [value]="marca.id">
-                {{ marca.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-
-
-
-      </div>
 
 
     </div>
+  </div>
+
+</div>
+
+<div class="miniselect">
+
+  <div class="filter-section">
+    <mat-form-field appearance="fill">
+      <mat-label>Filtrar por categoría</mat-label>
+      <mat-select [(value)]="selectCategoryId" (selectionChange)="filtrarPorCategoria()">
+        <mat-option value="">Todas</mat-option>
+        <mat-option *ngFor="let cat of categorias" [value]="cat.id">
+          {{ cat.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="filter-section">
+    <mat-form-field appearance="fill">
+      <mat-label>Filtrar por marca</mat-label>
+      <mat-select [(value)]="selectMarcaId" (selectionChange)="filtrarPorMarca()">
+        <mat-option value="">Todas</mat-option>
+        <mat-option *ngFor="let marca of marcas" [value]="marca.id">
+          {{ marca.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="filter-section">
+    <mat-form-field appearance="fill">
+      <mat-label>Filtrar por stock</mat-label>
+      <mat-select [(value)]="selectStock" (selectionChange)="filtrarPorStock()">
+        <mat-option value="">Todos</mat-option>
+        <mat-option value="Instock">En Stock</mat-option>
+        <mat-option value="Outstock">Sin Stock</mat-option>
+      </mat-select>
+    </mat-form-field>
+    
   </div>
 
 </div>

@@ -42,7 +42,17 @@
       </mat-select>
     </mat-form-field>
   </div>
-
+  
+<div class="filter-section">
+  <mat-form-field appearance="fill">
+    <mat-label>Filtrar por estado</mat-label>
+    <mat-select [(value)]="selectState" (selectionChange)="filtrarPorEstado()">
+      <mat-option value="">Todos</mat-option>
+      <mat-option value="Habilitado">Habilitado</mat-option>
+      <mat-option value="Deshabilitado">Deshabilitado</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
 
 
 </div>

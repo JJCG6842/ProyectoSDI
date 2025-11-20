@@ -41,6 +41,7 @@ export class ProductosAlmaceneroComponent implements OnInit {
   categorias: Categoria[] = [];
   productos: Producto[] = [];
   marcas: Marca[] = [];
+  selectState: 'Habilitado' | 'Deshabilitado' | '' = '';
 
   constructor(private categoriaService: CategoriaService, private marcaService: MarcaService) { }
 
@@ -218,8 +219,8 @@ export class ProductosAlmaceneroComponent implements OnInit {
       next: (res) => {
         this.productos = res;
         if (this.paginator) {
-        this.paginator.firstPage();
-      }
+          this.paginator.firstPage();
+        }
 
         this.reload.markForCheck();
       },
@@ -240,8 +241,8 @@ export class ProductosAlmaceneroComponent implements OnInit {
       next: (res) => {
         this.productos = res;
         if (this.paginator) {
-        this.paginator.firstPage();
-      }
+          this.paginator.firstPage();
+        }
 
         this.reload.markForCheck();
       },
@@ -269,6 +270,25 @@ export class ProductosAlmaceneroComponent implements OnInit {
   deshabilitar(id: string) {
     this.productoService.deshabilitarProducto(id).subscribe(() => {
       this.cargarProductos();
+    });
+  }
+
+  filtrarPorEstado() {
+    if (!this.selectState) {
+      this.cargarProductos();
+      return;
+    }
+
+    this.productoService.filtrarPorEstado(this.selectState).subscribe({
+      next: res => {
+        this.productos = res;
+        if (this.paginator) this.paginator.firstPage();
+        this.reload.markForCheck();
+      },
+      error: err => {
+        console.error('Error al filtrar por estado', err);
+        this.productos = [];
+      }
     });
   }
 
