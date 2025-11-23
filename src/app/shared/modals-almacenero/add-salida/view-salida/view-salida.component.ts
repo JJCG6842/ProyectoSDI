@@ -9,6 +9,8 @@ import { ViewChild } from '@angular/core';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import * as ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 
 declare module 'jspdf' {
   interface jsPDF {
@@ -152,5 +154,91 @@ export class ViewSalidaComponent implements OnInit {
 
     const fileName = `Salida-${this.salida.id}.pdf`;
     doc.save(fileName);
+  }
+
+  exportarExcel() {
+    if (!this.salida) return;
+
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet('Salida');
+
+    sheet.columns = [
+      { header: '#', key: 'index', width: 38 },
+      { header: 'Categoría', key: 'categoria', width: 20 },
+      { header: 'Producto', key: 'producto', width: 65 },
+      { header: 'Cantidad', key: 'cantidad', width: 18 },
+      { header: 'Precio', key: 'precio', width: 20 },
+      { header: 'Total', key: 'total', width: 30 },
+    ];
+
+    const titleRow = sheet.addRow(['Detalle de Salida']);
+    titleRow.font = { size: 18, bold: true };
+    sheet.mergeCells('A1:F1');
+    titleRow.alignment = { horizontal: 'center' };
+
+    sheet.addRow([]);
+
+    sheet.addRow(['Fecha:', new Date(this.salida.createdAt).toLocaleString()]);
+
+    const tipo = this.salida.tipo === 'cliente' ? 'Cliente' : 'Proveedor';
+    const nombre = this.salida.cliente?.name || this.salida.supplier?.name || 'N/A';
+
+    sheet.addRow([`${tipo}:`, nombre]);
+
+    sheet.addRow([]);
+
+    const headerRow = sheet.addRow(['#', 'Categoría', 'Producto', 'Cantidad', 'Precio', 'Total']);
+
+    headerRow.eachCell((cell) => {
+      cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FF1F4E78' },
+      };
+      cell.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' },
+      };
+      cell.alignment = { horizontal: 'center' };
+    });
+
+    this.salida.detalles.forEach((d, i) => {
+      const row = sheet.addRow([
+        i + 1,
+        this.getCategoriaName(d.product.categoryId),
+        d.product.name,
+        d.quantity,
+        d.price,
+        d.total,
+      ]);
+
+      row.eachCell((cell) => {
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' },
+        };
+        cell.alignment = { horizontal: 'center' };
+      });
+    });
+
+    sheet.addRow([]);
+
+    const totalCantidad = sheet.addRow(['Cantidad Total:', this.cantidadTotal]);
+    const totalMonto = sheet.addRow(['Monto Total:', this.montoTotal]);
+
+    totalCantidad.eachCell((cell) => (cell.font = { bold: true }));
+    totalMonto.eachCell((cell) => (cell.font = { bold: true }));
+
+    workbook.xlsx.writeBuffer().then((buffer) => {
+      saveAs(
+        new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+        `Salida-${this.salida!.id}.xlsx`
+      );
+    });
   }
 }
