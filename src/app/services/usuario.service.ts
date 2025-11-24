@@ -9,7 +9,7 @@ import { environment } from '../environments/environments.prod';
 })
 
 export class UsuarioService {
-    private apiUrl = `${environment.apiUrl}/usuario`;
+    private apiUrl = `http://localhost:3000/usuario`;
 
     constructor(private http: HttpClient) { }
 
