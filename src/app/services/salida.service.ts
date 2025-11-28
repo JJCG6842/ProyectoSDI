@@ -20,14 +20,18 @@ export class SalidaService {
     return this.http.get<Salida>(`${this.apiUrl}/${id}`);
   }
 
-  filtrarPorClienteProveedor(clienteId?: string, supplierId?: string) {
+  filtrarPorClienteProveedor(tipoSalida?:string,clienteId?: string, supplierId?: string,
+    categoryId?: string, categoryName?: string
+  ) {
   let query = '?';
+  if (tipoSalida) query += `tiposalida=${tipoSalida}&`;
   if (clienteId) query += `clienteId=${clienteId}&`;
   if (supplierId) query += `supplierId=${supplierId}&`;
+  if (categoryId) query += `categoryId=${categoryId}&`;
+  if (categoryName) query += `categoryName=${categoryName}&`;
 
   return this.http.get<Salida[]>(`${this.apiUrl}/filtrar${query}`);
 }
-
 
   buscarPorProducto(term: string): Observable<Salida[]> {
     return this.http.get<Salida[]>(`${this.apiUrl}/buscar/producto/${term}`);

@@ -7,6 +7,9 @@
     <button class="salida" (click)="exportarPDF()" style="background-color: rgb(248, 180, 34);">
       Exportar PDF
     </button>
+    <button class="salida" style="background-color: rgb(34, 248, 102);" (click)="exportarExcel()">
+      Exportar Excel
+    </button>
   </div>
 </div>
 
@@ -16,13 +19,13 @@
 
   <h2>Información general</h2>
   <p><strong>Fecha:</strong> {{ salida.createdAt | date: 'dd-MM-yyyy' }}</p>
-  <p><strong>Tipo:</strong> {{ salida.tipo }}</p>
+  <p><strong>Tipo de salida:</strong> {{ salida.tiposalida }}</p>
 
-  <p *ngIf="salida.tipo === 'cliente'">
+  <p *ngIf="salida.tiposalida === 'Venta'">
     <strong>Cliente:</strong> {{ salida.cliente?.name }}
   </p>
 
-  <p *ngIf="salida.tipo === 'proveedor'">
+  <p *ngIf="salida.tiposalida === 'Devolucion'">
     <strong>Proveedor:</strong> {{ salida.supplier?.name }}
   </p>
 
@@ -54,7 +57,8 @@
         </tr>
       </tbody>
     </table>
-    <mat-paginator [length]="salida.detalles.length || 0" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
+    <mat-paginator [length]="salida.detalles.length || 0" [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
   </div>
 
   <br>

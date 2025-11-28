@@ -37,6 +37,8 @@ export class KardexAlmaceneroComponent {
   pageIndex = 0;
   filtroProducto = '';
   tipoFiltro: 'todos' | 'entrada' | 'salida' = 'todos';
+  filtroTiempo: 'todo' | 'mes' | '6meses' | 'anio' = 'todo';
+  fechaFiltroRango: Date | null = null;
   ordenFecha: 'asc' | 'desc' = 'desc';
   fechaFiltro: Date | null = null;
   movimientosPaginados: any[] = [];
@@ -135,10 +137,14 @@ export class KardexAlmaceneroComponent {
           (this.tipoFiltro === 'entrada' && mov.movimiento === 'Entrada') ||
           (this.tipoFiltro === 'salida' && mov.movimiento === 'Salida');
 
+        const coincideRango =
+          !this.fechaFiltroRango ||
+          new Date(mov.fecha) >= this.fechaFiltroRango;
+
         const coincideFecha =
           !this.fechaFiltro ||
           new Date(mov.fecha).toDateString() === this.fechaFiltro.toDateString();
-        return coincideProducto && coincideTipo && coincideFecha;
+        return coincideProducto && coincideTipo && coincideFecha && coincideRango;
       })
       .sort((a, b) =>
         this.ordenFecha === 'desc'
@@ -162,30 +168,59 @@ export class KardexAlmaceneroComponent {
     );
   }
 
+  filtrarPorTiempo() {
+    const hoy = new Date();
+
+    let fechaInicio: Date | null = null;
+
+    switch (this.filtroTiempo) {
+      case 'mes':
+        fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+        break;
+
+      case '6meses':
+        fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth() - 6, hoy.getDate());
+        break;
+
+      case 'anio':
+        fechaInicio = new Date(hoy.getFullYear(), 0, 1);
+        break;
+
+      case 'todo':
+        fechaInicio = null;
+        break;
+    }
+
+    this.fechaFiltroRango = fechaInicio;
+    this.pageIndex = 0;
+    this.actualizarPaginacion();
+    this.reload.markForCheck();
+  }
+
+
   search() {
-    const term = this.searchTerm.trim();
+    const term = this.searchTerm.trim().toLowerCase();
 
     if (!term) {
-      this.cargarProductos();
+      this.filtroProducto = '';
+      this.pageIndex = 0;
+      this.actualizarPaginacion();
+      this.reload.markForCheck();
       return;
     }
 
-    this.isLoading = true;
+    this.filtroProducto = term;
+    this.pageIndex = 0;
+    this.actualizarPaginacion();
+    this.reload.markForCheck();
+  }
 
-    this.productoService.buscarProducto(term).subscribe({
-      next: (res) => {
-        this.productos = res;
-        this.isLoading = false;
-        this.reload.markForCheck();
-      },
+  onSearchTermChange(term: string) {
+    this.searchTerm = term.trim();
 
-      error: (err) => {
-        console.error('Error en la busqueda :/', err);
-        this.productos = [];
-        this.isLoading = false;
-        this.reload.markForCheck();
-      }
-    })
+    if (!this.searchTerm) {
+      this.limpiarFiltros();
+    }
   }
 
   limpiarFiltros() {
@@ -197,13 +232,5 @@ export class KardexAlmaceneroComponent {
     this.pageIndex = 0;
     this.actualizarPaginacion();
     this.reload.markForCheck();
-  }
-
-  entradas() {
-    this.router.navigate(['/almacenero/entrada-almacenero']);
-  }
-
-  salidas() {
-    this.router.navigate(['/almacenero/salida-almacenero']);
   }
 }

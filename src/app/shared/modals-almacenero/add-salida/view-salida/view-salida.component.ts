@@ -126,10 +126,16 @@ export class ViewSalidaComponent implements OnInit {
     doc.setFontSize(12);
     doc.text(`Fecha: ${new Date(this.salida.createdAt).toLocaleString()}`, 14, 35);
 
-    const tipo = this.salida.tipo === 'cliente' ? 'Cliente' : 'Proveedor';
-    const nombre = this.salida.cliente?.name || this.salida.supplier?.name || 'N/A';
+    doc.text(`Tipo de salida: ${this.salida.tiposalida}`, 14, 43);
 
-    doc.text(`${tipo}: ${nombre}`, 14, 43);
+    let infoExtra = 'N/A';
+    if (this.salida.tiposalida === 'Venta') {
+      infoExtra = this.salida.cliente?.name || 'N/A';
+      doc.text(`Cliente: ${infoExtra}`, 14, 51);
+    } else if (this.salida.tiposalida === 'Devolucion') {
+      infoExtra = this.salida.supplier?.name || 'N/A';
+      doc.text(`Proveedor: ${infoExtra}`, 14, 51);
+    }
 
     const rows = this.salida.detalles.map((d, index) => [
       index + 1,
@@ -141,7 +147,7 @@ export class ViewSalidaComponent implements OnInit {
     ]);
 
     autoTable(doc, {
-      startY: 55,
+      startY: 60,
       head: [['#', 'Categoría', 'Producto', 'Cantidad', 'Precio', 'Total']],
       body: rows,
       theme: 'grid'
@@ -179,11 +185,18 @@ export class ViewSalidaComponent implements OnInit {
     sheet.addRow([]);
 
     sheet.addRow(['Fecha:', new Date(this.salida.createdAt).toLocaleString()]);
+    sheet.addRow(['Tipo de salida:', this.salida.tiposalida]);
 
-    const tipo = this.salida.tipo === 'cliente' ? 'Cliente' : 'Proveedor';
-    const nombre = this.salida.cliente?.name || this.salida.supplier?.name || 'N/A';
-
-    sheet.addRow([`${tipo}:`, nombre]);
+    let infoExtra = 'N/A';
+    if (this.salida.tiposalida === 'Venta') {
+      infoExtra = this.salida.cliente?.name || 'N/A';
+      sheet.addRow(['Cliente:', infoExtra]);
+    } else if (this.salida.tiposalida === 'Devolucion') {
+      infoExtra = this.salida.supplier?.name || 'N/A';
+      sheet.addRow(['Proveedor:', infoExtra]);
+    } else {
+      sheet.addRow(['Información adicional:', 'N/A']);
+    }
 
     sheet.addRow([]);
 

@@ -204,4 +204,8 @@ export class SubcategoriaAlmaceneroComponent implements OnInit{
   page1(){
     this.router.navigate(['/almacenero/categoria-almacenero'])
   }
+  
+  page3() {
+    this.router.navigate(['/almacenero/marcas'])
+  }
 }

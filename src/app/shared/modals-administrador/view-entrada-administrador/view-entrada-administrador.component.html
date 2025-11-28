@@ -7,6 +7,9 @@
     <button class="salida" style="background-color: rgb(248, 180, 34);" (click)="exportarPDF()">
       Exportar PDF
     </button>
+    <button class="salida" style="background-color: rgb(34, 248, 102);" (click)="exportarExcel()">
+      Exportar Excel
+    </button>
   </div>
 </div>
 
@@ -16,11 +19,16 @@
 
   <h2>Información general</h2>
   <p><strong>Fecha:</strong> {{entrada.createdAt | date: 'dd-MM-yyyy'}}</p>
+  <p><strong>Tipo de entrada:</strong> {{entrada.tipoentrada}}</p>
 
-
-  <p>
-    <strong>Proveedor:</strong> {{entrada.supplier?.name}}
+  <p *ngIf="entrada.tipoentrada === 'Devolucion'">
+    <strong>Cliente:</strong> {{entrada.cliente?.name || 'Sin cliente'}}
   </p>
+
+  <p *ngIf="entrada.tipoentrada === 'Proveedor'">
+    <strong>Proveedor:</strong> {{entrada.supplier?.name || 'Sin proveedor'}}
+  </p>
+
 
   <br>
 

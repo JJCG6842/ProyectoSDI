@@ -9,7 +9,6 @@
       Añadir producto
     </button>
   </div>
-
 </div>
 
 <div class="forms">
@@ -18,27 +17,22 @@
     <div>
       <h3>Tipo de salida:</h3>
       <mat-form-field appearance="fill" style="width: 280px;">
-        <mat-label>Seleccione destino</mat-label>
-        <mat-select formControlName="tipoDestino" (selectionChange)="onTipoDestinoChange($event.value)">
-          <mat-option value="proveedor">Proveedor</mat-option>
-          <mat-option value="cliente">Cliente</mat-option>
+        <mat-label>Seleccione tipo de salida</mat-label>
+
+        <mat-select 
+          formControlName="tiposalida"
+          (selectionChange)="onTipoSalidaChange($event.value)">
+          <mat-option value="Venta">Venta</mat-option>
+          <mat-option value="Devolucion">Devolucion</mat-option>
+          <mat-option value="Baja">Baja</mat-option>
+          <mat-option value="Mantenimiento">Mantenimiento</mat-option>
+          <mat-option value="Perdida_robo">Perdida o robo</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
 
-    <div *ngIf="tipoDestino === 'proveedor'">
-      <h3>Seleccione proveedor:</h3>
-      <mat-form-field appearance="fill" style="width: 280px;">
-        <mat-label>Proveedor</mat-label>
-        <mat-select formControlName="provider">
-          <mat-option *ngFor="let prov of proveedores" [value]="prov.id">
-            {{ prov.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
 
-    <div *ngIf="tipoDestino === 'cliente'">
+    <div *ngIf="tiposalida === 'Venta'">
       <h3>Seleccione cliente:</h3>
       <mat-form-field appearance="fill" style="width: 280px;">
         <mat-label>Cliente</mat-label>
@@ -50,10 +44,21 @@
       </mat-form-field>
     </div>
 
+    <div *ngIf="tiposalida === 'Devolucion'">
+      <h3>Seleccione proveedor:</h3>
+      <mat-form-field appearance="fill" style="width: 280px;">
+        <mat-label>Proveedor</mat-label>
+        <mat-select formControlName="supplier">
+          <mat-option *ngFor="let prov of proveedores" [value]="prov.id">
+            {{ prov.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
   </form>
-
-
 </div>
+
 
 <br><br>
 
@@ -74,6 +79,7 @@
         <th>Acciones</th>
       </tr>
     </thead>
+
     <tbody>
       <tr *ngFor="let salida of pagedSalidas; let i = index">
         <th>{{ (pageIndex * pageSize) + i + 1 }}</th>
@@ -82,6 +88,7 @@
         <th>{{ salida.quantity }}</th>
         <th>S/.{{ salida.price }}</th>
         <th>S/.{{ salida.total }}</th>
+
         <th>
           <button class="delete" (click)="deleteSalida(i)">
             <mat-icon aria-hidden="false" fontIcon="remove"></mat-icon>
@@ -90,26 +97,33 @@
       </tr>
     </tbody>
   </table>
-  <mat-paginator [length]="salidas.length" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons
+
+  <mat-paginator 
+    [length]="salidas.length" 
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[5, 10, 20]"
+    showFirstLastButtons
     (page)="onPageChange($event)">
   </mat-paginator>
 </div>
 
+
 <br><br>
 
 <div style="display: flex; gap: 30px;">
-
   <div>
     <h2>Monto total:</h2>
-    <h3>S/.{{totalMonto}}</h3>
+    <h3>S/.{{ totalMonto }}</h3>
   </div>
 
-
-  <br>
   <div>
     <h2>Cantidad total:</h2>
-    <h3>{{totalCantidad}}</h3>
+    <h3>{{ totalCantidad }}</h3>
   </div>
 </div>
+
 <br>
-<button class="salida" style="height: 52px; width: 220px;" (click)="realizarSalida()">Realizar salida</button>
+
+<button class="salida" style="height: 52px; width: 220px;" (click)="realizarSalida()">
+  Realizar salida
+</button>

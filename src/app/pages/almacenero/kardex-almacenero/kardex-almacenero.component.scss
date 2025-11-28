@@ -1,30 +1,30 @@
 .header-row {
   display: flex;
-  justify-content: space-between; 
-  align-items: center;            
-  margin-bottom: 20px;            
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.miniselect {
+  display: flex;
+  gap: 30px;
 }
 
 .entrance,
-.salida{
-    width: 250px;
-    height: 60px;
-    background-color: #04ff11;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    font-size: 21px;
-    font-weight: 500;
-    cursor: pointer;
+.salida {
+  width: 250px;
+  height: 60px;
+  background-color: #04ff11;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 21px;
+  font-weight: 500;
+  cursor: pointer;
 }
 
-.salida{
-    background-color: red;
-}
-
-.botons{
-  display: flex;
-  gap: 30px;
+.salida {
+  background-color: red;
 }
 
 .table {
@@ -52,12 +52,18 @@
   color: #ffffff;
 }
 
-.table th, .table td {
+.table th,
+.table td {
   padding: 12px 15px;
   border-bottom: 1px solid #ddd;
 }
 
-
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  align-items: center;
+}
 
 .c2 {
   display: flex;
@@ -86,12 +92,28 @@
   justify-content: center;
 }
 
+.clean{
+  width: 110px;
+  height: 49px;
+  position: relative;
+  bottom: 10px;
+  cursor: pointer;
+  background-color: #045CFF;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 19px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-.icon{
-    font-size: 35px;  
-    height: 30px;
-    width: 30px;
-    margin-right: 35px;
+.icon {
+  font-size: 35px;
+  height: 30px;
+  width: 30px;
+  margin-right: 35px;
 }
 
 .icon-btn {
@@ -102,36 +124,45 @@
   position: relative;
 }
 
-.enter{
-    font-size: 30px;
-    font-weight: 500;
-    position: relative;
-    top: 46px;
-}
-
-input{
-    width: 760px;
-    height: 45px;
-    font-size: 24px;
-    position: relative;
-    left: 20px;
-    bottom: -70px;
-    border-radius: 8px;
-    outline: none;
-    border-color: #A4A4A4;
-    padding-left: 20px; 
-}
-
-.content1{
-    position: relative;
-    bottom: 20px;
-    display: flex;
+.filtros-container {
+  display: flex;
+  justify-content: flex-start;
+  padding-left: 0px;
+  margin-top: 30px;
 }
 
 
-.view{
+.enter {
+  font-size: 30px;
+  font-weight: 500;
+  position: relative;
+  top: 46px;
+}
+
+
+input.input-busqueda {
+  width: 760px;
+  height: 45px;
+  font-size: 24px;
+  position: relative;
+  left: 20px;
+  bottom: -70px;
+  border-radius: 8px;
+  outline: none;
+  border-color: #A4A4A4;
+  padding-left: 20px;
+}
+
+.content1 {
+  position: relative;
+  bottom: 20px;
+  display: flex;
+}
+
+
+.view {
   padding: 8px 16px;
-  margin-right: 10px; 
+  margin-right: 10px;
   width: 60px;
   height: 48px;
   border: none;
@@ -143,6 +174,6 @@ input{
   background: rgb(1, 255, 1);
 }
 
-.view:hover{
+.view:hover {
   background: rgb(95, 247, 95);
 }

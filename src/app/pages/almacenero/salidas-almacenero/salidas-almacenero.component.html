@@ -14,28 +14,37 @@
 <h2>Filtros:</h2>
 <div class="filters">
 
-  <mat-form-field appearance="fill">
-    <mat-label>Filtrar por</mat-label>
-    <mat-select [(value)]="selectedOpcion" (selectionChange)="onOpcionChange()">
-      <mat-option *ngFor="let op of opciones" [value]="op">{{ op }}</mat-option>
-    </mat-select>
-  </mat-form-field>
+  <mat-form-field appearance="fill" style="width: 250px;">
+  <mat-label>Tipo de salida</mat-label>
+  <mat-select [(ngModel)]="selectedTipoSalida" (selectionChange)="onTipoSalidaChange()">
+    <mat-option value="">Todos</mat-option>
+    <mat-option value="Venta">Venta</mat-option>
+    <mat-option value="Devolucion">Devolucion</mat-option>
+    <mat-option value="Mantenimiento">Mantenimiento</mat-option>
+    <mat-option value="Baja">Baja</mat-option>
+    <mat-option value="Perdida_robo">Pérdida / Robo</mat-option>
+  </mat-select>
+</mat-form-field>
 
-  <mat-form-field *ngIf="selectedOpcion === 'Cliente'" appearance="fill">
-    <mat-label>Seleccionar Cliente</mat-label>
-    <mat-select [(value)]="selectedClienteId" (selectionChange)="filtrarSalidas()">
-      <mat-option value="">Todos</mat-option>
-      <mat-option *ngFor="let c of clientes" [value]="c.id">{{ c.name }}</mat-option>
-    </mat-select>
-  </mat-form-field>
+<mat-form-field appearance="fill" *ngIf="selectedTipoSalida === 'Venta'" style="width: 250px;">
+  <mat-label>Seleccionar Cliente</mat-label>
+  <mat-select [(ngModel)]="selectedClienteId" (selectionChange)="filtrarSalidas()">
+    <mat-option value="">Todos</mat-option>
+    <mat-option *ngFor="let c of clientes" [value]="c.id">
+      {{ c.name }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
 
-  <mat-form-field *ngIf="selectedOpcion === 'Proveedor'" appearance="fill">
-    <mat-label>Seleccionar Proveedor</mat-label>
-    <mat-select [(value)]="selectedProveedorId" (selectionChange)="filtrarSalidas()">
-      <mat-option value="">Todos</mat-option>
-      <mat-option *ngFor="let p of proveedores" [value]="p.id">{{ p.name }}</mat-option>
-    </mat-select>
-  </mat-form-field>
+<mat-form-field appearance="fill" *ngIf="selectedTipoSalida === 'Devolucion'" style="width: 250px;">
+  <mat-label>Seleccionar Proveedor</mat-label>
+  <mat-select [(ngModel)]="selectedProveedorId" (selectionChange)="filtrarSalidas()">
+    <mat-option value="">Todos</mat-option>
+    <mat-option *ngFor="let p of proveedores" [value]="p.id">
+      {{ p.name }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
 
 
   <!-- <mat-form-field>
@@ -55,7 +64,7 @@
       <tr>
         <th>Nro°</th>
         <th>Fecha registro</th>
-        <th>Proveedor/Cliente</th>
+        <th>Tipo de salida</th>
         <th>Cantidad total</th>
         <th>Monto total</th>
         <th>Acciones</th>
@@ -65,7 +74,7 @@
       <tr *ngFor="let salida of  pagedSalidas; let i = index">
         <th>{{ (pageIndex * pageSize) + i + 1 }}</th>
         <th>{{salida.createdAt | date: 'dd-MM-yyyy'}}</th>
-        <th>{{ getNombreProveedorCliente(salida) }}</th>
+        <th>{{ salida.tiposalida }}</th>
         <th>{{ getCantidadTotal(salida) }}</th>
         <th>S/.{{ getMontoTotal(salida) }}</th>
 

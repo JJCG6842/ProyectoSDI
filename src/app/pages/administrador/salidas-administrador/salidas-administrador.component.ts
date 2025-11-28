@@ -48,6 +48,7 @@ export class SalidasAdministradorComponent implements OnInit {
   proveedores: Proveedor[] = [];
   salidas: Salida[] = [];
   selectedClienteId: string = '';
+  selectedTipoSalida: string = '';
   selectedProveedorId: string = '';
   salidasFiltradas: any[] = [];
   selectedOpcion: string = '';
@@ -125,6 +126,49 @@ export class SalidasAdministradorComponent implements OnInit {
     })
   }
 
+  addSalidas() {
+    const dialogRef = this.dialog.open(AddSalidaComponent, {
+      width: '550px',
+      maxWidth: 'none',
+      panelClass: 'custom-dialog-container'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+      if (result) {
+        this.cargarSalidas();
+      }
+    });
+  }
+
+  eraseSalida(id: string): void {
+    const dialogRef = this.dialog.open(DeleteSalidaConfirmComponent, {
+      width: '400px',
+      disableClose: true,
+      data: { id }
+    });
+
+    dialogRef.afterClosed().subscribe((confirmado) => {
+      if (confirmado) {
+        this.isloading = true;
+        this.salidaService.deleteSalida(id).subscribe({
+          next: () => {
+            this.dialog.open(DeleteSalidaSuccessComponent, {
+              width: '400px',
+              disableClose: true,
+            });
+            this.cargarSalidas();
+          },
+          error: (error) => {
+            console.error('Error al eliminar entrada:', error);
+            this.isloading = false;
+          },
+        });
+      }
+    });
+  }
+
+
   search() {
     const term = this.searchTerm.trim();
 
@@ -179,35 +223,36 @@ export class SalidasAdministradorComponent implements OnInit {
 
 
   filtrarSalidas() {
-    if (this.selectedOpcion === 'Cliente') {
-      if (!this.selectedClienteId) {
-        this.salidasFiltradas = [...this.salidas];
-        return;
-      }
-      this.salidasFiltradas = this.salidas.filter(
+
+    this.salidasFiltradas = this.salidas;
+
+    if (this.selectedTipoSalida) {
+      this.salidasFiltradas = this.salidasFiltradas.filter(
+        s => s.tiposalida === this.selectedTipoSalida
+      );
+    }
+
+    if (this.selectedTipoSalida === 'Venta' && this.selectedClienteId) {
+      this.salidasFiltradas = this.salidasFiltradas.filter(
         s => s.clienteId === this.selectedClienteId
       );
     }
 
-    if (this.selectedOpcion === 'Proveedor') {
-      if (!this.selectedProveedorId) {
-        this.salidasFiltradas = [...this.salidas];
-        return;
-      }
-      this.salidasFiltradas = this.salidas.filter(
+    if (this.selectedTipoSalida === 'Devolucion' && this.selectedProveedorId) {
+      this.salidasFiltradas = this.salidasFiltradas.filter(
         s => s.supplierId === this.selectedProveedorId
       );
     }
 
     this.pageIndex = 0;
-    this.reload.markForCheck()
+    this.reload.markForCheck();
   }
 
-  onOpcionChange() {
+  onTipoSalidaChange() {
     this.selectedClienteId = '';
     this.selectedProveedorId = '';
-this.pageIndex = 0;
-    this.salidasFiltradas = [...this.salidas];
+
+    this.filtrarSalidas();
   }
 
 

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, ChangeDetectionStrategy, inject, OnInit, viewChild } from '@angular/core';
+import { Component, ChangeDetectorRef, ChangeDetectionStrategy, inject, OnInit } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -9,20 +9,24 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddSalidaComponent } from '../../../shared/modals-almacenero/add-salida/add-salida.component';
 import { ProveedorService } from '../../../services/proveedor.service';
 import { ClienteService } from '../../../services/cliente.service';
+import { ProductoService } from '../../../services/producto.service';
+import { SalidaService } from '../../../services/salida.service';
 import { Proveedor } from '../../../interface/proveedor.interface';
 import { Cliente } from '../../../interface/cliente.interface';
-import { MatOptionModule } from '@angular/material/core';
-import { MatInputModule } from '@angular/material/input';
-import { ProductoService } from '../../../services/producto.service';
-import { Producto } from '../../../interface/producto.interface';
 import { AddSalidaSuccessComponent } from '../../../shared/modals-almacenero/add-salida/modals-salida/add-salida-success/add-salida-success.component';
-import { SalidaService } from '../../../services/salida.service';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { TipoSalida } from '../../../environments/tipos-salida.type';
+import { ProductNullComponent } from '../../../shared/modals-almacenero/add-entrada/modals-entrada/product-null/product-null.component';
+import { ClienteNullComponent } from '../../../shared/modals-almacenero/add-entrada/modals-entrada/cliente-null/cliente-null.component';
+import { ProveedorNullComponent } from '../../../shared/modals-almacenero/add-entrada/modals-entrada/proveedor-null/proveedor-null.component';
+import { TipoSalidaNullComponent } from '../../../shared/modals-almacenero/add-salida/modals-salida/tipo-salida-null/tipo-salida-null.component';
 
 @Component({
   selector: 'app-salida-panel',
-  imports: [MatFormFieldModule, CommonModule, MatSelectModule, MatIconModule, MatDialogModule, FormsModule,
-    ReactiveFormsModule, MatOptionModule, MatInputModule, MatPaginatorModule
+  imports: [
+    MatFormFieldModule, CommonModule, MatSelectModule, MatIconModule,
+    MatDialogModule, FormsModule, ReactiveFormsModule,
+    MatPaginatorModule
   ],
   templateUrl: './salida-panel.component.html',
   styleUrl: './salida-panel.component.scss',
@@ -30,30 +34,34 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 })
 export class SalidaPanelComponent implements OnInit {
 
-  readonly dialog = inject(MatDialog)
-  readonly reload = inject(ChangeDetectorRef);
+  readonly dialog = inject(MatDialog);
+  readonly cd = inject(ChangeDetectorRef);
 
   formProveedor!: FormGroup;
+
   proveedores: Proveedor[] = [];
-  productosSeleccionados: any[] = [];
-  cantidadTotal: number = 0;
-  montoTotal: number = 0;
   clientes: Cliente[] = [];
+  salidas: any[] = [];
+
+  tiposalida: TipoSalida = '';
+
   pageSize = 5;
   pageIndex = 0;
-  salidas: any[] = [];
-  isloading = false
-  tipoDestino: 'proveedor' | 'cliente' | '' = '';
 
+  constructor(
+    private router: Router,
+    private fb: FormBuilder,
+    private proveedorService: ProveedorService,
+    private clienteService: ClienteService,
+    private productoService: ProductoService,
+    private salidaService: SalidaService
+  ) {
 
-  constructor(private route: Router, private fb: FormBuilder, private proveedorService: ProveedorService
-    , private clienteService: ClienteService, private cd: ChangeDetectorRef, private productoService: ProductoService,
-    private salidaService: SalidaService) {
     this.formProveedor = this.fb.group({
-      tipoDestino: ['', Validators.required],
-      provider: [''],
-      cliente: [''],
-    })
+      tiposalida: ['', Validators.required],
+      supplier: [''],
+      cliente: ['']
+    });
   }
 
   ngOnInit(): void {
@@ -71,77 +79,62 @@ export class SalidaPanelComponent implements OnInit {
     this.cd.markForCheck();
   }
 
-  onTipoDestinoChange(tipo: string) {
-    this.tipoDestino = tipo as 'proveedor' | 'cliente';
+  onTipoSalidaChange(tipo: string) {
+    this.tiposalida = tipo as TipoSalida;
 
-    this.formProveedor.patchValue({ provider: '', cliente: '' });
+    this.formProveedor.patchValue({ supplier: '', cliente: '' });
 
-    if (tipo === 'proveedor') {
-      this.cargarProveedores();
-      this.formProveedor.get('provider')?.setValidators([Validators.required]);
-      this.formProveedor.get('cliente')?.clearValidators();
-    } else if (tipo === 'cliente') {
+    if (tipo === 'Venta') {
       this.cargarClientes();
       this.formProveedor.get('cliente')?.setValidators([Validators.required]);
-      this.formProveedor.get('provider')?.clearValidators();
+      this.formProveedor.get('supplier')?.clearValidators();
+
+    } else if (tipo === 'Devolucion') {
+      this.cargarProveedores();
+      this.formProveedor.get('supplier')?.setValidators([Validators.required]);
+      this.formProveedor.get('cliente')?.clearValidators();
+
+    } else {
+      this.formProveedor.get('cliente')?.clearValidators();
+      this.formProveedor.get('supplier')?.clearValidators();
     }
 
-    this.formProveedor.get('provider')?.updateValueAndValidity();
     this.formProveedor.get('cliente')?.updateValueAndValidity();
+    this.formProveedor.get('supplier')?.updateValueAndValidity();
 
     this.cd.markForCheck();
   }
 
   cargarProveedores() {
     this.proveedorService.getProveedores().subscribe({
-      next: (proveedor) => {
-        this.proveedores = proveedor;
-      },
-      error: (fail) => {
-        console.error('error al cargar proveedores', fail)
-      },
-    })
+      next: res => {
+        this.proveedores = res;
+        this.cd.markForCheck();
+      }
+    });
   }
 
   cargarClientes() {
     this.clienteService.getClientes().subscribe({
-      next: (clientes) => {
-        this.clientes = clientes;
+      next: res => {
+        this.clientes = res;
         this.cd.markForCheck();
-      },
-      error: (err) => console.error('Error al cargar clientes', err)
+      }
     });
-  }
-
-  get provider() {
-    return this.formProveedor.get('provider') as FormControl;
-  }
-  get cliente() {
-    return this.formProveedor.get('cliente') as FormControl;
   }
 
   addProduct() {
     const dialogRef = this.dialog.open(AddSalidaComponent, {
-      width: '550px',
-      maxWidth: 'none',
-      panelClass: 'custom-dialog-container'
+      width: '550px'
     });
 
     dialogRef.afterClosed().subscribe(result => {
-    if (result) {
-      const producto = this.productosSeleccionados.find(p => p.id === result.productId);
-
-      if (producto) {
-        producto.quantity -= result.quantity;
-
-        producto.status = producto.quantity > 0 ? 'Instock' : 'Outstock';
+      if (result) {
+        this.salidas.push(result);
+        this.pageIndex = 0;
+        this.cd.markForCheck();
       }
-
-      this.salidas.push(result);
-      this.pageIndex = 0;
-      this.cd.markForCheck();
-    }
-  });
+    });
   }
 
   get totalCantidad() {
@@ -160,65 +153,89 @@ export class SalidaPanelComponent implements OnInit {
 
   async realizarSalida() {
 
-  if (!this.tipoDestino) {
-    alert("Seleccione proveedor o cliente");
-    return;
-  }
+    if (!this.tiposalida) {
+      const dialogRef = this.dialog.open(TipoSalidaNullComponent, {
+        width: '400px',
+        maxWidth: 'none',
+        panelClass: 'custom-dialog-container'
+      });
 
-  if (this.salidas.length === 0) {
-    alert("Debe agregar al menos un producto");
-    return;
-  }
+      dialogRef.afterClosed().subscribe(result => {
+        console.log(`Dialog result: ${result}`);
+      });
+      return;
+    }
 
-  for (const salida of this.salidas) {
-    try {
+    if (this.salidas.length === 0) {
+      const dialogRef = this.dialog.open(ProductNullComponent, {
+        width: '400px',
+        maxWidth: 'none',
+        panelClass: 'custom-dialog-container'
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        console.log(`Dialog result: ${result}`);
+      });
+      return;
+    }
+
+    for (const salida of this.salidas) {
       const producto = await this.productoService.getProductoporId(salida.productId).toPromise();
+
       if (!producto) {
-        alert(`Producto "${salida.productName}" no encontrado`);
+        alert(`Producto ${salida.productName} no encontrado`);
         return;
       }
 
       if (salida.quantity > producto.quantity) {
-        alert(`Cantidad solicitada para "${salida.productName}" (${salida.quantity}) supera el stock disponible (${producto.quantity})`);
+        alert(`Cantidad solicitada de ${salida.productName} supera el stock`);
         return;
       }
-
-    } catch (err) {
-      console.error(err);
-      alert(`Error verificando stock del producto "${salida.productName}"`);
-      return;
     }
+
+    const productos = this.salidas.map(p => ({
+      productId: p.productId,
+      quantity: p.quantity,
+      price: p.price
+    }));
+
+    const data = {
+
+      tipo:
+        this.tiposalida === 'Venta'
+          ? 'cliente'
+          : this.tiposalida === 'Devolucion'
+            ? 'proveedor'
+            : 'interno',
+
+      tiposalida: this.tiposalida,
+
+      supplierId:
+        this.tiposalida === 'Devolucion'
+          ? this.formProveedor.value.supplier
+          : null,
+
+      clienteId:
+        this.tiposalida === 'Venta'
+          ? this.formProveedor.value.cliente
+          : null,
+
+      productos
+    };
+
+    console.log("DATA ENVIADA:", data);
+
+    this.salidaService.createSalida(data).subscribe({
+      next: () => {
+        this.dialog.open(AddSalidaSuccessComponent);
+        this.salidas = [];
+        this.router.navigate(['/almacenero/salida-almacenero']);
+      },
+      error: err => console.error(err)
+    });
   }
-
-  const productos = this.salidas.map(p => ({
-    productId: p.productId,
-    quantity: p.quantity,
-    price: p.price
-  }));
-
-  const data = {
-    tipo: this.tipoDestino,
-    supplierId: this.tipoDestino === 'proveedor' ? this.formProveedor.value.provider : null,
-    clienteId: this.tipoDestino === 'cliente' ? this.formProveedor.value.cliente : null,
-    productos
-  };
-
-  console.log('Payload salida:', data);
-
-
-  this.salidaService.createSalida(data).subscribe({
-    next: () => {
-      this.dialog.open(AddSalidaSuccessComponent);
-      this.salidas = [];
-      this.route.navigate(['/almacenero/salida-almacenero']);
-    },
-    error: err => console.error('Error al crear salida:', err)
-  });
-}
 
   gestor() {
-    this.route.navigate(['/almacenero/salida-almacenero'])
+    this.router.navigate(['/almacenero/salida-almacenero']);
   }
-
-
 }

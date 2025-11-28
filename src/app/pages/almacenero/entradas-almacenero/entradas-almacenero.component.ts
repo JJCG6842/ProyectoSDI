@@ -17,6 +17,8 @@ import { MatFormField, MatSelect, MatOption } from "@angular/material/select";
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { ClienteService } from '../../../services/cliente.service';
+import { Cliente } from '../../../interface/cliente.interface';
 import { ProveedorService } from '../../../services/proveedor.service';
 import { Proveedor } from '../../../interface/proveedor.interface';
 
@@ -41,17 +43,21 @@ export class EntradasAlmaceneroComponent implements OnInit {
   entradas: Entrada[] = [];
   proveedores: Proveedor[] = [];
   entradasFiltradas: Entrada[] = [];
+  selectedTipoEntrada: string = "";
+  selectedClienteId: string = "";
+  clientes: any[] = [];
   selectedProveedorId: string = '';
   pageSize = 5;
   pageIndex = 0;
 
   constructor(private router: Router, private productoService: ProductoService, private entradaService: EntradaService,
-    private proveedorService: ProveedorService) { }
+    private proveedorService: ProveedorService, private clienteService: ClienteService) { }
 
   ngOnInit(): void {
     this.cargarEntradas();
     this.cargarProductos();
     this.cargarProveedores();
+    this.cargarClientes();
   }
 
   get pagedEntradas(): Entrada[] {
@@ -75,7 +81,15 @@ export class EntradasAlmaceneroComponent implements OnInit {
     })
   }
 
-  
+  cargarClientes() {
+  this.clienteService.getClientes().subscribe({
+    next: (res) => {
+      this.clientes = res;
+      this.reload.markForCheck();
+    },
+    error: (err) => console.error('Error al cargar clientes', err)
+  });
+}
 
   cargarProveedores() {
     this.proveedorService.getProveedores().subscribe({
@@ -100,6 +114,28 @@ export class EntradasAlmaceneroComponent implements OnInit {
       error: err => console.error('Error al cargar entradas', err)
     });
   }
+
+  aplicarFiltros() {
+  this.entradasFiltradas = this.entradas.filter(e => {
+
+    if (this.selectedTipoEntrada && e.tipoentrada !== this.selectedTipoEntrada) {
+      return false;
+    }
+
+    if (this.selectedTipoEntrada === 'Proveedor' && this.selectedProveedorId) {
+      if (e.supplierId !== this.selectedProveedorId) return false;
+    }
+
+    if (this.selectedTipoEntrada === 'Devolucion' && this.selectedClienteId) {
+      if (e.clienteId !== this.selectedClienteId) return false;
+    }
+
+    return true;
+  });
+
+  if (this.paginator) this.paginator.firstPage();
+  this.reload.markForCheck();
+}
 
 
   addEntrance() {
@@ -186,25 +222,25 @@ export class EntradasAlmaceneroComponent implements OnInit {
     }
   }
 
-  filtrarPorProveedor() {
-    if (!this.selectedProveedorId) {
-      this.entradasFiltradas = [...this.entradas];
-    } else {
-      this.entradasFiltradas = this.entradas.filter(
-        e => e.supplierId === this.selectedProveedorId
-      );
-    }
+  // filtrarPorProveedor() {
+  //   if (!this.selectedProveedorId) {
+  //     this.entradasFiltradas = [...this.entradas];
+  //   } else {
+  //     this.entradasFiltradas = this.entradas.filter(
+  //       e => e.supplierId === this.selectedProveedorId
+  //     );
+  //   }
 
-    if (this.paginator) this.paginator.firstPage();
+  //   if (this.paginator) this.paginator.firstPage();
 
-    this.reload.markForCheck();
-  }
+  //   this.reload.markForCheck();
+  // }
 
   onPageChange(event: any) {
-  this.pageSize = event.pageSize;
-  this.pageIndex = event.pageIndex;
-  this.reload.markForCheck();
-}
+    this.pageSize = event.pageSize;
+    this.pageIndex = event.pageIndex;
+    this.reload.markForCheck();
+  }
 
   getCantidadTotal(entrada: Entrada): number {
     return entrada.detalles?.reduce((acc, p) => acc + p.quantity, 0) ?? 0;

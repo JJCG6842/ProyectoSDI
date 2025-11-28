@@ -4,7 +4,8 @@
 
 <div class="content1">
   <p class="enter">Ingrese Producto:</p>
-  <input type="text" placeholder="Buscar producto..." [(ngModel)]="searchTerm">
+  <input type="text" placeholder="Buscar producto..." [(ngModel)]="searchTerm"
+  (ngModelChange)="onSearchTermChange($event)" class="input-busqueda">
 
   <button class="boton1" (click)="search()">
     <mat-icon fontIcon="search" class="icon-btn"></mat-icon>
@@ -12,38 +13,47 @@
   </button>
 </div>
 
-<div class="c2">
-  <div class="botons">
-    <div class="miniselect">
-      <div class="filters">
+<p style="font-size: 26px; font-weight: 500;position: relative; top: 16px;">Filtros:</p>
 
-        <mat-form-field appearance="fill">
-          <mat-label>Movimiento</mat-label>
-          <mat-select [(ngModel)]="tipoFiltro">
-            <mat-option value="todos">Todos</mat-option>
-            <mat-option value="entrada">Entradas</mat-option>
-            <mat-option value="salida">Salidas</mat-option>
-          </mat-select>
-        </mat-form-field>
+<div class="filtros-container">
+  <div class="filters">
 
-        <mat-form-field>
-          <mat-label>Ordenar por fecha</mat-label>
-          <mat-select [(ngModel)]="ordenFecha">
-            <mat-option value="desc">Más recientes</mat-option>
-            <mat-option value="asc">Más antiguas</mat-option>
-          </mat-select>
-        </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Movimiento</mat-label>
+      <mat-select [(ngModel)]="tipoFiltro">
+        <mat-option value="todos">Todos</mat-option>
+        <mat-option value="entrada">Entradas</mat-option>
+        <mat-option value="salida">Salidas</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-        <mat-form-field>
-          <mat-label>Filtrar por fecha</mat-label>
-          <input matInput [matDatepicker]="datepicker" placeholder="Selecciona fecha" [(ngModel)]="fechaFiltro" />
-          <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
-          <mat-datepicker #datepicker></mat-datepicker>
-        </mat-form-field>
+    <mat-form-field>
+      <mat-label>Ordenar por fecha</mat-label>
+      <mat-select [(ngModel)]="ordenFecha">
+        <mat-option value="desc">Más recientes</mat-option>
+        <mat-option value="asc">Más antiguas</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-        <button mat-flat-button color="primary" (click)="limpiarFiltros()">Limpiar</button>
-      </div>
-    </div>
+    <mat-form-field>
+      <mat-label>Filtrar por fecha</mat-label>
+      <input matInput [matDatepicker]="datepicker" placeholder="Selecciona fecha" [(ngModel)]="fechaFiltro" />
+      <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
+      <mat-datepicker #datepicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Rango de tiempo</mat-label>
+      <mat-select [(ngModel)]="filtroTiempo" (selectionChange)="filtrarPorTiempo()">
+        <mat-option value="todo">Todo</mat-option>
+        <mat-option value="mes">Mes actual</mat-option>
+        <mat-option value="6meses">Últimos 6 meses</mat-option>
+        <mat-option value="anio">Año actual</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button (click)="limpiarFiltros()" class="clean">Limpiar</button>
+
   </div>
 </div>
 

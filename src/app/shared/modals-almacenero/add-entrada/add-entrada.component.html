@@ -2,29 +2,51 @@
 
 <mat-dialog-content>
     <form [formGroup]="formEntrance">
-        
+
+        <h3>Filtrar por categoría:</h3>
+        <mat-form-field appearance="fill">
+            <mat-label>Categoría</mat-label>
+            <mat-select formControlName="category" (selectionChange)="filtrarPorCategoria($event.value)">
+                <mat-option value="">Todas</mat-option>
+                <mat-option *ngFor="let cat of categorias" [value]="cat.id">
+                    {{ cat.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <h3>Filtrar por marca:</h3>
+        <mat-form-field appearance="fill">
+            <mat-label>Marca</mat-label>
+            <mat-select formControlName="marca" (selectionChange)="filtrarPorMarca($event.value)"
+                [disabled]="!formEntrance.get('category')?.value">
+                <mat-option value="">Todas</mat-option>
+                <mat-option *ngFor="let m of marcasFiltradas" [value]="m.id">
+                    {{ m.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
         <h3>Seleccione el producto:</h3>
         <mat-form-field appearance="fill">
             <mat-label>Producto:</mat-label>
             <mat-select formControlName="product">
-            <mat-option *ngFor="let product of productos" [value]="product.id">
-                {{product.name}}
-            </mat-option>
-        </mat-select>
+                <mat-option *ngFor="let product of productosFiltrados" [value]="product.id">
+                    {{ product.name }}
+                </mat-option>
+            </mat-select>
         </mat-form-field>
         <div [hidden]="product.valid || product.pristine" class="error">
             <span *ngIf="product.errors?.['required']">El campo es requerido</span>
         </div>
-      
+
         <h3>Ingrese monto de entrada:</h3>
-            <mat-form-field appearance="fill">
+        <mat-form-field appearance="fill">
             <mat-label>Cantidad:</mat-label>
             <input matInput formControlName="quantity" type="number">
-            </mat-form-field>
+        </mat-form-field>
         <div [hidden]="quantity.valid || quantity.pristine" class="error">
             <span *ngIf="quantity.errors?.['required']">El campo es requerido</span>
         </div>
-
         <div [hidden]="quantity.valid || quantity.pristine" class="error">
             <span *ngIf="quantity.errors?.['min']">Debe haber almenos un producto</span>
         </div>
@@ -33,6 +55,7 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-    <button mat-flat-button  style="background-color: blue; color: white;" (click)="addEntrance()">Agregar producto</button>
+    <button mat-flat-button style="background-color: blue; color: white;" (click)="addEntrance()">Agregar
+        producto</button>
     <button mat-flat-button mat-dialog-close style="background-color: red; color: white;">Cancelar</button>
 </mat-dialog-actions>

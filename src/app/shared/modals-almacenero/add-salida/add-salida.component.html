@@ -3,11 +3,35 @@
 <mat-dialog-content>
   <form [formGroup]="formSalida">
 
+    <h3>Filtrar por categoría:</h3>
+    <mat-form-field appearance="fill">
+      <mat-label>Categoría</mat-label>
+      <mat-select formControlName="category" (selectionChange)="filtrarPorCategoria($event.value)">
+        <mat-option value="">Todas</mat-option>
+        <mat-option *ngFor="let cat of categorias" [value]="cat.id">
+          {{ cat.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <h3>Filtrar por marca:</h3>
+    <mat-form-field appearance="fill">
+      <mat-label>Marca</mat-label>
+      <mat-select formControlName="marca" (selectionChange)="filtrarPorMarca($event.value)"
+        [disabled]="!formSalida.get('category')?.value">
+        <mat-option value="">Todas</mat-option>
+        <mat-option *ngFor="let m of marcasFiltradas" [value]="m.id">
+          {{ m.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+
     <h3>Seleccione el producto:</h3>
     <mat-form-field appearance="fill">
       <mat-label>Producto</mat-label>
       <mat-select formControlName="product">
-        <mat-option *ngFor="let product of productos" [value]="product.id">
+        <mat-option *ngFor="let product of productosFiltrados" [value]="product.id">
           {{ product.name }}
         </mat-option>
       </mat-select>
