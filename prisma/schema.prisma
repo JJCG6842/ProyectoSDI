@@ -51,26 +51,26 @@ model Marca {
 }
 
 model Products {
-  id            String        @id @default(uuid())
+  id            String            @id @default(uuid())
   image         String
   name          String
   description   String
   marcaId       String?
-  quantity      Float         @default(0)
+  quantity      Float             @default(0)
   price         Float
-  status        ProductStatus @default(Outstock)
-  state         ProductState  @default(Habilitado)
+  status        ProductStatus     @default(Outstock)
+  state         ProductState      @default(Habilitado)
   model         String
   categoryId    String
   subcategoryId String
   storeId       String?
   entrances     EntranceDetalle[]
   salidas       SalidaDetalle[]
-  category      Category      @relation(fields: [categoryId], references: [id])
-  subcategory   Subcategory   @relation(fields: [subcategoryId], references: [id])
-  marca         Marca?        @relation(fields: [marcaId], references: [id])
-  createAt      DateTime      @default(now())
-  updateAt      DateTime      @updatedAt
+  category      Category          @relation(fields: [categoryId], references: [id])
+  subcategory   Subcategory       @relation(fields: [subcategoryId], references: [id])
+  marca         Marca?            @relation(fields: [marcaId], references: [id])
+  createAt      DateTime          @default(now())
+  updateAt      DateTime          @updatedAt
 }
 
 model Supplier {
@@ -85,44 +85,49 @@ model Supplier {
 }
 
 model Cliente {
-  id        String   @id @default(uuid())
+  id        String     @id @default(uuid())
   dni       Int
   name      String
   phone     Int
   salidas   Salida[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  entrances Entrance[]
 }
 
 model Entrance {
-  id         String    @id @default(uuid())
-  supplierId String?
-  createdAt  DateTime  @default(now())
-  detalles   EntranceDetalle[]
-  supplier   Supplier? @relation(fields: [supplierId], references: [id])
+  id          String            @id @default(uuid())
+  tipoentrada TipoEntrada
+  supplierId  String?
+  clienteId   String?
+  createdAt   DateTime          @default(now())
+  detalles    EntranceDetalle[]
+  supplier    Supplier?         @relation(fields: [supplierId], references: [id])
+  cliente     Cliente?          @relation(fields: [clienteId], references: [id])
 }
 
 model EntranceDetalle {
-  id         String    @id @default(uuid())
+  id         String @id @default(uuid())
   entranceId String
   productId  String
   quantity   Float
   price      Float
   total      Float
 
-  product    Products  @relation(fields: [productId], references: [id])
-  entrance   Entrance  @relation(fields: [entranceId], references: [id], onDelete: Cascade)
+  product  Products @relation(fields: [productId], references: [id])
+  entrance Entrance @relation(fields: [entranceId], references: [id], onDelete: Cascade)
 }
 
 model Salida {
-  id         String           @id @default(uuid())
-  tipo       String          
+  id         String          @id @default(uuid())
+  tipo       String
+  tiposalida TipoSalida
   supplierId String?
   clienteId  String?
-  createdAt  DateTime         @default(now())
+  createdAt  DateTime        @default(now())
   detalles   SalidaDetalle[]
-  supplier   Supplier?        @relation(fields: [supplierId], references: [id])
-  cliente    Cliente?         @relation(fields: [clienteId], references: [id])
+  supplier   Supplier?       @relation(fields: [supplierId], references: [id])
+  cliente    Cliente?        @relation(fields: [clienteId], references: [id])
 }
 
 model SalidaDetalle {
@@ -154,4 +159,20 @@ enum UserStatus {
 enum ProductState {
   Habilitado
   Deshabilitado
+}
+
+enum TipoSalida {
+  Mantenimiento
+  Baja
+  Perdida_robo
+  Venta
+  Devolucion
+}
+
+enum TipoEntrada {
+  Reparado
+  Compra
+  Devolucion
+  Proveedor
+  Recuperado
 }

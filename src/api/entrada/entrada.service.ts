@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, TipoEntrada } from '@prisma/client';
 
 @Injectable()
 export class EntradaService {
-    private prisma = new PrismaClient();
+  private prisma = new PrismaClient();
 
-    async getAllEntradas() {
+  async getAllEntradas() {
     return this.prisma.entrance.findMany({
       include: {
         detalles: {
@@ -36,11 +36,19 @@ export class EntradaService {
   }
 
   async createEntrada(data: {
+    tipoentrada: TipoEntrada;   
     supplierId?: string;
+    clienteId?: string;
     productos: { productId: string; quantity: number; price: number }[];
   }) {
     if (!data.productos?.length)
       throw new BadRequestException('Debe enviar al menos un producto');
+
+    if (!Object.values(TipoEntrada).includes(data.tipoentrada)) {
+      throw new BadRequestException(
+        `TipoEntrada inválido. Valores permitidos: ${Object.values(TipoEntrada).join(', ')}`
+      );
+    }
 
     const productIds = data.productos.map(p => p.productId);
     const productos = await this.prisma.products.findMany({
@@ -52,7 +60,9 @@ export class EntradaService {
 
     const entrada = await this.prisma.entrance.create({
       data: {
-        supplierId: data.supplierId,
+        tipoentrada: data.tipoentrada,  
+        supplierId: data.supplierId || null,
+        clienteId: data.clienteId || null,
         detalles: {
           create: data.productos.map(p => ({
             productId: p.productId,

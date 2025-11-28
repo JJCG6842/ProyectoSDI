@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Delete, Param, Body } from '@nestjs/common';
 import { EntradaService } from './entrada.service';
+import { TipoEntrada } from '@prisma/client';
 
 @Controller('entrada')
 export class EntradaController {
@@ -18,7 +19,7 @@ export class EntradaController {
 
   @Post()
   crearEntrada(
-    @Body() body: { supplierId?: string; productos: { productId: string; quantity: number; price: number }[] },
+    @Body() body: {tipoentrada: TipoEntrada; clienteId?:string ;supplierId?: string; productos: { productId: string; quantity: number; price: number }[] },
   ) {
     return this.entradasService.createEntrada(body);
   }

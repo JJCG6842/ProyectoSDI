@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, TipoSalida } from '@prisma/client';
 
 @Injectable()
 export class SalidaService {
@@ -34,24 +34,60 @@ export class SalidaService {
     return salida;
   }
 
-  async filtrarSalidas(filtros: { clienteId?: string; supplierId?: string }) {
-    const { clienteId, supplierId } = filtros;
+  async filtrarSalidas(filtros: {
+    clienteId?: string;
+    supplierId?: string;
+    tiposalida?: string;
+    categoryId?: string;
+    categoryName?: string;
+  }) {
+
+    const { clienteId, supplierId, categoryId, categoryName } = filtros;
+    let { tiposalida } = filtros;
+
+    if (tiposalida && !Object.values(TipoSalida).includes(tiposalida as TipoSalida)) {
+      throw new BadRequestException(
+        `TipoSalida inválido. Valores permitidos: ${Object.values(TipoSalida).join(', ')}`
+      );
+    }
+
+    const enumTipoSalida = tiposalida ? (tiposalida as TipoSalida) : undefined;
 
     return this.prisma.salida.findMany({
       where: {
         ...(clienteId && { clienteId }),
         ...(supplierId && { supplierId }),
+        ...(enumTipoSalida && { tiposalida: enumTipoSalida }),
+        ...(categoryId && {
+        detalles: {
+          some: {
+            product: {
+              categoryId: categoryId
+            }
+          }
+        }
+      }),
+      ...(categoryName && {
+        detalles: {
+          some: {
+            product: {
+              category: {
+                name: { contains: categoryName, mode: 'insensitive' }
+              }
+            }
+          }
+        }
+      })
       },
       include: {
         supplier: true,
         cliente: true,
-        detalles: {
-          include: { product: true },
-        },
+        detalles: { include: { product: true } }
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: 'desc' }
     });
   }
+
 
   async searchByProductName(term: string) {
     if (!term.trim()) throw new BadRequestException('El término de búsqueda no puede estar vacío');
@@ -77,7 +113,7 @@ export class SalidaService {
   }
 
   async crearSalida(body: any) {
-    let { tipo, supplierId, clienteId, productos } = body;
+    let { tipo, tiposalida, supplierId, clienteId, productos } = body;
 
     supplierId = supplierId || null;
     clienteId = clienteId || null;
@@ -88,7 +124,6 @@ export class SalidaService {
 
     return this.prisma.$transaction(async (prisma) => {
 
-      // 1️⃣ Validación de productos
       for (const item of productos) {
         const producto = await prisma.products.findUnique({
           where: { id: item.productId },
@@ -107,6 +142,7 @@ export class SalidaService {
       const salida = await prisma.salida.create({
         data: {
           tipo,
+          tiposalida,
           supplierId,
           clienteId,
           detalles: {
