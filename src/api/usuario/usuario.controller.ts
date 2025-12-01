@@ -63,7 +63,7 @@ export class UsuarioController {
     }
 
     @Post('login')
-    login(@Body() body: { nombre: string; password: string; lastname: string; email: string; dni: number }) {
-        return this.usuarioService.verifyPassword(body.nombre, body.password, body.lastname, body.email, body.dni);
+    login(@Body() body: { nombre: string; password: string;}) {
+        return this.usuarioService.verifyPassword(body.nombre, body.password);
     }
 }

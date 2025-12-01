@@ -118,13 +118,10 @@ export class UsuarioService {
   }
 
 
-  async verifyPassword(nombre: string, password: string, lastname: string, email: string, dni: number) {
+  async verifyPassword(nombre: string, password: string) {
     const user = await this.prisma.users.findFirst({
       where: {
         nombre,
-        email,
-        dni,
-        lastname
       }
     });
 
