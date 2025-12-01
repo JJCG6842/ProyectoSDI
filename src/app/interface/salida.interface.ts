@@ -4,10 +4,11 @@ import { Usuario } from "./usuario.interface";
 export interface Salida {
   id: string;
   createdAt: string;
-
   userId: string;
   user?: Usuario;     
   detalles: SalidaDetalle[];
+
+  destinoNombre?: string;
 }
 
 export interface SalidaDetalle {

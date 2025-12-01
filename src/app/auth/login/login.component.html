@@ -15,35 +15,6 @@
           <span *ngIf="nombre.errors?.['required']">El campo es requerido</span>
         </div>
 
-        <label class="text1">Apellido:</label>
-        <div class="input-container">
-          <i class="fas fa-user icon"></i>
-          <input class="input1" formControlName="lastname" type="text" placeholder="Ingrese apellido">
-        </div>
-        <div *ngIf="lastname.invalid && lastname.touched" class="error">
-          <span *ngIf="lastname.errors?.['required']">El campo es requerido</span>
-        </div>
-
-        <label class="text1">DNI:</label>
-        <div class="input-container">
-          <i class="fas fa-id-card icon"></i>
-          <input class="input1" formControlName="dni" type="text" placeholder="Ingrese DNI">
-        </div>
-        <div [hidden]="dni.valid || dni.pristine" class="error">
-          <span *ngIf="dni.errors?.['required']">El campo es requerido</span>
-          <span *ngIf="dni.errors?.['pattern']">DNI no válido</span>
-        </div>
-
-        <label class="text1">Correo electrónico:</label>
-        <div class="input-container">
-          <i class="fas fa-envelope icon"></i>
-          <input class="input1" formControlName="email" type="email" placeholder="Ingrese correo electrónico">
-        </div>
-        <div *ngIf="email.invalid && email.touched" class="error">
-          <span *ngIf="email.errors?.['required']">El campo es requerido</span>
-          <span *ngIf="email.errors?.['email']">Correo no válido</span>
-        </div>
-
         <label class="text1">Contraseña:</label>
         <div class="input-container">
           <i class="fas fa-lock icon"></i>
@@ -53,7 +24,6 @@
           <span *ngIf="password.errors?.['required']">El campo es requerido</span>
         </div>
       </form>
-
 
       <button class="boton" (click)="login()">Iniciar sesión</button>
       <div *ngIf="errorMessage" class="error">

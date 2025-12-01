@@ -11,6 +11,22 @@
   </div>
 </div>
 
+<div class="forms">
+
+  <div>
+    <mat-form-field>
+  <mat-label>Seleccionar destino:</mat-label>
+  <mat-select [(value)]="selectedUserId" (selectionChange)="filtrarPorUsuario()" 
+  [formControl]="destino">
+    <mat-option *ngFor="let user of usuarios" [value]="user.id">
+      {{ user.nombre}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+  </div>
+
+</div>
+
 <br><br>
 
 <div>

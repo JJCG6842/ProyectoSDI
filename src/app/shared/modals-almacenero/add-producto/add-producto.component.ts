@@ -45,14 +45,15 @@ export class AddProductoComponent implements OnInit{
     });
   }
 
-  ngOnInit(): void{
-    this.cargarCategorias();
-    this.cargarSubcategorias();
-    this.cargarMarcas();
+  ngOnInit(): void {
+  this.cargarCategorias();
+  this.cargarSubcategorias();
+  this.cargarMarcas();
 
-    this.subcategory.disable();
+  this.subcategory.disable();
+  this.marca.disable();
 
-    this.category.valueChanges.subscribe(categoryId => {
+  this.category.valueChanges.subscribe(categoryId => {
     if (categoryId) {
       this.subcategory.enable();
       this.cargarSubcategoriasPorCategoria(categoryId);
@@ -60,9 +61,20 @@ export class AddProductoComponent implements OnInit{
       this.subcategory.reset();
       this.subcategory.disable();
       this.subcategorias = [];
+      this.marca.reset();
+      this.marca.disable();
     }
   });
-  }
+
+  this.subcategory.valueChanges.subscribe(subcatId => {
+    if (subcatId) {
+      this.marca.enable();
+    } else {
+      this.marca.reset();
+      this.marca.disable();
+    }
+  });
+}
 
   cargarSubcategoriasPorCategoria(categoryId: string) {
   this.subcategoriaService.getSubcategoriasPorCategoriaId(categoryId).subscribe({
@@ -135,7 +147,6 @@ export class AddProductoComponent implements OnInit{
   get subcategory(){
     return this.formProduct.get('subcategory') as FormControl;
   }
-
 
   addProduct(){
     if(this.formProduct.invalid){

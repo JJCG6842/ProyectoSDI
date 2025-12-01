@@ -240,7 +240,6 @@ export class EntradasAlmaceneroComponent implements OnInit {
     this.router.navigate(['almacenero/view-entrada-almacenero', id]);
   }
 
-
   kardex() {
     this.router.navigate(['/almacenero/panel-inventario'])
   }

@@ -24,9 +24,6 @@ export class LoginComponent {
   ) {
     this.formUser = this.fb.group({
       nombre: ['', Validators.required],
-      lastname: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      dni: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
       password: ['', Validators.required]
     });
   }
@@ -35,21 +32,10 @@ export class LoginComponent {
     return this.formUser.get('nombre') as FormControl;
   }
 
-  get lastname() {
-    return this.formUser.get('lastname') as FormControl;
+  get password(){
+    return this.formUser.get('password') as FormControl
   }
 
-  get email() {
-    return this.formUser.get('email') as FormControl;
-  }
-
-  get dni() {
-    return this.formUser.get('dni') as FormControl;
-  }
-
-  get password() {
-    return this.formUser.get('password') as FormControl;
-  }
 
   login() {
   if (this.formUser.invalid) {
@@ -57,9 +43,9 @@ export class LoginComponent {
     return;
   }
 
-  const { nombre, password, lastname, email, dni } = this.formUser.value;
+  const { nombre, password } = this.formUser.value;
 
-  this.usuarioService.login(nombre, password, lastname, email, Number(dni)).subscribe({
+  this.usuarioService.login(nombre, password).subscribe({
     next: (res) => {
       const user = res.user;
       localStorage.setItem('usuario', JSON.stringify(user));
