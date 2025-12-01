@@ -33,24 +33,33 @@ export class UsuarioService {
     return user;
   }
 
+  // async findByDni(dni: number) {
+  //   const user = await this.prisma.users.findFirst({
+  //     where: { dni },
+  //   });
+  //   return user;
+  // }
 
-  async createUser(data: { nombre: string; password: string; role?: Role }) {
+  async createUser(data: { nombre: string; lastname: string; email: string; dni: number; password: string; role?: Role }) {
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
     return this.prisma.users.create({
       data: {
         nombre: data.nombre,
+        lastname: data.lastname,
+        email: data.email,
+        dni: data.dni,
         password: hashedPassword,
         role: data.role ?? Role.Almacenero,
       },
-      select: { id: true, nombre: true, role: true, createdAt: true },
+      select: { id: true, nombre: true, lastname: true, email: true, dni: true, role: true, createdAt: true },
     });
   }
 
 
   async updateUser(
     id: string,
-    data: Partial<{ nombre: string; password: string; role: Role }>,
+    data: Partial<{ nombre: string; lastname: string; email: string; dni: number; password: string; role: Role }>,
   ) {
     await this.findOne(id);
 
@@ -63,7 +72,7 @@ export class UsuarioService {
     return this.prisma.users.update({
       where: { id },
       data: updateData,
-      select: { id: true, nombre: true, role: true, updatedAt: true },
+      select: { id: true, nombre: true, lastname: true, email: true, dni: true, role: true, updatedAt: true },
     });
   }
 
@@ -78,7 +87,15 @@ export class UsuarioService {
     return this.prisma.users.update({
       where: { id },
       data: { status: UserStatus.Habilitado },
-      select: { id: true, nombre: true, status: true, updatedAt: true },
+      select: {
+        id: true,
+        nombre: true,
+        lastname: true,
+        email: true,
+        dni: true,
+        status: true,
+        updatedAt: true,
+      },
     });
   }
 
@@ -88,16 +105,32 @@ export class UsuarioService {
     return this.prisma.users.update({
       where: { id },
       data: { status: UserStatus.Deshabilitado },
-      select: { id: true, nombre: true, status: true, updatedAt: true },
+      select: {
+        id: true,
+        nombre: true,
+        lastname: true,
+        email: true,
+        dni: true,
+        status: true,
+        updatedAt: true,
+      },
     });
   }
 
 
-  async verifyPassword(nombre: string, password: string) {
-    const user = await this.prisma.users.findFirst({ where: { nombre } });
-    if (!user) throw new NotFoundException('Usuario no encontrado');
+  async verifyPassword(nombre: string, password: string, lastname: string, email: string, dni: number) {
+    const user = await this.prisma.users.findFirst({
+      where: {
+        nombre,
+        email,
+        dni,
+        lastname
+      }
+    });
 
-    if( user.status === UserStatus.Deshabilitado){
+    if (!user) throw new NotFoundException('Usuario no encontrado con los datos proporcionados');
+
+    if (user.status === UserStatus.Deshabilitado) {
       throw new UnauthorizedException('El usuario está deshabilitado');
     }
 
@@ -108,8 +141,8 @@ export class UsuarioService {
   }
 
   async findByStatus(status: UserStatus) {
-  return this.prisma.users.findMany({
-    where: { status },
-  });
-}
+    return this.prisma.users.findMany({
+      where: { status },
+    });
+  }
 }

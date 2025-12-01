@@ -10,7 +10,11 @@ datasource db {
 model Users {
   id        String     @id @default(uuid())
   nombre    String
+  lastname  String
+  email     String
+  dni       Int
   password  String
+  salidas   Salida[]
   role      Role       @default(Almacenero)
   status    UserStatus @default(Habilitado)
   createdAt DateTime   @default(now())
@@ -57,7 +61,6 @@ model Products {
   description   String
   marcaId       String?
   quantity      Float             @default(0)
-  price         Float
   status        ProductStatus     @default(Outstock)
   state         ProductState      @default(Habilitado)
   model         String
@@ -75,11 +78,12 @@ model Products {
 
 model Supplier {
   id          String     @id @default(uuid())
+  ruc         String 
+  address     String
   name        String
   phone       Int
   description String
   entrances   Entrance[]
-  salidas     Salida[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 }
@@ -89,21 +93,16 @@ model Cliente {
   dni       Int
   name      String
   phone     Int
-  salidas   Salida[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  entrances Entrance[]
 }
 
 model Entrance {
   id          String            @id @default(uuid())
-  tipoentrada TipoEntrada
   supplierId  String?
-  clienteId   String?
   createdAt   DateTime          @default(now())
   detalles    EntranceDetalle[]
-  supplier    Supplier?         @relation(fields: [supplierId], references: [id])
-  cliente     Cliente?          @relation(fields: [clienteId], references: [id])
+  supplier    Supplier?         @relation(fields: [supplierId], references: [id],onDelete: Cascade)
 }
 
 model EntranceDetalle {
@@ -113,21 +112,16 @@ model EntranceDetalle {
   quantity   Float
   price      Float
   total      Float
-
   product  Products @relation(fields: [productId], references: [id])
   entrance Entrance @relation(fields: [entranceId], references: [id], onDelete: Cascade)
 }
 
 model Salida {
   id         String          @id @default(uuid())
-  tipo       String
-  tiposalida TipoSalida
-  supplierId String?
-  clienteId  String?
   createdAt  DateTime        @default(now())
   detalles   SalidaDetalle[]
-  supplier   Supplier?       @relation(fields: [supplierId], references: [id])
-  cliente    Cliente?        @relation(fields: [clienteId], references: [id])
+  userId     String
+  user       Users @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model SalidaDetalle {
@@ -135,8 +129,6 @@ model SalidaDetalle {
   salidaId  String
   productId String
   quantity  Float
-  price     Float
-  total     Float
   product   Products @relation(fields: [productId], references: [id])
   salida    Salida   @relation(fields: [salidaId], references: [id], onDelete: Cascade)
 }
@@ -159,20 +151,4 @@ enum UserStatus {
 enum ProductState {
   Habilitado
   Deshabilitado
-}
-
-enum TipoSalida {
-  Mantenimiento
-  Baja
-  Perdida_robo
-  Venta
-  Devolucion
-}
-
-enum TipoEntrada {
-  Reparado
-  Compra
-  Devolucion
-  Proveedor
-  Recuperado
 }

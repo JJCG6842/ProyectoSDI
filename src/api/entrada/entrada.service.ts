@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { PrismaClient, TipoEntrada } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class EntradaService {
@@ -10,7 +10,7 @@ export class EntradaService {
       include: {
         detalles: {
           include: {
-            product: { select: { id: true, name: true, price: true, categoryId: true } },
+            product: { select: { id: true, name: true, categoryId: true } },
           },
         },
         supplier: { select: { id: true, name: true, phone: true } },
@@ -25,68 +25,66 @@ export class EntradaService {
       include: {
         detalles: {
           include: {
-            product: { select: { id: true, name: true, price: true, categoryId: true } },
+            product: { select: { id: true, name: true, categoryId: true } },
           },
         },
         supplier: { select: { id: true, name: true } },
       },
     });
+
     if (!entrada) throw new NotFoundException('Entrada no encontrada');
+
     return entrada;
   }
 
   async createEntrada(data: {
-    tipoentrada: TipoEntrada;   
     supplierId?: string;
-    clienteId?: string;
     productos: { productId: string; quantity: number; price: number }[];
   }) {
-    if (!data.productos?.length)
+    if (!data.productos?.length) {
       throw new BadRequestException('Debe enviar al menos un producto');
-
-    if (!Object.values(TipoEntrada).includes(data.tipoentrada)) {
-      throw new BadRequestException(
-        `TipoEntrada inválido. Valores permitidos: ${Object.values(TipoEntrada).join(', ')}`
-      );
     }
 
     const productIds = data.productos.map(p => p.productId);
-    const productos = await this.prisma.products.findMany({
+
+    const productosDB = await this.prisma.products.findMany({
       where: { id: { in: productIds } },
     });
 
-    if (productos.length !== data.productos.length)
-      throw new NotFoundException('Uno o más productos no encontrados');
+    if (productosDB.length !== data.productos.length) {
+      throw new NotFoundException('Uno o más productos no existen');
+    }
 
-    const entrada = await this.prisma.entrance.create({
-      data: {
-        tipoentrada: data.tipoentrada,  
-        supplierId: data.supplierId || null,
-        clienteId: data.clienteId || null,
-        detalles: {
-          create: data.productos.map(p => ({
-            productId: p.productId,
-            quantity: p.quantity,
-            price: p.price,
-            total: p.quantity * p.price,
-          })),
+    const entrada = await this.prisma.$transaction(async prisma => {
+      const entradaCreada = await prisma.entrance.create({
+        data: {
+          supplierId: data.supplierId ?? null,
+          detalles: {
+            create: data.productos.map(p => ({
+              productId: p.productId,
+              quantity: p.quantity,
+              price: p.price, 
+              total: p.quantity * p.price,
+            })),
+          },
         },
-      },
-      include: { detalles: true },
-    });
+        include: { detalles: true },
+      });
 
-    for (const p of data.productos) {
-      const producto = productos.find(pr => pr.id === p.productId);
-      if (producto) {
-        await this.prisma.products.update({
+      for (const p of data.productos) {
+        const prodActual = productosDB.find(x => x.id === p.productId)!;
+
+        await prisma.products.update({
           where: { id: p.productId },
           data: {
-            quantity: producto.quantity + p.quantity,
+            quantity: prodActual.quantity + p.quantity,
             status: 'Instock',
           },
         });
       }
-    }
+
+      return entradaCreada;
+    });
 
     return entrada;
   }
@@ -98,5 +96,4 @@ export class EntradaService {
     await this.prisma.entrance.delete({ where: { id } });
     return { message: 'Entrada eliminada correctamente' };
   }
-
 }

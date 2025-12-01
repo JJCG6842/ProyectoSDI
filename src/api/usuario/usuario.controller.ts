@@ -32,8 +32,13 @@ export class UsuarioController {
         return this.usuarioService.findByStatus(status);
     }
 
+    // @Get('dni/:dni')
+    // checkDni(@Param('dni') dni: string) {
+    //     return this.usuarioService.findByDni(Number(dni));
+    // }
+
     @Post()
-    create(@Body() body: { nombre: string; password: string; role?: Role }) {
+    create(@Body() body: { nombre: string; password: string; role?: Role; lastname: string; email: string; dni: number }) {
         return this.usuarioService.createUser(body);
     }
 
@@ -48,7 +53,7 @@ export class UsuarioController {
     }
 
     @Put(':id')
-    update(@Param('id') id: string, @Body() body: Partial<{ nombre: string; password: string; role: Role }>,) {
+    update(@Param('id') id: string, @Body() body: Partial<{ nombre: string; password: string; role: Role; lastname: string; email: string; dni: number }>,) {
         return this.usuarioService.updateUser(id, body);
     }
 
@@ -58,8 +63,7 @@ export class UsuarioController {
     }
 
     @Post('login')
-    login(@Body() body: { nombre: string; password: string }) {
-        return this.usuarioService.verifyPassword(body.nombre, body.password);
+    login(@Body() body: { nombre: string; password: string; lastname: string; email: string; dni: number }) {
+        return this.usuarioService.verifyPassword(body.nombre, body.password, body.lastname, body.email, body.dni);
     }
-
 }

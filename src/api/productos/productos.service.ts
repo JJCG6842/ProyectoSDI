@@ -98,7 +98,6 @@ export class ProductosService {
     name: string;
     description: string;
     marcaId?: string;
-    price: number;
     quantity: number;
     status?: ProductStatus;
     model: string;
@@ -137,7 +136,6 @@ export class ProductosService {
       name: string;
       description: string;
       marcaId: string;
-      price: number;
       quantity: number;
       status: ProductStatus;
       model: string;

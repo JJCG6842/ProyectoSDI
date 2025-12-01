@@ -8,7 +8,6 @@ export class ProveedoresService {
 
   async findAll() {
     return this.prisma.supplier.findMany({
-
     });
   }
 
@@ -44,15 +43,13 @@ export class ProveedoresService {
     return suppliers;
   }
 
-
-  async create(data: { name: string; phone: number; description: string }) {
+  async create(data: { name: string; phone: number; description: string , ruc: string, address: string}) {
     return this.prisma.supplier.create({ data });
   }
-
  
   async update(
     id: string,
-    data: { name?: string; phone?: number; description?: string },
+    data: { name?: string; phone?: number; description?: string, ruc?: string, address?: string },
   ) {
     await this.findOne(id);
     return this.prisma.supplier.update({
@@ -60,7 +57,6 @@ export class ProveedoresService {
       data,
     });
   }
-
 
   async delete(id: string) {
     await this.findOne(id);

@@ -27,7 +27,7 @@ export class ProveedoresController {
 
   @Post()
   create(
-    @Body() body: { name: string; phone: number; description: string },
+    @Body() body: { name: string; phone: number; description: string, ruc: string, address: string },
   ) {
     return this.proveedoresService.create(body);
   }
@@ -35,7 +35,7 @@ export class ProveedoresController {
   @Put(':id')
   update(
     @Param('id') id: string,
-    @Body() body: { name?: string; phone?: number; description?: string },
+    @Body() body: { name?: string; phone?: number; description?: string, ruc?: string, address?: string },
   ) {
     return this.proveedoresService.update(id, body);
   }

@@ -10,27 +10,25 @@ export class SalidaController {
     return this.salidaService.getAllSalidas();
   }
 
-  @Get(':id')
-  obtenerSalida(@Param('id') id: string) {
-    return this.salidaService.getSalidaPorId(id);
-  }
-
-  @Get('filtrar')
-  async filtrarSalidas(
-    @Query('clienteId') clienteId?: string,
-    @Query('supplierId') supplierId?: string,
-    @Query('tiposalida') tiposalida?: string,
-    @Query('categoryId') categoryId?: string,
-    @Query('categoryName') categoryName?: string,
-  ) {
-    return this.salidaService.filtrarSalidas({ clienteId, supplierId, tiposalida, categoryId, categoryName });
-  }
-
   @Get('buscar/producto/:term')
   buscarPorProducto(@Param('term') term: string) {
     return this.salidaService.searchByProductName(term);
   }
 
+  @Get(':id')
+  obtenerSalida(@Param('id') id: string) {
+    return this.salidaService.getSalidaPorId(id);
+  }
+
+  @Get('usuario/:userId')
+  getSalidasPorUsuario(@Param('userId') userId: string) {
+    return this.salidaService.getSalidasByUser(userId);
+  }
+
+  @Get('buscar/usuario/:nombre')
+  buscarPorNombreUsuario(@Param('nombre') nombre: string) {
+    return this.salidaService.getSalidasByUserName(nombre);
+  }
 
   @Post()
   async crearSalida(@Body() body: any) {
@@ -40,12 +38,10 @@ export class SalidaController {
   @Delete(':id')
   async eliminarSalida(@Param('id') id: string) {
     const salida = await this.salidaService.eliminarSalida(id);
-    if (!salida) {
-      throw new NotFoundException('Salida no encontrada');
-    }
+
     return {
       message: 'Salida eliminada correctamente',
-      salida
+      salida: salida,
     };
   }
 }
