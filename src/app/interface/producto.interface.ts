@@ -8,7 +8,6 @@ export interface Producto {
   name: string;
   description: string;
   marcaId: string;
-  price: number;
   quantity: number;
   status: 'Instock' | 'Outstock';
   model: string;

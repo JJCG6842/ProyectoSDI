@@ -10,30 +10,7 @@
 
 <h2>Filtros:</h2>
 <div class="filters">
-
   <mat-form-field style="width: 220px;">
-    <mat-label>Tipo de Entrada</mat-label>
-    <mat-select [(ngModel)]="selectedTipoEntrada" (selectionChange)="aplicarFiltros()">
-      <mat-option value="">Todos</mat-option>
-      <mat-option value="Compra">Compra</mat-option>
-      <mat-option value="Proveedor">Proveedor</mat-option>
-      <mat-option value="Devolucion">Devolución</mat-option>
-      <mat-option value="Reparado">Reparado</mat-option>
-      <mat-option value="Recuperado">Recuperado</mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <mat-form-field *ngIf="selectedTipoEntrada === 'Devolucion'" style="width: 220px;">
-    <mat-label>Cliente</mat-label>
-    <mat-select [(ngModel)]="selectedClienteId" (selectionChange)="aplicarFiltros()">
-      <mat-option value="">Todos</mat-option>
-      <mat-option *ngFor="let c of clientes" [value]="c.id">
-        {{ c.name }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <mat-form-field *ngIf="selectedTipoEntrada === 'Proveedor'" style="width: 220px;">
     <mat-label>Proveedor</mat-label>
     <mat-select [(ngModel)]="selectedProveedorId" (selectionChange)="aplicarFiltros()">
       <mat-option value="">Todos</mat-option>
@@ -42,7 +19,6 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
-
 </div>
 
 <div class="table">
@@ -51,7 +27,7 @@
       <tr>
         <th>Nro°</th>
         <th>Fecha de registro</th>
-        <th>Tipo de entrada</th>
+        <th>Proveedor</th>
         <th>Cantidad total</th>
         <th>Monto total</th>
         <th>Acciones</th>
@@ -61,12 +37,13 @@
       <tr *ngFor="let entrada of pagedEntradas; let i = index">
         <th>{{i + 1}}</th>
         <th>{{entrada.createdAt | date: 'dd-MM-yy'}}</th>
-        <th>{{entrada.tipoentrada}}</th>
+        <th>{{getNombreProveedor(entrada)}}</th>
         <th>{{getCantidadTotal(entrada)}}</th>
         <th>S/.{{getMontoTotal(entrada)}}</th>
         <th>
-          <button class="delete" (click)="view(entrada.id)" style="background-color: rgb(1, 255, 1);"><mat-icon
-              aria-hidden="false" fontIcon="visibility"></mat-icon></button>
+          <button class="delete" (click)="view(entrada.id)" style="background-color: rgb(1, 255, 1);">
+            <mat-icon aria-hidden="false" fontIcon="visibility"></mat-icon>
+          </button>
         </th>
       </tr>
     </tbody>
@@ -74,5 +51,3 @@
   <mat-paginator [length]="entradasFiltradas.length" [pageSize]="8" [pageSizeOptions]="[8]" showFirstLastButtons>
   </mat-paginator>
 </div>
-
-<br><br><br><br>

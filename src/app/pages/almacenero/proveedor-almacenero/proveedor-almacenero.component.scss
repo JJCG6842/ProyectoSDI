@@ -137,6 +137,20 @@ input{
   background: rgb(252, 0, 0);
 }
 
+.view{
+  padding: 8px 16px;
+  margin-right: 10px; 
+  width: 60px;
+  height: 48px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  padding: 10px 0;
+  cursor: pointer;
+  background: rgb(1, 255, 1);
+}
+
 .edit:hover,
 .boton1:hover{
     background: rgb(59, 102, 245);
@@ -144,6 +158,10 @@ input{
 
 .delete:hover{
     background: rgb(243, 47, 47);
+}
+
+.view:hover{
+    background: rgb(52, 250, 52)
 }
 
 .add:hover{

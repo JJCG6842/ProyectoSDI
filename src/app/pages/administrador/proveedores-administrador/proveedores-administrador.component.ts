@@ -12,6 +12,7 @@ import { DeleteSupplierConfirmComponent } from '../../../shared/modals-administr
 import { DeleteSupplierSuccessComponent } from '../../../shared/modals-administrador/modals/delete-supplier-success/delete-supplier-success.component';
 import { Proveedor } from '../../../interface/proveedor.interface';
 import { ProveedorService } from '../../../services/proveedor.service';
+import { ViewSupplierComponent } from '../../../shared/modals-administrador/view-supplier/view-supplier.component';
 
 @Component({
   selector: 'app-proveedores-administrador',
@@ -141,4 +142,17 @@ export class ProveedoresAdministradorComponent implements OnInit, AfterViewInit 
       }
     });
   }
+
+  view(proveedores: Proveedor) {
+        const dialogRef = this.dialog.open(ViewSupplierComponent, {
+          width: '600px',
+          maxWidth: 'none',
+          panelClass: 'custom-dialog-container',
+          data: proveedores
+        });
+    
+        dialogRef.afterClosed().subscribe(result => {
+          console.log(`Dialog result: ${result}`);
+        })
+      }
 }

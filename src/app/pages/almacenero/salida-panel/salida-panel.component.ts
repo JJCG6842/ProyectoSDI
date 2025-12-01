@@ -17,8 +17,6 @@ import { AddSalidaSuccessComponent } from '../../../shared/modals-almacenero/add
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { TipoSalida } from '../../../environments/tipos-salida.type';
 import { ProductNullComponent } from '../../../shared/modals-almacenero/add-entrada/modals-entrada/product-null/product-null.component';
-import { ClienteNullComponent } from '../../../shared/modals-almacenero/add-entrada/modals-entrada/cliente-null/cliente-null.component';
-import { ProveedorNullComponent } from '../../../shared/modals-almacenero/add-entrada/modals-entrada/proveedor-null/proveedor-null.component';
 import { TipoSalidaNullComponent } from '../../../shared/modals-almacenero/add-salida/modals-salida/tipo-salida-null/tipo-salida-null.component';
 
 @Component({
@@ -34,39 +32,21 @@ import { TipoSalidaNullComponent } from '../../../shared/modals-almacenero/add-s
 })
 export class SalidaPanelComponent implements OnInit {
 
-  readonly dialog = inject(MatDialog);
-  readonly cd = inject(ChangeDetectorRef);
+  private dialog = inject(MatDialog);
+  private cd = inject(ChangeDetectorRef);
 
-  formProveedor!: FormGroup;
-
-  proveedores: Proveedor[] = [];
-  clientes: Cliente[] = [];
   salidas: any[] = [];
-
-  tiposalida: TipoSalida = '';
 
   pageSize = 5;
   pageIndex = 0;
 
   constructor(
     private router: Router,
-    private fb: FormBuilder,
-    private proveedorService: ProveedorService,
-    private clienteService: ClienteService,
     private productoService: ProductoService,
     private salidaService: SalidaService
-  ) {
+  ) { }
 
-    this.formProveedor = this.fb.group({
-      tiposalida: ['', Validators.required],
-      supplier: [''],
-      cliente: ['']
-    });
-  }
-
-  ngOnInit(): void {
-    this.cargarProveedores();
-  }
+  ngOnInit(): void { }
 
   get pagedSalidas() {
     const start = this.pageIndex * this.pageSize;
@@ -77,50 +57,6 @@ export class SalidaPanelComponent implements OnInit {
     this.pageSize = event.pageSize;
     this.pageIndex = event.pageIndex;
     this.cd.markForCheck();
-  }
-
-  onTipoSalidaChange(tipo: string) {
-    this.tiposalida = tipo as TipoSalida;
-
-    this.formProveedor.patchValue({ supplier: '', cliente: '' });
-
-    if (tipo === 'Venta') {
-      this.cargarClientes();
-      this.formProveedor.get('cliente')?.setValidators([Validators.required]);
-      this.formProveedor.get('supplier')?.clearValidators();
-
-    } else if (tipo === 'Devolucion') {
-      this.cargarProveedores();
-      this.formProveedor.get('supplier')?.setValidators([Validators.required]);
-      this.formProveedor.get('cliente')?.clearValidators();
-
-    } else {
-      this.formProveedor.get('cliente')?.clearValidators();
-      this.formProveedor.get('supplier')?.clearValidators();
-    }
-
-    this.formProveedor.get('cliente')?.updateValueAndValidity();
-    this.formProveedor.get('supplier')?.updateValueAndValidity();
-
-    this.cd.markForCheck();
-  }
-
-  cargarProveedores() {
-    this.proveedorService.getProveedores().subscribe({
-      next: res => {
-        this.proveedores = res;
-        this.cd.markForCheck();
-      }
-    });
-  }
-
-  cargarClientes() {
-    this.clienteService.getClientes().subscribe({
-      next: res => {
-        this.clientes = res;
-        this.cd.markForCheck();
-      }
-    });
   }
 
   addProduct() {
@@ -141,10 +77,6 @@ export class SalidaPanelComponent implements OnInit {
     return this.salidas.reduce((acc, item) => acc + item.quantity, 0);
   }
 
-  get totalMonto() {
-    return this.salidas.reduce((acc, item) => acc + item.total, 0);
-  }
-
   deleteSalida(index: number) {
     this.salidas.splice(index, 1);
     this.pageIndex = 0;
@@ -152,43 +84,24 @@ export class SalidaPanelComponent implements OnInit {
   }
 
   async realizarSalida() {
-
-    if (!this.tiposalida) {
-      const dialogRef = this.dialog.open(TipoSalidaNullComponent, {
-        width: '400px',
-        maxWidth: 'none',
-        panelClass: 'custom-dialog-container'
-      });
-
-      dialogRef.afterClosed().subscribe(result => {
-        console.log(`Dialog result: ${result}`);
-      });
-      return;
-    }
-
     if (this.salidas.length === 0) {
-      const dialogRef = this.dialog.open(ProductNullComponent, {
+      this.dialog.open(ProductNullComponent, {
         width: '400px',
-        maxWidth: 'none',
         panelClass: 'custom-dialog-container'
-      });
-
-      dialogRef.afterClosed().subscribe(result => {
-        console.log(`Dialog result: ${result}`);
       });
       return;
     }
 
-    for (const salida of this.salidas) {
-      const producto = await this.productoService.getProductoporId(salida.productId).toPromise();
+    for (const item of this.salidas) {
+      const producto = await this.productoService.getProductoporId(item.productId).toPromise();
 
       if (!producto) {
-        alert(`Producto ${salida.productName} no encontrado`);
+        alert(`Producto ${item.productName} no encontrado`);
         return;
       }
 
-      if (salida.quantity > producto.quantity) {
-        alert(`Cantidad solicitada de ${salida.productName} supera el stock`);
+      if (item.quantity > producto.quantity) {
+        alert(`Cantidad solicitada de ${item.productName} supera el stock`);
         return;
       }
     }
@@ -196,34 +109,16 @@ export class SalidaPanelComponent implements OnInit {
     const productos = this.salidas.map(p => ({
       productId: p.productId,
       quantity: p.quantity,
-      price: p.price
     }));
 
+    const storedUser = localStorage.getItem('usuario');
+    const user = storedUser ? JSON.parse(storedUser) : null;
+
+
     const data = {
-
-      tipo:
-        this.tiposalida === 'Venta'
-          ? 'cliente'
-          : this.tiposalida === 'Devolucion'
-            ? 'proveedor'
-            : 'interno',
-
-      tiposalida: this.tiposalida,
-
-      supplierId:
-        this.tiposalida === 'Devolucion'
-          ? this.formProveedor.value.supplier
-          : null,
-
-      clienteId:
-        this.tiposalida === 'Venta'
-          ? this.formProveedor.value.cliente
-          : null,
-
+      userId: user?.id,
       productos
     };
-
-    console.log("DATA ENVIADA:", data);
 
     this.salidaService.createSalida(data).subscribe({
       next: () => {

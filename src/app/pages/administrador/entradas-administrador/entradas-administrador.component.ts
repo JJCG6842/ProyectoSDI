@@ -29,108 +29,90 @@ import { ClienteService } from '../../../services/cliente.service';
 export class EntradasAdministradorComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  
-    readonly dialog = inject(MatDialog)
-    readonly reload = inject(ChangeDetectorRef);
-    isloading = false;
-    searchTerm: string = '';
-    productos: Producto[] = [];
-    entradas: Entrada[] = [];
-    proveedores: Proveedor[] = [];
-    entradasFiltradas: Entrada[] = [];
-    selectedTipoEntrada: string = "";
-    selectedClienteId: string = "";
-    clientes: any[] = [];
-    selectedProveedorId: string = '';
-    pageSize = 5;
-    pageIndex = 0;
-  
-    constructor(private router: Router, private productoService: ProductoService, private entradaService: EntradaService,
-      private proveedorService: ProveedorService, private clienteService: ClienteService) { }
-  
-    ngOnInit(): void {
-      this.cargarEntradas();
-      this.cargarProductos();
-      this.cargarProveedores();
-      this.cargarClientes();
-    }
-  
-    get pagedEntradas(): Entrada[] {
-      if (!this.paginator) return this.entradasFiltradas;
-  
-      const start = this.paginator.pageIndex * this.paginator.pageSize;
-      return this.entradasFiltradas.slice(start, start + this.paginator.pageSize);
-    }
-  
-    cargarProductos() {
-      this.productoService.getProductos().subscribe({
-        next: (products) => {
-          this.productos = products;
-          this.isloading = false;
-          this.reload.markForCheck();
-        },
-        error: (err) => {
-          this.isloading = false;
-          console.error('Error al cargar productos', err);
-        }
-      })
-    }
-  
-    cargarClientes() {
-    this.clienteService.getClientes().subscribe({
-      next: (res) => {
-        this.clientes = res;
+
+  readonly dialog = inject(MatDialog)
+  readonly reload = inject(ChangeDetectorRef);
+  isloading = false;
+  searchTerm: string = '';
+  productos: Producto[] = [];
+  entradas: Entrada[] = [];
+  proveedores: Proveedor[] = [];
+  entradasFiltradas: Entrada[] = [];
+  selectedTipoEntrada: string = "";
+  selectedClienteId: string = "";
+  clientes: any[] = [];
+  selectedProveedorId: string = '';
+  pageSize = 5;
+  pageIndex = 0;
+
+  constructor(private router: Router, private productoService: ProductoService, private entradaService: EntradaService,
+    private proveedorService: ProveedorService, private clienteService: ClienteService) { }
+
+  ngOnInit(): void {
+    this.cargarEntradas();
+    this.cargarProductos();
+    this.cargarProveedores();
+  }
+
+  get pagedEntradas(): Entrada[] {
+    if (!this.paginator) return this.entradasFiltradas;
+
+    const start = this.paginator.pageIndex * this.paginator.pageSize;
+    return this.entradasFiltradas.slice(start, start + this.paginator.pageSize);
+  }
+
+  cargarProductos() {
+    this.productoService.getProductos().subscribe({
+      next: (products) => {
+        this.productos = products;
+        this.isloading = false;
         this.reload.markForCheck();
       },
-      error: (err) => console.error('Error al cargar clientes', err)
-    });
+      error: (err) => {
+        this.isloading = false;
+        console.error('Error al cargar productos', err);
+      }
+    })
   }
   
-    cargarProveedores() {
-      this.proveedorService.getProveedores().subscribe({
-        next: (res) => {
-          this.proveedores = res;
-          this.reload.markForCheck();
-        },
-        error: (err) => console.error('Error al cargar proveedores', err)
-      });
-    }
-  
-    cargarEntradas() {
-      this.entradaService.getEntradas().subscribe({
-        next: (data) => {
-          this.entradas = data.map(e => ({ ...e }));
-          this.entradasFiltradas = [...this.entradas];
-  
-          if (this.paginator) this.paginator.firstPage();
-  
-          this.reload.markForCheck();
-        },
-        error: err => console.error('Error al cargar entradas', err)
-      });
-    }
-  
-    aplicarFiltros() {
-    this.entradasFiltradas = this.entradas.filter(e => {
-  
-      if (this.selectedTipoEntrada && e.tipoentrada !== this.selectedTipoEntrada) {
-        return false;
-      }
-  
-      if (this.selectedTipoEntrada === 'Proveedor' && this.selectedProveedorId) {
-        if (e.supplierId !== this.selectedProveedorId) return false;
-      }
-  
-      if (this.selectedTipoEntrada === 'Devolucion' && this.selectedClienteId) {
-        if (e.clienteId !== this.selectedClienteId) return false;
-      }
-  
-      return true;
+  cargarProveedores() {
+    this.proveedorService.getProveedores().subscribe({
+      next: (res) => {
+        this.proveedores = res;
+        this.reload.markForCheck();
+      },
+      error: (err) => console.error('Error al cargar proveedores', err)
     });
-  
-    if (this.paginator) this.paginator.firstPage();
-    this.reload.markForCheck();
   }
+
+  cargarEntradas() {
+    this.entradaService.getEntradas().subscribe({
+      next: (data) => {
+        this.entradas = data.map(e => ({ ...e }));
+        this.entradasFiltradas = [...this.entradas];
+
+        if (this.paginator) this.paginator.firstPage();
+
+        this.reload.markForCheck();
+      },
+      error: err => console.error('Error al cargar entradas', err)
+    });
+  }
+
+  aplicarFiltros() {
+  if (!this.selectedProveedorId) {
+    
+    this.entradasFiltradas = [...this.entradas];
+  } else {
+    
+    this.entradasFiltradas = this.entradas.filter(
+      e => e.supplierId === this.selectedProveedorId
+    );
+  }
+
+  if (this.paginator) this.paginator.firstPage();
+  this.reload.markForCheck();
+}
   onSearchTermChange(term: string) {
     this.searchTerm = term.trim();
     if (!this.searchTerm) {

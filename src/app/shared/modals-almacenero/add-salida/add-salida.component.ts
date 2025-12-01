@@ -42,6 +42,7 @@ export class AddSalidaComponent implements OnInit {
 
     this.formSalida = this.fb.group({
       category: [''],
+      marca: [],
       product: ['', Validators.required],
       quantity: ['', [Validators.required, Validators.min(1)]]
     });
@@ -120,7 +121,6 @@ export class AddSalidaComponent implements OnInit {
 
   addSalida() {
     this.stockError = '';
-
     if (this.formSalida.invalid) {
       this.formSalida.markAllAsTouched();
       return;
@@ -143,16 +143,12 @@ export class AddSalidaComponent implements OnInit {
       return;
     }
 
-    const newSalida = {
+    this.dialogRef.close({
       productId: producto.id,
       productCategory: producto.category?.name,
       productName: producto.name,
-      quantity: formValue.quantity,
-      price: producto.price,
-      total: producto.price * formValue.quantity
-    };
-
-    this.dialogRef.close(newSalida);
+      quantity: formValue.quantity
+    });
   }
 
 }

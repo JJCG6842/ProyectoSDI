@@ -16,19 +16,9 @@
 <br>
 
 <div *ngIf="entrada">
-
   <h2>Información general</h2>
   <p><strong>Fecha:</strong> {{entrada.createdAt | date: 'dd-MM-yyyy'}}</p>
-  <p><strong>Tipo de entrada:</strong> {{entrada.tipoentrada}}</p>
-
-  <p *ngIf="entrada.tipoentrada === 'Devolucion'">
-    <strong>Cliente:</strong> {{entrada.cliente?.name || 'Sin cliente'}}
-  </p>
-
-  <p *ngIf="entrada.tipoentrada === 'Proveedor'">
-    <strong>Proveedor:</strong> {{entrada.supplier?.name || 'Sin proveedor'}}
-  </p>
-
+  <p><strong>Proveedor:</strong> {{entrada.supplier?.name || 'Sin proveedor'}}</p>
 
   <br>
 
@@ -46,7 +36,6 @@
           <th>Total</th>
         </tr>
       </thead>
-
       <tbody>
         <tr *ngFor="let d of detallesPaginados; let i = index" style="text-align: center;">
           <td>{{ (pageIndex * pageSize) + i + 1 }}</td>
@@ -75,5 +64,4 @@
       <h3>{{cantidadTotal}}</h3>
     </div>
   </div>
-
 </div>

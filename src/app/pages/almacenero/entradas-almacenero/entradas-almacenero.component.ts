@@ -57,7 +57,6 @@ export class EntradasAlmaceneroComponent implements OnInit {
     this.cargarEntradas();
     this.cargarProductos();
     this.cargarProveedores();
-    this.cargarClientes();
   }
 
   get pagedEntradas(): Entrada[] {
@@ -80,17 +79,7 @@ export class EntradasAlmaceneroComponent implements OnInit {
       }
     })
   }
-
-  cargarClientes() {
-  this.clienteService.getClientes().subscribe({
-    next: (res) => {
-      this.clientes = res;
-      this.reload.markForCheck();
-    },
-    error: (err) => console.error('Error al cargar clientes', err)
-  });
-}
-
+  
   cargarProveedores() {
     this.proveedorService.getProveedores().subscribe({
       next: (res) => {
@@ -116,22 +105,15 @@ export class EntradasAlmaceneroComponent implements OnInit {
   }
 
   aplicarFiltros() {
-  this.entradasFiltradas = this.entradas.filter(e => {
-
-    if (this.selectedTipoEntrada && e.tipoentrada !== this.selectedTipoEntrada) {
-      return false;
-    }
-
-    if (this.selectedTipoEntrada === 'Proveedor' && this.selectedProveedorId) {
-      if (e.supplierId !== this.selectedProveedorId) return false;
-    }
-
-    if (this.selectedTipoEntrada === 'Devolucion' && this.selectedClienteId) {
-      if (e.clienteId !== this.selectedClienteId) return false;
-    }
-
-    return true;
-  });
+  if (!this.selectedProveedorId) {
+    
+    this.entradasFiltradas = [...this.entradas];
+  } else {
+    
+    this.entradasFiltradas = this.entradas.filter(
+      e => e.supplierId === this.selectedProveedorId
+    );
+  }
 
   if (this.paginator) this.paginator.firstPage();
   this.reload.markForCheck();

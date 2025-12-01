@@ -51,6 +51,16 @@
             <span *ngIf="quantity.errors?.['min']">Debe haber almenos un producto</span>
         </div>
 
+        <h3>Precio unitario:</h3>
+        <mat-form-field appearance="fill">
+            <mat-label>Precio</mat-label>
+            <input matInput type="number" formControlName="price">
+        </mat-form-field>
+        <div [hidden]="price.valid || price.pristine" class="error">
+            <span *ngIf="price.errors?.['required']">El precio es requerido</span>
+            <span *ngIf="price.errors?.['min']">El precio debe ser mayor a 0</span>
+        </div>
+
     </form>
 </mat-dialog-content>
 

@@ -3,7 +3,7 @@
 <mat-dialog-content>
     <form [formGroup]="formUser">
 
-        <h3>Nombre de usuario:</h3>
+        <h3>Nombre:</h3>
         <mat-form-field appearance="fill">
             <mat-label>Editar nombre:</mat-label>
             <input matInput formControlName="nombre" />
@@ -12,10 +12,47 @@
             <span *ngIf="nombre.errors?.['required']">El campo es requerido</span>
         </div>
 
+        <h3>Apellido:</h3>
+        <mat-form-field appearance="fill">
+            <mat-label>Editar apellido:</mat-label>
+            <input matInput formControlName="lastname" />
+        </mat-form-field>
+        <div [hidden]="lastname.valid || lastname.pristine" class="error">
+            <span *ngIf="lastname.errors?.['required']">El campo es requerido</span>
+        </div>
+
+        <h3>Correo electrónico:</h3>
+        <mat-form-field appearance="fill">
+            <mat-label>Editar correo electrónico:</mat-label>
+            <input matInput formControlName="email" />
+        </mat-form-field>
+        <div [hidden]="email.valid || email.pristine" class="error">
+            <span *ngIf="email.errors?.['required']">El campo es requerido</span>
+            <span *ngIf="email.errors?.['email']">Correo no válido</span>
+        </div>
+
+        <h3>DNI:</h3>
+        <mat-form-field appearance="fill">
+            <mat-label>Editar DNI:</mat-label>
+            <input matInput formControlName="dni" />
+        </mat-form-field>
+        <div [hidden]="dni.valid || dni.pristine" class="error">
+            <span *ngIf="dni.errors?.['required']">El campo es requerido</span>
+        </div>
+        <div [hidden]="dni.valid || dni.pristine" class="error">
+            <span *ngIf="dni.errors?.['pattern']">Solo numeros</span>
+        </div>
+        <div [hidden]="dni.valid || dni.pristine" class="error">
+            <span *ngIf="dni.errors?.['minlength']">Debe tener 8 digitos</span>
+        </div>
+        <div [hidden]="dni.valid || dni.pristine" class="error">
+            <span *ngIf="dni.errors?.['maxlength']">Debe tener 8 digitos</span>
+        </div>
+
         <h3>Contraseña:</h3>
         <mat-form-field appearance="fill">
             <mat-label>Cambiar contraseña:</mat-label>
-            <input matInput formControlName="password" />
+            <input matInput formControlName="password" type="password" />
         </mat-form-field>
         <div [hidden]="password.valid || password.pristine" class="error">
             <span *ngIf="password.errors?.['required']">El campo es requerido</span>

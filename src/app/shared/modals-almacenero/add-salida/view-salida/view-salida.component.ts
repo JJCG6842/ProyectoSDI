@@ -77,7 +77,6 @@ export class ViewSalidaComponent implements OnInit {
         this.salida = data;
 
         this.cantidadTotal = data.detalles.reduce((acc, d) => acc + d.quantity, 0);
-        this.montoTotal = data.detalles.reduce((acc, d) => acc + d.total, 0);
 
         this.aplicarPaginacion();
         this.cd.markForCheck();
@@ -125,30 +124,18 @@ export class ViewSalidaComponent implements OnInit {
 
     doc.setFontSize(12);
     doc.text(`Fecha: ${new Date(this.salida.createdAt).toLocaleString()}`, 14, 35);
-
-    doc.text(`Tipo de salida: ${this.salida.tiposalida}`, 14, 43);
-
-    let infoExtra = 'N/A';
-    if (this.salida.tiposalida === 'Venta') {
-      infoExtra = this.salida.cliente?.name || 'N/A';
-      doc.text(`Cliente: ${infoExtra}`, 14, 51);
-    } else if (this.salida.tiposalida === 'Devolucion') {
-      infoExtra = this.salida.supplier?.name || 'N/A';
-      doc.text(`Proveedor: ${infoExtra}`, 14, 51);
-    }
+    doc.text(`Usuario: ${this.salida.user?.nombre || 'N/A'}`, 14, 42);
 
     const rows = this.salida.detalles.map((d, index) => [
       index + 1,
       this.getCategoriaName(d.product.categoryId),
       d.product.name,
       d.quantity,
-      `S/. ${d.price}`,
-      `S/. ${d.total}`
     ]);
 
     autoTable(doc, {
-      startY: 60,
-      head: [['#', 'Categoría', 'Producto', 'Cantidad', 'Precio', 'Total']],
+      startY: 55,
+      head: [['#', 'Categoría', 'Producto', 'Cantidad']],
       body: rows,
       theme: 'grid'
     });
@@ -156,7 +143,6 @@ export class ViewSalidaComponent implements OnInit {
     const finalY = doc.lastAutoTable.finalY + 10;
     doc.setFontSize(14);
     doc.text(`Cantidad total: ${this.cantidadTotal}`, 14, finalY);
-    doc.text(`Monto total: S/. ${this.montoTotal}`, 14, finalY + 10);
 
     const fileName = `Salida-${this.salida.id}.pdf`;
     doc.save(fileName);
@@ -169,52 +155,27 @@ export class ViewSalidaComponent implements OnInit {
     const sheet = workbook.addWorksheet('Salida');
 
     sheet.columns = [
-      { header: '#', key: 'index', width: 38 },
+      { header: '#', key: 'index', width: 10 },
       { header: 'Categoría', key: 'categoria', width: 20 },
-      { header: 'Producto', key: 'producto', width: 65 },
-      { header: 'Cantidad', key: 'cantidad', width: 18 },
-      { header: 'Precio', key: 'precio', width: 20 },
-      { header: 'Total', key: 'total', width: 30 },
+      { header: 'Producto', key: 'producto', width: 40 },
+      { header: 'Cantidad', key: 'cantidad', width: 15 },
     ];
 
     const titleRow = sheet.addRow(['Detalle de Salida']);
     titleRow.font = { size: 18, bold: true };
-    sheet.mergeCells('A1:F1');
+    sheet.mergeCells('A1:D1');
     titleRow.alignment = { horizontal: 'center' };
 
     sheet.addRow([]);
-
     sheet.addRow(['Fecha:', new Date(this.salida.createdAt).toLocaleString()]);
-    sheet.addRow(['Tipo de salida:', this.salida.tiposalida]);
-
-    let infoExtra = 'N/A';
-    if (this.salida.tiposalida === 'Venta') {
-      infoExtra = this.salida.cliente?.name || 'N/A';
-      sheet.addRow(['Cliente:', infoExtra]);
-    } else if (this.salida.tiposalida === 'Devolucion') {
-      infoExtra = this.salida.supplier?.name || 'N/A';
-      sheet.addRow(['Proveedor:', infoExtra]);
-    } else {
-      sheet.addRow(['Información adicional:', 'N/A']);
-    }
-
+    sheet.addRow(['Usuario:', this.salida.user?.nombre || 'N/A']);
     sheet.addRow([]);
 
-    const headerRow = sheet.addRow(['#', 'Categoría', 'Producto', 'Cantidad', 'Precio', 'Total']);
-
+    const headerRow = sheet.addRow(['#', 'Categoría', 'Producto', 'Cantidad']);
     headerRow.eachCell((cell) => {
       cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FF1F4E78' },
-      };
-      cell.border = {
-        top: { style: 'thin' },
-        left: { style: 'thin' },
-        bottom: { style: 'thin' },
-        right: { style: 'thin' },
-      };
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
       cell.alignment = { horizontal: 'center' };
     });
 
@@ -224,28 +185,16 @@ export class ViewSalidaComponent implements OnInit {
         this.getCategoriaName(d.product.categoryId),
         d.product.name,
         d.quantity,
-        d.price,
-        d.total,
       ]);
-
       row.eachCell((cell) => {
-        cell.border = {
-          top: { style: 'thin' },
-          left: { style: 'thin' },
-          bottom: { style: 'thin' },
-          right: { style: 'thin' },
-        };
+        cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
         cell.alignment = { horizontal: 'center' };
       });
     });
 
     sheet.addRow([]);
-
     const totalCantidad = sheet.addRow(['Cantidad Total:', this.cantidadTotal]);
-    const totalMonto = sheet.addRow(['Monto Total:', this.montoTotal]);
-
     totalCantidad.eachCell((cell) => (cell.font = { bold: true }));
-    totalMonto.eachCell((cell) => (cell.font = { bold: true }));
 
     workbook.xlsx.writeBuffer().then((buffer) => {
       saveAs(

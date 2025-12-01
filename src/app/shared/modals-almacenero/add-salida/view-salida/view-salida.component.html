@@ -19,15 +19,7 @@
 
   <h2>Información general</h2>
   <p><strong>Fecha:</strong> {{ salida.createdAt | date: 'dd-MM-yyyy' }}</p>
-  <p><strong>Tipo de salida:</strong> {{ salida.tiposalida }}</p>
-
-  <p *ngIf="salida.tiposalida === 'Venta'">
-    <strong>Cliente:</strong> {{ salida.cliente?.name }}
-  </p>
-
-  <p *ngIf="salida.tiposalida === 'Devolucion'">
-    <strong>Proveedor:</strong> {{ salida.supplier?.name }}
-  </p>
+  <p><strong>Usuario:</strong> {{salida.user?.nombre}}</p>
 
   <br>
 
@@ -41,8 +33,6 @@
           <th>Categoría</th>
           <th>Producto</th>
           <th>Cantidad</th>
-          <th>Precio</th>
-          <th>Total</th>
         </tr>
       </thead>
 
@@ -52,8 +42,6 @@
           <td>{{getCategoriaName(d.product.categoryId)}}</td>
           <td>{{ d.product.name }}</td>
           <td>{{ d.quantity }}</td>
-          <td>S/ {{ d.price }}</td>
-          <td>S/ {{ d.total }}</td>
         </tr>
       </tbody>
     </table>
@@ -64,11 +52,6 @@
   <br>
 
   <div style="display: flex; gap: 40px;">
-    <div>
-      <h2>Monto total:</h2>
-      <h3>S/. {{ montoTotal }}</h3>
-    </div>
-
     <div>
       <h2>Cantidad total:</h2>
       <h3>{{ cantidadTotal }}</h3>

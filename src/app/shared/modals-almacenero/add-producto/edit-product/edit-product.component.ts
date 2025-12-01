@@ -43,7 +43,6 @@ export class EditProductComponent {
       image: [''],
       category: ['',Validators.required],
       subcategory: ['', Validators.required],
-      price: ['', [Validators.required,Validators.min(1)]],
     });
   }
 
@@ -61,7 +60,6 @@ export class EditProductComponent {
       image: this.data.image,
       category: this.data.categoryId,
       subcategory: this.data.subcategoryId,
-      price: this.data.price,
     });
   }
   }
@@ -127,10 +125,6 @@ export class EditProductComponent {
     return this.formProduct.get('subcategory') as FormControl;
   }
 
-  get price(){
-    return this.formProduct.get('price') as FormControl;
-  }
-
   editProduct(){
     if (this.formProduct.invalid) {
     this.formProduct.markAllAsTouched();
@@ -147,7 +141,6 @@ export class EditProductComponent {
     marcaId: this.marca.value,
     model: this.model.value,
     image: this.image.value,
-    price: this.price.value,
     status,
     categoryId: this.category.value,
     subcategoryId: this.subcategory.value,

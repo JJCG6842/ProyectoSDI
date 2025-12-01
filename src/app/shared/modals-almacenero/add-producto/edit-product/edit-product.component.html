@@ -82,18 +82,6 @@
                 </div>
             </div>
 
-            <div class="form-field">
-                <h3>Precio del producto:</h3>
-                <mat-form-field appearance="fill">
-                    <mat-label>Precio:</mat-label>
-                    <input matInput formControlName="price" type="number">
-                </mat-form-field>
-                <div [hidden]="price.valid || price.pristine" class="error">
-                    <span *ngIf="price.errors?.['required']">El campo es requerido</span>
-                    <span *ngIf="price.errors?.['min']">El producto no debe ser gratis :v</span>
-                </div>
-            </div>
-
             <div class="form-field"></div>
 
             <div class="form-field" id="descripcion">

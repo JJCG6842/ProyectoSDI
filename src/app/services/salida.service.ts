@@ -3,6 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Salida } from '../interface/salida.interface';
 
+export interface ProductoSalida {
+  productId: string;
+  quantity: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -20,30 +25,23 @@ export class SalidaService {
     return this.http.get<Salida>(`${this.apiUrl}/${id}`);
   }
 
-  filtrarPorClienteProveedor(tipoSalida?:string,clienteId?: string, supplierId?: string,
-    categoryId?: string, categoryName?: string
-  ) {
-  let query = '?';
-  if (tipoSalida) query += `tiposalida=${tipoSalida}&`;
-  if (clienteId) query += `clienteId=${clienteId}&`;
-  if (supplierId) query += `supplierId=${supplierId}&`;
-  if (categoryId) query += `categoryId=${categoryId}&`;
-  if (categoryName) query += `categoryName=${categoryName}&`;
+  getSalidasByUser(userId: string): Observable<Salida[]> {
+    return this.http.get<Salida[]>(`${this.apiUrl}/usuario/${userId}`);
+  }
 
-  return this.http.get<Salida[]>(`${this.apiUrl}/filtrar${query}`);
-}
+  buscarPorNombreUsuario(nombre: string): Observable<Salida[]> {
+    return this.http.get<Salida[]>(`${this.apiUrl}/buscar/usuario/${nombre}`);
+  }
 
   buscarPorProducto(term: string): Observable<Salida[]> {
     return this.http.get<Salida[]>(`${this.apiUrl}/buscar/producto/${term}`);
   }
 
-  createSalida(data: {
-    tipo: string; supplierId?: string; clienteId?: string; productos: { productId: string; quantity: number; price: number }[];
-  }): Observable<{ message: string; salidaId: string }> {
-    return this.http.post<{ message: string; salidaId: string }>(this.apiUrl, data);
+  createSalida(data: { userId: string; productos: ProductoSalida[] }): Observable<Salida> {
+    return this.http.post<Salida>(this.apiUrl, data);
   }
 
   deleteSalida(id: string): Observable<{ message: string; eliminado?: any }> {
-  return this.http.delete<{ message: string; eliminado?: any }>(`${this.apiUrl}/${id}`);
+    return this.http.delete<{ message: string; eliminado?: any }>(`${this.apiUrl}/${id}`);
   }
 }

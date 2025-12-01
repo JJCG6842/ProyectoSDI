@@ -53,7 +53,6 @@
         <th>Marca</th>
         <th>Estado</th>
         <th>Categoria</th>
-        <th>Precio</th>
         <th>Acciones</th>
       </tr>
     </thead>
@@ -69,7 +68,6 @@
           {{ producto.state }}
         </th>
         <th>{{producto.category?.name}}</th>
-        <th>S/.{{ producto.price | number: '1.2-2' }}</th>
         <th>
 
           <button class="view" (click)="view(producto)"><mat-icon aria-hidden="false"

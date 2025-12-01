@@ -42,7 +42,6 @@ export class AddProductoComponent implements OnInit{
       image: [''],
       category: ['',Validators.required],
       subcategory: ['', Validators.required],
-      price: ['', [Validators.required,Validators.min(1)]],
     });
   }
 
@@ -137,10 +136,6 @@ export class AddProductoComponent implements OnInit{
     return this.formProduct.get('subcategory') as FormControl;
   }
 
-  get price(){
-    return this.formProduct.get('price') as FormControl;
-  }
-
 
   addProduct(){
     if(this.formProduct.invalid){
@@ -156,7 +151,6 @@ export class AddProductoComponent implements OnInit{
       image: formValue.image,
       name: formValue.name,
       description: formValue.description,
-      price: Number(formValue.price),
       status, 
       quantity: formValue.quantity,
       model: formValue.model,

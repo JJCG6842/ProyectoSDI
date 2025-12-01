@@ -15,43 +15,16 @@
 <div class="forms">
 
   <div>
-  <h3>Tipo de entrada:</h3>
-  <mat-form-field appearance="fill" style="width: 280px;">
-    <mat-label>Seleccione tipo de entrada</mat-label>
-    <mat-select [formControl]="tipoentrada">
-      <mat-option value="Compra">Compra</mat-option>
-      <mat-option value="Proveedor">Proveedor</mat-option>
-      <mat-option value="Devolucion">Devolución</mat-option>
-      <mat-option value="Reparado">Reparado</mat-option>
-      <mat-option value="Recuperado">Recuperado</mat-option>
-    </mat-select>
-  </mat-form-field>
-</div>
-
-<div *ngIf="tipoentrada.value === 'Proveedor'">
-  <h3>Seleccione Proveedor:</h3>
-  <mat-form-field appearance="fill" style="width: 280px;">
-    <mat-label>Seleccione proveedor</mat-label>
-    <mat-select [formControl]="proveedor">
-      <mat-option *ngFor="let prov of proveedores" [value]="prov.id">
-        {{ prov.name }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-</div>
-
-
-<div *ngIf="tipoentrada.value === 'Devolucion'">
-  <h3>Seleccione Cliente:</h3>
-  <mat-form-field appearance="fill" style="width: 280px;">
-    <mat-label>Seleccione cliente</mat-label>
-    <mat-select [formControl]="cliente">
-      <mat-option *ngFor="let cli of clientes" [value]="cli.id">
-        {{ cli.name }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-</div>
+    <h3>Seleccione Proveedor:</h3>
+    <mat-form-field appearance="fill" style="width: 280px;">
+      <mat-label>Proveedor</mat-label>
+      <mat-select [formControl]="proveedor">
+        <mat-option *ngFor="let prov of proveedores" [value]="prov.id">
+          {{ prov.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 
 </div>
 
@@ -69,7 +42,7 @@
         <th>Categoria</th>
         <th>Producto</th>
         <th>Cantidad</th>
-        <th>Precio</th>
+        <th>Precio unitario</th>
         <th>Monto total</th>
         <th>Acciones</th>
       </tr>

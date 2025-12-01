@@ -41,10 +41,10 @@ export class UsuarioService {
         return this.http.delete<void>(`${this.apiUrl}/${id}`);
     }
 
-    login(nombre: string, password: string): Observable<{ message: string; user: Usuario }> {
+    login(nombre: string, password: string, lastname: string, email: string, dni: number): Observable<{ message: string; user: Usuario }> {
         return this.http.post<{ message: string; user: Usuario }>(
             `${this.apiUrl}/login`,
-            { nombre, password }
+            { nombre, password, lastname, email, dni }
         );
     }
 

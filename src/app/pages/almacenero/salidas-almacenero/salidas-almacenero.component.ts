@@ -4,8 +4,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { SalidaService } from '../../../services/salida.service';
 import { FormsModule } from '@angular/forms';
-import { Proveedor } from '../../../interface/proveedor.interface';
-import { Cliente } from '../../../interface/cliente.interface';
 import { Salida } from '../../../interface/salida.interface';
 import { AddSalidaComponent } from '../../../shared/modals-almacenero/add-salida/add-salida.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -23,6 +21,8 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { ClienteService } from '../../../services/cliente.service';
+import { Usuario } from '../../../interface/usuario.interface';
+import { UsuarioService } from '../../../services/usuario.service';
 
 @Component({
   selector: 'app-salidas-almacenero',
@@ -43,46 +43,23 @@ export class SalidasAlmaceneroComponent implements OnInit {
   productos: Producto[] = [];
   pageSize = 5;
   pageIndex = 0;
-  clientes: Cliente[] = [];
-  opciones: string[] = ['Cliente', 'Proveedor'];
-  proveedores: Proveedor[] = [];
   salidas: Salida[] = [];
-  selectedClienteId: string = '';
-  selectedTipoSalida: string = '';
-  selectedProveedorId: string = '';
   salidasFiltradas: any[] = [];
   selectedOpcion: string = '';
-
+  selectedUserId: string = '';
+  currentUserId: string = '';
+  usuarios: Usuario[] = [];
 
   constructor(private router: Router, private productoService: ProductoService,
-    private salidaService: SalidaService, private proveedorService: ProveedorService, private clienteService: ClienteService) { }
+    private salidaService: SalidaService, private proveedorService: ProveedorService, private clienteService: ClienteService,
+    private usuarioService: UsuarioService) { }
 
   ngOnInit(): void {
     this.cargarSalidas();
     this.cargarProductos();
-    this.cargarClientes();
-    this.cargarProveedores();
+    this.cargarUsuarios();
   }
 
-  cargarClientes() {
-    this.clienteService.getClientes().subscribe({
-      next: (res) => {
-        this.clientes = res;
-        this.reload.markForCheck();
-      },
-      error: (err) => console.error('Error al cargar clientes', err),
-    });
-  }
-
-  cargarProveedores() {
-    this, this.proveedorService.getProveedores().subscribe({
-      next: (res) => {
-        this.proveedores = res;
-        this.reload.markForCheck();
-      },
-      error: (err) => console.error('Error al cargar proveedores', err),
-    });
-  }
 
   get pagedSalidas(): Salida[] {
     const start = this.pageIndex * this.pageSize;
@@ -124,6 +101,28 @@ export class SalidasAlmaceneroComponent implements OnInit {
         this.isloading = false;
       },
     })
+  }
+
+  cargarUsuarios() {
+    this.usuarioService.getUsuario().subscribe({
+      next: (res) => {
+        this.usuarios = res;
+        this.reload.markForCheck();
+      },
+      error: (err) => console.error('Error cargando usuarios', err),
+    });
+  }
+
+  filtrarPorUsuario() {
+    if (!this.selectedUserId) {
+      this.salidasFiltradas = [...this.salidas];
+    } else {
+      this.salidasFiltradas = this.salidas.filter(
+        salida => salida.userId === this.selectedUserId
+      );
+    }
+    this.pageIndex = 0;
+    this.reload.markForCheck();
   }
 
   addSalidas() {
@@ -207,59 +206,9 @@ export class SalidasAlmaceneroComponent implements OnInit {
     return salida.detalles?.reduce((acc, d) => acc + d.quantity, 0) ?? 0;
   }
 
-  getMontoTotal(salida: Salida): number {
-    return salida.detalles?.reduce((acc, d) => acc + d.total, 0) ?? 0;
-  }
-
-  getNombreProveedorCliente(salida: Salida): string {
-    if (salida.tipo === 'proveedor') {
-      return salida.supplier?.name || 'Sin proveedor';
-    }
-    if (salida.tipo === 'cliente') {
-      return salida.cliente?.name || 'Sin cliente';
-    }
-    return '—';
-  }
-
-
-  filtrarSalidas() {
-
-    this.salidasFiltradas = this.salidas;
-
-    if (this.selectedTipoSalida) {
-      this.salidasFiltradas = this.salidasFiltradas.filter(
-        s => s.tiposalida === this.selectedTipoSalida
-      );
-    }
-
-    if (this.selectedTipoSalida === 'Venta' && this.selectedClienteId) {
-      this.salidasFiltradas = this.salidasFiltradas.filter(
-        s => s.clienteId === this.selectedClienteId
-      );
-    }
-
-    if (this.selectedTipoSalida === 'Devolucion' && this.selectedProveedorId) {
-      this.salidasFiltradas = this.salidasFiltradas.filter(
-        s => s.supplierId === this.selectedProveedorId
-      );
-    }
-
-    this.pageIndex = 0;
-    this.reload.markForCheck();
-  }
-
-  onTipoSalidaChange() {
-    this.selectedClienteId = '';
-    this.selectedProveedorId = '';
-
-    this.filtrarSalidas();
-  }
-
-
   view(id: string) {
     this.router.navigate(['almacenero/view-salida-almacenero', id]);
   }
-
 
   kardex() {
     this.router.navigate(['/almacenero/panel-inventario'])

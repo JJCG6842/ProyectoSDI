@@ -26,8 +26,8 @@
     <thead>
       <tr>
         <th>Nro °</th>
+        <th>RUC</th>
         <th>Nombre</th>
-        <th>Telefono</th>
         <th>Descripción</th>
         <th>Fecha de creación</th>
         <th>Acciones</th>
@@ -36,13 +36,15 @@
     <tbody>
       <tr *ngFor="let proveedor of paginatedProveedores; let i = index">
         <th>{{ (pageIndex * pageSize) + i + 1 }}</th>
+        <th>{{proveedor.ruc}}</th>
         <th>{{proveedor.name}}</th>
-        <th>{{proveedor.phone}}</th>
         <th>{{proveedor.description}}</th>
         <th>{{proveedor.createdAt | date:'dd-MM-yyyy'}}</th>
         <th>
           <button class="edit" (click)="editSupplier(proveedor)"><mat-icon aria-hidden="false"
               fontIcon="edit"></mat-icon></button>
+          <button class="view" (click)="view(proveedor)"><mat-icon aria-hidden="false"
+              fontIcon="visibility"></mat-icon></button>
           <button class="delete" (click)="deleteSupplier(proveedor.id!)"><mat-icon aria-hidden="false"
               fontIcon="delete"></mat-icon></button>
         </th>

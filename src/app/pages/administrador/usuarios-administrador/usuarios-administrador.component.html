@@ -44,8 +44,9 @@
       <tr>
         <th>Nro °</th>
         <th>Nombre</th>
-        <th>Contraseña</th>
-        <th>Rol</th>
+        <th>Apellido</th>
+        <th>Correo</th>
+        <th>DNI</th>
         <th>Estado</th>
         <th>Fecha de creación</th>
         <th>Acciones</th>
@@ -55,8 +56,9 @@
       <tr *ngFor="let usuario of paginatedUsuarios; let i = index">
         <th>{{ (pageIndex * pageSize) + i + 1 }}</th>
         <th>{{usuario.nombre}}</th>
-        <th>{{ ocultarPassword(usuario.password) }}</th>
-        <th>{{usuario.role}}</th>
+        <th>{{ usuario.lastname }}</th> 
+        <th>{{usuario.email}}</th>
+        <th>{{usuario.dni}}</th>
         <th [ngClass]="{
       'estado-habilitado': usuario.status === 'Habilitado',
       'estado-deshabilitado': usuario.status === 'Deshabilitado'

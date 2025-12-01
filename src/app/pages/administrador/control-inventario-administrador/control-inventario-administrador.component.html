@@ -78,8 +78,6 @@
         <th>Marca</th>
         <th>Estado</th>
         <th>Stock actual</th>
-        <th>Precio</th>
-        <th>Monto total</th>
         <th>Acciones</th>
       </tr>
     </thead>
@@ -88,12 +86,12 @@
         <th>{{producto.name}}</th>
         <th><img [src]="producto.image" alt="Imagen" width="50"></th>
         <th>{{producto.marca?.name}}</th>
-        <th [ngClass]="{'instock': producto.status === 'Instock','outstock': producto.status === 'Outstock'}">
-          {{producto.status}}
-        </th>
+        <th [ngClass]="{
+  'instock': producto.status === 'Instock',
+  'outstock': producto.status === 'Outstock'
+}">
+          {{ producto.status }}</th>
         <th>{{producto.quantity}}</th>
-        <th>S/.{{producto.price | number: '1.2-2'}}</th>
-        <th>S/.{{ producto.price * producto.quantity | number: '1.2-2' }}</th>
         <th>
           <button class="view" (click)="viewProduct(producto)"><mat-icon aria-hidden="false"
               fontIcon="visibility"></mat-icon></button>

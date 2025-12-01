@@ -137,13 +137,7 @@ export class ViewEntradaAdministradorComponent implements OnInit {
 
     doc.setFontSize(12);
     doc.text(`Fecha: ${new Date(this.entrada.createdAt).toLocaleDateString()}`, 50, 35);
-    doc.text(`Tipo de entrada: ${this.entrada.tipoentrada}`, 50, 41);
-
-    if (this.entrada.tipoentrada === 'Devolucion') {
-      doc.text(`Cliente: ${this.entrada.cliente?.name || 'Sin cliente'}`, 50, 47);
-    } else if (this.entrada.tipoentrada === 'Proveedor') {
-      doc.text(`Proveedor: ${this.entrada.supplier?.name || 'Sin proveedor'}`, 50, 47);
-    }
+    doc.text(`Proveedor: ${this.entrada.supplier?.name || 'Sin proveedor'}`, 50, 41);
 
     const rows = this.entrada.detalles.map((d, index) => [
       index + 1,
@@ -195,13 +189,7 @@ export class ViewEntradaAdministradorComponent implements OnInit {
     sheet.addRow([]);
 
     sheet.addRow(['Fecha:', new Date(this.entrada.createdAt).toLocaleString()]);
-    sheet.addRow(['Tipo de entrada:', this.entrada.tipoentrada]);
-
-    if (this.entrada.tipoentrada === 'Devolucion') {
-      sheet.addRow(['Cliente:', this.entrada.cliente?.name || 'Sin cliente']);
-    } else if (this.entrada.tipoentrada === 'Proveedor') {
-      sheet.addRow(['Proveedor:', this.entrada.supplier?.name || 'Sin proveedor']);
-    }
+    sheet.addRow(['Proveedor:', this.entrada.supplier?.name || 'Sin proveedor']);
 
     sheet.addRow([]);
     const headerRow = sheet.addRow(['#', 'Categoría', 'Producto', 'Cantidad', 'Precio', 'Total']);

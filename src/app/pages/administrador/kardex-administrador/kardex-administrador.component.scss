@@ -10,6 +10,12 @@
   gap: 30px;
 }
 
+.botons{
+  display: flex;
+  gap: 30px;
+  position: relative;
+}
+
 .entrance,
 .salida {
   width: 250px;

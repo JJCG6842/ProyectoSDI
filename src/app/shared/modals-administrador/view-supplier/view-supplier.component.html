@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>Datos del proveedor</h2>
+
+<mat-dialog-content class="">
+  <div class="grid-container">
+    <div><strong>RUC:</strong> {{data.ruc}}</div>
+    <div><strong>Nombre:</strong> {{data.name}}</div>
+    <div><strong>Dirección:</strong> {{data.address}}</div>
+    <div><strong>Telefono:</strong> {{data.phone}}</div>
+  </div>
+
+  <div class="descripcion">
+    <strong>Descripción:</strong> {{data.description}}
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+<button mat-flat-button mat-dialog-close style="background-color: red; color: white;">Cerrar</button>
+</mat-dialog-actions>

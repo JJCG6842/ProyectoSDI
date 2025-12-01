@@ -1,40 +1,65 @@
 <body>
-    <div class="container">
-      <div class="card">
-        <img src="compusurlogo..jpg" class="logo" alt="Logo">
-  
-        <h1 class="title1">Iniciar sesión</h1>
-  
-        <form [formGroup]="formUser">
-          <label class="text1">Nombre de usuario:</label>
-            <div class="input-container">
-              <i class="fas fa-user icon"></i>
-              <input class="input1" formControlName="nombre" type="text" placeholder="Ingresa tu usuario">
-            </div>
-            <div [hidden]="nombre.valid || nombre.pristine" class="error">
-              <span *ngIf="nombre.errors?.['required']">El campo es requerido</span>
-            </div>
+  <div class="container">
+    <div class="card">
+      <img src="compusurlogo..jpg" class="logo" alt="Logo">
+
+      <h1 class="title1">Iniciar sesión</h1>
+
+      <form [formGroup]="formUser">
+        <label class="text1">Nombre:</label>
+        <div class="input-container">
+          <i class="fas fa-user icon"></i>
+          <input class="input1" formControlName="nombre" type="text" placeholder="Ingrese nombre">
+        </div>
+        <div *ngIf="nombre.invalid && nombre.touched" class="error">
+          <span *ngIf="nombre.errors?.['required']">El campo es requerido</span>
+        </div>
+
+        <label class="text1">Apellido:</label>
+        <div class="input-container">
+          <i class="fas fa-user icon"></i>
+          <input class="input1" formControlName="lastname" type="text" placeholder="Ingrese apellido">
+        </div>
+        <div *ngIf="lastname.invalid && lastname.touched" class="error">
+          <span *ngIf="lastname.errors?.['required']">El campo es requerido</span>
+        </div>
+
+        <label class="text1">DNI:</label>
+        <div class="input-container">
+          <i class="fas fa-id-card icon"></i>
+          <input class="input1" formControlName="dni" type="text" placeholder="Ingrese DNI">
+        </div>
+        <div [hidden]="dni.valid || dni.pristine" class="error">
+          <span *ngIf="dni.errors?.['required']">El campo es requerido</span>
+          <span *ngIf="dni.errors?.['pattern']">DNI no válido</span>
+        </div>
+
+        <label class="text1">Correo electrónico:</label>
+        <div class="input-container">
+          <i class="fas fa-envelope icon"></i>
+          <input class="input1" formControlName="email" type="email" placeholder="Ingrese correo electrónico">
+        </div>
+        <div *ngIf="email.invalid && email.touched" class="error">
+          <span *ngIf="email.errors?.['required']">El campo es requerido</span>
+          <span *ngIf="email.errors?.['email']">Correo no válido</span>
+        </div>
+
+        <label class="text1">Contraseña:</label>
+        <div class="input-container">
+          <i class="fas fa-lock icon"></i>
+          <input class="input1" formControlName="password" type="password" placeholder="Ingresa tu contraseña">
+        </div>
+        <div *ngIf="password.invalid && password.touched" class="error">
+          <span *ngIf="password.errors?.['required']">El campo es requerido</span>
+        </div>
+      </form>
 
 
-
-          <label class="text1">Contraseña:</label>
-            <div class="input-container">
-              <i class="fas fa-lock icon"></i>
-              <input class="input1" formControlName="password" type="password" placeholder="Ingresa tu contraseña">
-            </div>
-            <div [hidden]="password.valid || password.pristine" class="error">
-              <span *ngIf="password.errors?.['required']">El campo es requerido</span>
-            </div>
-
-
-          </form>
-        
-
-        <button class="boton" (click)="login()">Iniciar sesión</button>
-          <div *ngIf="errorMessage" class="error">
-            {{ errorMessage }}
-          </div>
-
+      <button class="boton" (click)="login()">Iniciar sesión</button>
+      <div *ngIf="errorMessage" class="error">
+        {{ errorMessage }}
       </div>
+
     </div>
-  </body>
+  </div>
+</body>

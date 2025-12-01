@@ -25,7 +25,6 @@ export class InicioAlmaceneroComponent implements OnInit{
   totalEntradas: number = 0;
   totalProveedores: number = 0;
   totalSalidas: number = 0;
-  totalMontoSalidas: number = 0;
   totalMontoEntradas: number = 0;
 
   constructor(private usuarioService: UsuarioService,private productoService: ProductoService,
@@ -40,7 +39,6 @@ export class InicioAlmaceneroComponent implements OnInit{
     this.usuarioNombre = 'Almacenero';
   }
 
-  // Productos
   this.productoService.getProductos().subscribe({
     next: (productos: Producto[]) => {
       this.totalProductos = productos.length;
@@ -48,24 +46,19 @@ export class InicioAlmaceneroComponent implements OnInit{
     error: (err) => console.error('Error al cargar productos:', err)
   });
 
-  // Entradas
   this.entradaService.getEntradas().subscribe({
-    next: (entradas: Entrada[]) => {
-      this.totalEntradas = entradas.length;
+  next: (entradas: Entrada[]) => {
+    this.totalEntradas = entradas.length;
 
-      this.totalMontoEntradas = entradas.reduce((totalEntrada, entrada) => {
-        // Sumar todos los detalles de cada entrada
-        const subtotalEntrada = entrada.detalles?.reduce((sum, detalle) => {
-          return sum + (detalle.quantity * (detalle.product?.price ?? 0));
-        }, 0) ?? 0;
+    this.totalMontoEntradas = entradas.reduce((acc, entrada) => {
+      const totalEntrada = entrada.detalles.reduce((sum, d) => sum + d.total, 0);
+      return acc + totalEntrada;
+    }, 0);
 
-        return totalEntrada + subtotalEntrada;
-      }, 0);
-    },
-    error: (err) => console.error('Error al cargar entradas:', err)
-  });
+  },
+  error: (err) => console.error('Error al cargar entradas:', err)
+});
 
-  // Proveedores
   this.proveedorService.getProveedores().subscribe({
     next: (proveedores: Proveedor[]) => {
       this.totalProveedores = proveedores.length;
@@ -73,18 +66,9 @@ export class InicioAlmaceneroComponent implements OnInit{
     error: (err) => console.error('Error al cargar proveedores:', err)
   });
 
-  // Salidas
   this.salidasService.getSalidas().subscribe({
     next: (salidas: Salida[]) => {
       this.totalSalidas = salidas.length;
-
-      this.totalMontoSalidas = salidas.reduce((totalSalida, salida) => {
-        const subtotalSalida = salida.detalles?.reduce((sum, detalle) => {
-          return sum + (detalle.quantity * (detalle.product?.price ?? 0));
-        }, 0) ?? 0;
-
-        return totalSalida + subtotalSalida;
-      }, 0);
     },
     error: (err) => console.error('Error al cargar salidas:', err)
   });

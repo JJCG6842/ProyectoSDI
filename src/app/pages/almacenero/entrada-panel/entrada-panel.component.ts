@@ -133,87 +133,46 @@ export class EntradaPanelComponent implements OnInit, AfterViewInit {
   }
 
   realizarEntrada() {
-    if (this.entradasRegistradas.length === 0) {
-      const dialogRef = this.dialog.open(ProductNullComponent, {
-        width: '400px',
-        maxWidth: 'none',
-        panelClass: 'custom-dialog-container'
-      });
-
-      dialogRef.afterClosed().subscribe(result => {
-        console.log(`Dialog result: ${result}`);
-      });
-      return;
-    }
-
-    if (!this.tipoentrada.value) {
-      const dialogRef = this.dialog.open(TipoEntradaNullComponent, {
-        width: '400px',
-        maxWidth: 'none',
-        panelClass: 'custom-dialog-container'
-      });
-
-      dialogRef.afterClosed().subscribe(result => {
-        console.log(`Dialog result: ${result}`);
-      });
-      return;
-    }
-
-    if (this.tipoentrada.value === 'Proveedor' && !this.proveedor.value) {
-      const dialogRef = this.dialog.open(ProveedorNullComponent, {
-        width: '400px',
-        maxWidth: 'none',
-        panelClass: 'custom-dialog-container'
-      });
-
-      dialogRef.afterClosed().subscribe(result => {
-        console.log(`Dialog result: ${result}`);
-      });
-      return;
-    }
-
-    if (this.tipoentrada.value === 'Devolucion' && !this.cliente.value) {
-      const dialogRef = this.dialog.open(ClienteNullComponent, {
-        width: '400px',
-        maxWidth: 'none',
-        panelClass: 'custom-dialog-container'
-      });
-
-      dialogRef.afterClosed().subscribe(result => {
-        console.log(`Dialog result: ${result}`);
-      });
-      return;
-    }
-
-    const productos = this.entradasRegistradas.map(p => ({
-      productId: p.productId,
-      quantity: p.quantity,
-      price: p.price,
-    }));
-
-    const payload: any = {
-      tipoentrada: this.tipoentrada.value,
-      productos
-    };
-
-    if (this.proveedor.value && this.tipoentrada.value === 'Proveedor') {
-      payload.supplierId = this.proveedor.value;
-    }
-
-    if (this.cliente.value && this.tipoentrada.value === 'Devolucion') {
-      payload.clienteId = this.cliente.value;
-    }
-
-    this.entradaService.crearEntrada(payload).subscribe({
-      next: res => {
-        this.dialog.open(AddEntradaSuccessComponent, { data: res });
-        this.entradasRegistradas = [];
-        this.aplicarPaginacion();
-        this.route.navigate(['/almacenero/entrada-almacenero']);
-      },
-      error: err => console.error('Error al crear entrada', err)
+  if (this.entradasRegistradas.length === 0) {
+    this.dialog.open(ProductNullComponent, {
+      width: '400px',
+      maxWidth: 'none',
+      panelClass: 'custom-dialog-container'
     });
+    return;
   }
+
+  if (!this.proveedor.value) {
+    this.dialog.open(ProveedorNullComponent, {
+      width: '400px',
+      maxWidth: 'none',
+      panelClass: 'custom-dialog-container'
+    });
+    return;
+  }
+
+  const productos = this.entradasRegistradas.map(p => ({
+    productId: p.productId,
+    quantity: p.quantity,
+    price: p.price
+  }));
+
+  const payload = {
+    tipoentrada: 'Proveedor',     
+    supplierId: this.proveedor.value,
+    productos
+  };
+
+  this.entradaService.crearEntrada(payload).subscribe({
+    next: res => {
+      this.dialog.open(AddEntradaSuccessComponent, { data: res });
+      this.entradasRegistradas = [];
+      this.aplicarPaginacion();
+      this.route.navigate(['/almacenero/entrada-almacenero']);
+    },
+    error: err => console.error('Error al crear entrada', err)
+  });
+}
 
   gestor() {
     this.route.navigate(['/almacenero/entrada-almacenero']);

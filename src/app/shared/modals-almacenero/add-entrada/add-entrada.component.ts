@@ -14,7 +14,6 @@ import { FormControl, FormsModule, ReactiveFormsModule, Validators, FormBuilder,
 import { CommonModule } from '@angular/common';
 import { TextFieldModule } from '@angular/cdk/text-field';
 
-
 @Component({
   selector: 'app-add-entrada',
   imports: [MatDialogModule, MatFormFieldModule, MatSelectModule, MatInput, MatButtonModule, TextFieldModule, CommonModule,
@@ -45,7 +44,8 @@ export class AddEntradaComponent implements OnInit {
       category: [''],
       marca: [''],
       product: ['', Validators.required],
-      quantity: [1, [Validators.required, Validators.min(1)]]
+      quantity: [1, [Validators.required, Validators.min(1)]],
+      price: [0,[Validators.required, Validators.min(1)] ]
     });
   }
 
@@ -109,6 +109,7 @@ export class AddEntradaComponent implements OnInit {
 
   get product() { return this.formEntrance.get('product') as FormControl; }
   get quantity() { return this.formEntrance.get('quantity') as FormControl; }
+  get price() {return this.formEntrance.get('price') as FormControl}
 
   addEntrance() {
     if (this.formEntrance.invalid) {
@@ -125,8 +126,8 @@ export class AddEntradaComponent implements OnInit {
       productName: producto.name,
       category: producto.category?.name,
       quantity: formValue.quantity,
-      price: producto.price,
-      total: producto.price * formValue.quantity
+      price: formValue.price,
+      total: formValue.quantity * formValue.price
     };
 
     this.dialogRef.close(newEntrada);

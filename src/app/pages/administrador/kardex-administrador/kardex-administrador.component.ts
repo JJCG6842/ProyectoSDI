@@ -18,6 +18,10 @@ import { Producto } from '../../../interface/producto.interface';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { Entrada } from '../../../interface/entrada.interface';
 import { Salida } from '../../../interface/salida.interface';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import * as ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-kardex-administrador',
@@ -84,8 +88,6 @@ export class KardexAdministradorComponent {
           proveedor: e.supplier?.name ?? '—',
           producto: d.product?.name ?? '—',
           cantidad: d.quantity,
-          precio: d.price ?? d.product?.price ?? 0,
-          total: d.total ?? d.quantity * (d.price ?? d.product?.price ?? 0)
         }))
       );
 
@@ -93,11 +95,8 @@ export class KardexAdministradorComponent {
         (s.detalles ?? []).map(d => ({
           fecha: s.createdAt,
           movimiento: 'Salida',
-          proveedor: s.supplier?.name || s.cliente?.name || '—',
           producto: d.product?.name ?? '—',
           cantidad: d.quantity,
-          precio: d.price ?? d.product?.price ?? 0,
-          total: d.total ?? d.quantity * (d.price ?? d.product?.price ?? 0)
         }))
       );
 
@@ -232,6 +231,125 @@ export class KardexAdministradorComponent {
     this.pageIndex = 0;
     this.actualizarPaginacion();
     this.reload.markForCheck();
+  }
+
+  exportarPDF() {
+    const doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'mm',
+      format: 'a4'
+    });
+
+    doc.setFontSize(18);
+    doc.text('Reporte de Kardex', 14, 15);
+
+    doc.setFontSize(12);
+    doc.text(`Fecha de generación: ${new Date().toLocaleString()}`, 14, 25);
+
+    const rows = this.movimientosFiltrados.map((m, i) => [
+      i + 1,
+      new Date(m.fecha).toLocaleDateString(),
+      m.movimiento,
+      m.producto,
+      m.cantidad
+    ]);
+
+    autoTable(doc, {
+      startY: 35,
+      head: [['#', 'Fecha', 'Movimiento', 'Producto', 'Cantidad']],
+      body: rows,
+      theme: 'grid'
+    });
+
+    const finalY = doc.lastAutoTable.finalY + 10;
+
+    const totalEntradas = this.movimientosFiltrados
+      .filter(m => m.movimiento === 'Entrada')
+      .reduce((a, b) => a + b.cantidad, 0);
+
+    const totalSalidas = this.movimientosFiltrados
+      .filter(m => m.movimiento === 'Salida')
+      .reduce((a, b) => a + b.cantidad, 0);
+
+    doc.setFontSize(14);
+    doc.text(`Total Entradas: ${totalEntradas}`, 14, finalY);
+    doc.text(`Total Salidas: ${totalSalidas}`, 14, finalY + 8);
+
+    doc.save(`Kardex-${Date.now()}.pdf`);
+  }
+
+  exportarExcel() {
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet('Kardex');
+
+    const titleRow = sheet.addRow(['Reporte de Kardex']);
+    titleRow.font = { size: 18, bold: true };
+    sheet.mergeCells('A1:E1');
+    titleRow.alignment = { horizontal: 'center' };
+
+    sheet.addRow([]);
+    sheet.addRow(['Fecha de generación:', new Date().toLocaleString()]);
+    sheet.addRow([]);
+
+    const headerRow = sheet.addRow(['#', 'Fecha', 'Movimiento', 'Producto', 'Cantidad']);
+    headerRow.eachCell((cell) => {
+      cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+      cell.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' }
+      };
+      cell.alignment = { horizontal: 'center' };
+    });
+
+    this.movimientosFiltrados.forEach((m, i) => {
+      const row = sheet.addRow([
+        i + 1,
+        new Date(m.fecha).toLocaleDateString(),
+        m.movimiento,
+        m.producto,
+        m.cantidad
+      ]);
+
+      row.eachCell((cell) => {
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' }
+        };
+        cell.alignment = { horizontal: 'center' };
+      });
+    });
+
+    sheet.addRow([]);
+
+    const totalEntradas = this.movimientosFiltrados
+      .filter(m => m.movimiento === 'Entrada')
+      .reduce((a, b) => a + b.cantidad, 0);
+
+    const totalSalidas = this.movimientosFiltrados
+      .filter(m => m.movimiento === 'Salida')
+      .reduce((a, b) => a + b.cantidad, 0);
+
+    const totalsRow = sheet.addRow([
+      '',
+      '',
+      '',
+      'Total Entradas / Salidas:',
+      `${totalEntradas} / ${totalSalidas}`
+    ]);
+
+    totalsRow.eachCell(cell => (cell.font = { bold: true }));
+
+    workbook.xlsx.writeBuffer().then((buffer) => {
+      saveAs(
+        new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+        `Kardex-${Date.now()}.xlsx`
+      );
+    });
   }
 
 }
