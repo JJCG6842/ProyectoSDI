@@ -15,6 +15,13 @@ export class MarcaService {
     });
   }
 
+  async getMarcasPorCategoria(categoryId: string): Promise<Marca[]> {
+  return this.prisma.marca.findMany({
+    where: { categoryId },
+    include: { products: true },
+  });
+}
+
   async create(data: Prisma.MarcaCreateInput): Promise<Marca> {
     return this.prisma.marca.create({ data });
   }

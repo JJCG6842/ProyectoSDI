@@ -19,6 +19,7 @@ model Users {
   status    UserStatus @default(Habilitado)
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+  salidasDestino Salida[] @relation("DestinoSalida")
 }
 
 model Category {
@@ -121,7 +122,9 @@ model Salida {
   createdAt  DateTime        @default(now())
   detalles   SalidaDetalle[]
   userId     String
+  destinoId  String?
   user       Users @relation(fields: [userId], references: [id], onDelete: Cascade)
+  destino    Users? @relation("DestinoSalida", fields: [destinoId], references: [id])
 }
 
 model SalidaDetalle {

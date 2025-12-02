@@ -30,6 +30,11 @@ export class SalidaController {
     return this.salidaService.getSalidasByUserName(nombre);
   }
 
+  @Get('destino/:destinoId')
+  async getSalidasByDestino(@Param('destinoId') destinoId: string) {
+    return this.salidaService.getSalidasByDestino(destinoId);
+  }
+
   @Post()
   async crearSalida(@Body() body: any) {
     return this.salidaService.crearSalida(body);
