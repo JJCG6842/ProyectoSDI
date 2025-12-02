@@ -37,35 +37,26 @@ export class SalidaPanelComponent implements OnInit {
   private dialog = inject(MatDialog);
   private cd = inject(ChangeDetectorRef);
 
-  formUser!: FormGroup;
   salidas: any[] = [];
-  selectedOpcion: string = '';
-  selectedUserId: string = '';
-  currentUserId: string = '';
   usuarios: Usuario[] = [];
-  salidasFiltradas: any[] = [];
+  destinoId: string = "";
+
   pageSize = 5;
   pageIndex = 0;
 
   constructor(
     private router: Router,
-    private fb: FormBuilder,
     private productoService: ProductoService,
     private salidaService: SalidaService,
     private usuarioService: UsuarioService
-  ) { 
-    this.formUser = this.fb.group({
-      destino: ['', Validators.required]
-    })
-  }
+  ) { }
 
   ngOnInit(): void {
-    this.cargarUsuarios();
-  }
-
-  get destino (){
-    return this.formUser.get('destino') as FormControl;
-  }
+  this.usuarioService.getUsuario().subscribe(res => {
+    this.usuarios = res;
+    this.cd.markForCheck();
+  });
+}
 
   get pagedSalidas() {
     const start = this.pageIndex * this.pageSize;
@@ -76,16 +67,6 @@ export class SalidaPanelComponent implements OnInit {
     this.pageSize = event.pageSize;
     this.pageIndex = event.pageIndex;
     this.cd.markForCheck();
-  }
-
-  cargarUsuarios() {
-    this.usuarioService.getUsuario().subscribe({
-      next: (res) => {
-        this.usuarios = res;
-        this.cd.markForCheck();
-      },
-      error: (err) => console.error('Error cargando usuarios', err),
-    });
   }
 
   addProduct() {
@@ -106,18 +87,6 @@ export class SalidaPanelComponent implements OnInit {
     return this.salidas.reduce((acc, item) => acc + item.quantity, 0);
   }
 
-  filtrarPorUsuario() {
-    if (!this.selectedUserId) {
-      this.salidasFiltradas = [...this.salidas];
-    } else {
-      this.salidasFiltradas = this.salidas.filter(
-        salida => salida.userId === this.selectedUserId
-      );
-    }
-    this.pageIndex = 0;
-    this.cd.markForCheck();
-  }
-
   deleteSalida(index: number) {
     this.salidas.splice(index, 1);
     this.pageIndex = 0;
@@ -133,15 +102,16 @@ export class SalidaPanelComponent implements OnInit {
       return;
     }
 
-    if (!this.destino.value) {
-      return
-    }
-
     for (const item of this.salidas) {
       const producto = await this.productoService.getProductoporId(item.productId).toPromise();
 
       if (!producto) {
         alert(`Producto ${item.productName} no encontrado`);
+        return;
+      }
+
+      if (!this.destinoId) {
+        alert("Debe seleccionar un destino para la salida");
         return;
       }
 
@@ -162,17 +132,14 @@ export class SalidaPanelComponent implements OnInit {
 
     const data = {
       userId: user?.id,
-      destinoId: this.destino.value,
+      destinoId: this.destinoId,
       productos
     };
 
-    const destinoSeleccionado = this.usuarios.find(u => u.id === this.destino.value);
-
     this.salidaService.createSalida(data).subscribe({
-      next: (res) => {
+      next: () => {
         this.dialog.open(AddSalidaSuccessComponent);
         this.salidas = [];
-        res.destinoNombre = destinoSeleccionado?.nombre ?? '---';
         this.router.navigate(['/almacenero/salida-almacenero']);
       },
       error: err => console.error(err)

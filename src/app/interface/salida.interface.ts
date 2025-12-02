@@ -5,10 +5,10 @@ export interface Salida {
   id: string;
   createdAt: string;
   userId: string;
-  user?: Usuario;     
+  destinoId?: string;
+  user?: Usuario;
+  destino?: Usuario;     
   detalles: SalidaDetalle[];
-
-  destinoNombre?: string;
 }
 
 export interface SalidaDetalle {

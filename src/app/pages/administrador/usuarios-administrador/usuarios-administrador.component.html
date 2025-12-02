@@ -8,7 +8,7 @@
 
 <div class="content1">
   <p class="enter">Buscar usuario:</p>
-  <input type="text" placeholder="Ingrese usuario..." [(ngModel)]="searchTerm">
+  <input type="text" placeholder="Ingrese usuario..." [(ngModel)]="searchTerm" (ngModelChange)="onSearchTermChange($event)">
 
   <div class="botons">
     <button class="boton1" (click)="search()">

@@ -52,6 +52,8 @@ input{
 .botons{
   display: flex;
   gap: 10px;
+  position: relative;
+  bottom: 5px;
 }
 
 .icon{

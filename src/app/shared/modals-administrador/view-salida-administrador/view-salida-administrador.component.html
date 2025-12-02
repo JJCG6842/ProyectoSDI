@@ -20,7 +20,8 @@
   <h2>Información general</h2>
   <p><strong>Fecha:</strong> {{ salida.createdAt | date: 'dd-MM-yyyy' }}</p>
   <p><strong>Usuario:</strong> {{salida.user?.nombre}}</p>
-
+  <p><strong>Destino:</strong> {{ salida.destino?.nombre || 'Sin destino' }}</p>
+  
   <br>
 
   <h2>Productos de esta salida</h2>

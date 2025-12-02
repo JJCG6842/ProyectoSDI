@@ -125,6 +125,7 @@ export class ViewSalidaAdministradorComponent implements OnInit {
     doc.setFontSize(12);
     doc.text(`Fecha: ${new Date(this.salida.createdAt).toLocaleString()}`, 14, 35);
     doc.text(`Usuario: ${this.salida.user?.nombre || 'N/A'}`, 14, 42);
+    doc.text(`Destino: ${this.salida.destino?.nombre || 'Sin destino'}`, 14, 49);
 
     const rows = this.salida.detalles.map((d, index) => [
       index + 1,
@@ -169,6 +170,7 @@ export class ViewSalidaAdministradorComponent implements OnInit {
     sheet.addRow([]);
     sheet.addRow(['Fecha:', new Date(this.salida.createdAt).toLocaleString()]);
     sheet.addRow(['Usuario:', this.salida.user?.nombre || 'N/A']);
+    sheet.addRow(['Destino:', this.salida.destino?.nombre || 'Sin destino']);
     sheet.addRow([]);
 
     const headerRow = sheet.addRow(['#', 'Categoría', 'Producto', 'Cantidad']);

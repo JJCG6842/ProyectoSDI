@@ -44,6 +44,8 @@ export class SalidasAlmaceneroComponent implements OnInit {
   pageSize = 5;
   pageIndex = 0;
   salidas: Salida[] = [];
+  destinoId: string = '';
+  destinos: Usuario[] = [];
   salidasFiltradas: any[] = [];
   selectedOpcion: string = '';
   selectedUserId: string = '';
@@ -58,15 +60,6 @@ export class SalidasAlmaceneroComponent implements OnInit {
     this.cargarSalidas();
     this.cargarProductos();
     this.cargarUsuarios();
-
-    const state = history.state;
-
-  if (state?.nuevaSalida) {
-
-    this.salidas.push(state.nuevaSalida);
-    this.salidasFiltradas = [...this.salidas];
-    this.reload.markForCheck();
-  }
   }
 
 
@@ -97,27 +90,20 @@ export class SalidasAlmaceneroComponent implements OnInit {
   }
 
   cargarSalidas() {
-  this.salidaService.getSalidas().subscribe({
-    next: (data) => {
-      this.salidas = data.map(salida => {
-        const usuario = this.usuarios.find(u => u.id === salida.userId);
-        return {
-          ...salida,
-          userNombre: usuario?.nombre ?? '---'
-        };
-      });
-
-      this.salidasFiltradas = [...this.salidas];
-      this.isloading = false;
-      this.pageIndex = 0;
-      this.reload.markForCheck();
-    },
-    error: (err) => {
-      console.error('Error al cargar salidas:', err);
-      this.isloading = false;
-    },
-  });
-}
+    this.salidaService.getSalidas().subscribe({
+      next: (data) => {
+        this.salidas = data;
+        this.salidasFiltradas = [...data];
+        this.isloading = false;
+        this.pageIndex = 0;
+        this.reload.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error al cargar salidas:', err);
+        this.isloading = false;
+      },
+    })
+  }
 
   cargarUsuarios() {
     this.usuarioService.getUsuario().subscribe({
@@ -221,6 +207,30 @@ export class SalidasAlmaceneroComponent implements OnInit {
   getCantidadTotal(salida: Salida): number {
     return salida.detalles?.reduce((acc, d) => acc + d.quantity, 0) ?? 0;
   }
+
+  filtrarPorDestino() {
+  if (!this.destinoId) {
+    this.salidasFiltradas = [...this.salidas];
+    this.pageIndex = 0;
+    this.reload.markForCheck();
+    return;
+  }
+
+  this.salidaService.getSalidasByDestino(this.destinoId)
+    .subscribe({
+      next: (salidas) => {
+        this.salidasFiltradas = salidas;
+        this.pageIndex = 0;
+        this.reload.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error filtrando por destino:', err);
+        this.salidasFiltradas = [];
+        this.pageIndex = 0;
+        this.reload.markForCheck();
+      },
+    });
+}
 
   view(id: string) {
     this.router.navigate(['almacenero/view-salida-almacenero', id]);

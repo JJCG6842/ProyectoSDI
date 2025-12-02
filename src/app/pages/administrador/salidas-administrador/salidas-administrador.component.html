@@ -20,6 +20,16 @@
   </mat-select>
 </mat-form-field>
 
+<mat-form-field>
+  <mat-label>Seleccionar destino:</mat-label>
+  <mat-select [(value)]="destinoId" (selectionChange)="filtrarPorDestino()">
+    <mat-option value="">Todos</mat-option>
+    <mat-option *ngFor="let destino of usuarios" [value]="destino.id">
+      {{ destino.nombre }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
   <!-- <mat-form-field>
   <mat-label>Fecha</mat-label>
   <input matInput [matDatepicker]="datepicker" [(ngModel)]="filterDate" (dateChange)="aplicarFiltros()">
@@ -27,7 +37,9 @@
   <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
 </mat-form-field> -->
 
+
 </div>
+
 
 <div class="table">
   <table>
@@ -36,6 +48,7 @@
         <th>Nro°</th>
         <th>Fecha registro</th>
         <th>Usuario</th>
+        <th>Destino</th>
         <th>Cantidad total</th>
         <th>Acciones</th>
       </tr>
@@ -45,6 +58,7 @@
         <th>{{ (pageIndex * pageSize) + i + 1 }}</th>
         <th>{{salida.createdAt | date: 'dd-MM-yyyy'}}</th>
         <th>{{salida.user?.nombre}}</th>
+        <th>{{ salida.destino?.nombre || 'Sin destino' }}</th>
         <th>{{ getCantidadTotal(salida) }}</th>
 
         <th>

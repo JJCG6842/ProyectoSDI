@@ -196,4 +196,12 @@ export class UsuariosAdministradorComponent implements OnInit {
   });
 }
 
+onSearchTermChange(term: string) {
+    this.searchTerm = term.trim();
+
+    if (!this.searchTerm) {
+      this.obtenerUsers();
+    }
+  }
+
 }

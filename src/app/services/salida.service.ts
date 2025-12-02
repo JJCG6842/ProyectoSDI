@@ -29,6 +29,10 @@ export class SalidaService {
     return this.http.get<Salida[]>(`${this.apiUrl}/usuario/${userId}`);
   }
 
+  getSalidasByDestino(destinoId: string): Observable<Salida[]> {
+    return this.http.get<Salida[]>(`${this.apiUrl}/destino/${destinoId}`);
+  }
+
   buscarPorNombreUsuario(nombre: string): Observable<Salida[]> {
     return this.http.get<Salida[]>(`${this.apiUrl}/buscar/usuario/${nombre}`);
   }
@@ -37,7 +41,7 @@ export class SalidaService {
     return this.http.get<Salida[]>(`${this.apiUrl}/buscar/producto/${term}`);
   }
 
-  createSalida(data: { userId: string; productos: ProductoSalida[] }): Observable<Salida> {
+  createSalida(data: { userId: string; destinoId: string; productos: ProductoSalida[] }): Observable<Salida> {
     return this.http.post<Salida>(this.apiUrl, data);
   }
 

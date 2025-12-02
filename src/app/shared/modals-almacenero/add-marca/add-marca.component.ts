@@ -62,6 +62,8 @@ export class AddMarcaComponent implements OnInit{
     return this.formMarca.get('category') as FormControl;
   }
 
+  
+
   create(){
     if(this.formMarca.invalid){
       this.formMarca.markAllAsTouched();

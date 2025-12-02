@@ -44,6 +44,8 @@ export class SalidasAdministradorComponent implements OnInit {
   pageSize = 5;
   pageIndex = 0;
   salidas: Salida[] = [];
+  destinoId: string = '';
+  destinos: Usuario[] = [];
   salidasFiltradas: any[] = [];
   selectedOpcion: string = '';
   selectedUserId: string = '';
@@ -205,6 +207,30 @@ export class SalidasAdministradorComponent implements OnInit {
   getCantidadTotal(salida: Salida): number {
     return salida.detalles?.reduce((acc, d) => acc + d.quantity, 0) ?? 0;
   }
+
+  filtrarPorDestino() {
+  if (!this.destinoId) {
+    this.salidasFiltradas = [...this.salidas];
+    this.pageIndex = 0;
+    this.reload.markForCheck();
+    return;
+  }
+
+  this.salidaService.getSalidasByDestino(this.destinoId)
+    .subscribe({
+      next: (salidas) => {
+        this.salidasFiltradas = salidas;
+        this.pageIndex = 0;
+        this.reload.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error filtrando por destino:', err);
+        this.salidasFiltradas = [];
+        this.pageIndex = 0;
+        this.reload.markForCheck();
+      },
+    });
+}
 
   view(id: string) {
     this.router.navigate(['administrador/view-salida-administrador', id]);

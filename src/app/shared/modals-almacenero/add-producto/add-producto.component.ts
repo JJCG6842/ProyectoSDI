@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import {MatButtonModule} from '@angular/material/button';
-import {MatDialog, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
-import {MatSelectModule} from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
 import { ProductoService } from '../../../services/producto.service';
 import { MatInputModule, MatInput } from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {FormControl, FormsModule, ReactiveFormsModule, Validators, FormBuilder, FormGroup} from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { CategoriaService } from '../../../services/categoria.service';
@@ -18,93 +18,96 @@ import { CreateProductSuccessComponent } from './modals-producto/create-product-
 
 @Component({
   selector: 'app-add-producto',
-  imports: [MatDialogModule, MatFormFieldModule, MatSelectModule,MatInput,MatButtonModule,TextFieldModule, CommonModule,
+  imports: [MatDialogModule, MatFormFieldModule, MatSelectModule, MatInput, MatButtonModule, TextFieldModule, CommonModule,
     FormsModule, ReactiveFormsModule],
   templateUrl: './add-producto.component.html',
   styleUrl: './add-producto.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddProductoComponent implements OnInit{
+export class AddProductoComponent implements OnInit {
 
-  formProduct!:  FormGroup;
+  formProduct!: FormGroup;
   categorias: Categoria[] = [];
   subcategorias: Subcategoria[] = [];
   marcas: Marca[] = [];
 
-  constructor(private fb:FormBuilder, private productoService: ProductoService, 
+  constructor(private fb: FormBuilder, private productoService: ProductoService,
     private dialogRef: MatDialogRef<AddProductoComponent>, private dialog: MatDialog,
-    private categoriaService: CategoriaService,private subcategoriaService : SubcategoriaService, private marcaService:MarcaService){
+    private categoriaService: CategoriaService, private subcategoriaService: SubcategoriaService, private marcaService: MarcaService) {
     this.formProduct = this.fb.group({
       name: ['', Validators.required],
-      description: ['',Validators.required],
+      description: ['', Validators.required],
       marca: ['', Validators.required],
       model: ['', Validators.required],
       image: [''],
-      category: ['',Validators.required],
+      category: ['', Validators.required],
       subcategory: ['', Validators.required],
     });
   }
 
   ngOnInit(): void {
-  this.cargarCategorias();
-  this.cargarSubcategorias();
-  this.cargarMarcas();
+    this.cargarCategorias();
+    this.cargarSubcategorias();
+    this.cargarMarcas();
 
-  this.subcategory.disable();
-  this.marca.disable();
+    this.subcategory.disable();
+    this.marca.disable();
 
-  this.category.valueChanges.subscribe(categoryId => {
-    if (categoryId) {
-      this.subcategory.enable();
-      this.cargarSubcategoriasPorCategoria(categoryId);
-    } else {
-      this.subcategory.reset();
-      this.subcategory.disable();
-      this.subcategorias = [];
-      this.marca.reset();
-      this.marca.disable();
-    }
-  });
+    this.category.valueChanges.subscribe(categoryId => {
+      if (categoryId) {
+        this.subcategory.enable();
+        this.cargarSubcategoriasPorCategoria(categoryId);
+      } else {
+        this.subcategory.reset();
+        this.subcategory.disable();
+        this.subcategorias = [];
+        this.marca.reset();
+        this.marca.disable();
+      }
+    });
 
-  this.subcategory.valueChanges.subscribe(subcatId => {
-    if (subcatId) {
-      this.marca.enable();
-    } else {
-      this.marca.reset();
-      this.marca.disable();
-    }
-  });
-}
+    this.subcategory.valueChanges.subscribe(subcatId => {
+      if (subcatId) {
+        this.marca.enable();
+        const categoryId = this.category.value;
+        this.cargarMarcasPorCategoria(categoryId);
+      } else {
+        this.marca.reset();
+        this.marca.disable();
+        this.marcas = [];
+      }
+    });
+  }
 
   cargarSubcategoriasPorCategoria(categoryId: string) {
-  this.subcategoriaService.getSubcategoriasPorCategoriaId(categoryId).subscribe({
-    next: (subs) => {
-      this.subcategorias = subs;
-    },
-    error: (err) => {
-      console.error('Error al cargar subcategorías', err);
-      this.subcategorias = [];
-    }
-  });
-}
+    this.subcategoriaService.getSubcategoriasPorCategoriaId(categoryId).subscribe({
+      next: (subs) => {
+        this.subcategorias = subs;
+      },
+      error: (err) => {
+        console.error('Error al cargar subcategorías', err);
+        this.subcategorias = [];
+      }
+    });
+  }
 
-  cargarCategorias(){
+  cargarCategorias() {
     this.categoriaService.getCategorias().subscribe({
       next: (categorys) => {
         this.categorias = categorys;
       },
-      error: (fail) =>{
+      error: (fail) => {
         console.error('error al cargar categorias', fail)
       },
     });
   }
 
-  cargarSubcategorias(){
+  cargarSubcategorias() {
     this.subcategoriaService.getSubcategorias().subscribe({
       next: (subcategorys) => {
         this.subcategorias = subcategorys;
       },
-      error: (fail) =>{
+      error: (fail) => {
         console.error('error al cargar subcategorias', fail)
       },
     });
@@ -119,37 +122,49 @@ export class AddProductoComponent implements OnInit{
     });
   }
 
+  cargarMarcasPorCategoria(categoryId: string) {
+    this.marcaService.getMarcasPorCategoria(categoryId).subscribe({
+      next: (marcas) => {
+        this.marcas = marcas;
+      },
+      error: (err) => {
+        console.error("Error al cargar marcas filtradas", err);
+        this.marcas = [];
+      }
+    });
+  }
 
-  get name(){
+
+  get name() {
     return this.formProduct.get('name') as FormControl;
   }
 
-  get description(){
+  get description() {
     return this.formProduct.get('description') as FormControl;
   }
 
-  get marca(){
+  get marca() {
     return this.formProduct.get('marca') as FormControl;
   }
 
-  get model(){
+  get model() {
     return this.formProduct.get('model') as FormControl;
   }
 
-  get image(){
+  get image() {
     return this.formProduct.get('image') as FormControl;
   }
 
-  get category(){
+  get category() {
     return this.formProduct.get('category') as FormControl;
   }
 
-  get subcategory(){
+  get subcategory() {
     return this.formProduct.get('subcategory') as FormControl;
   }
 
-  addProduct(){
-    if(this.formProduct.invalid){
+  addProduct() {
+    if (this.formProduct.invalid) {
       this.formProduct.markAllAsTouched();
       return;
     }
@@ -162,7 +177,7 @@ export class AddProductoComponent implements OnInit{
       image: formValue.image,
       name: formValue.name,
       description: formValue.description,
-      status, 
+      status,
       quantity: formValue.quantity,
       model: formValue.model,
       categoryId: formValue.category,
@@ -171,13 +186,13 @@ export class AddProductoComponent implements OnInit{
     }
 
     this.productoService.crearProducto(newProduct).subscribe({
-    next: () => {
+      next: () => {
         this.dialogRef.close(true);
         this.dialog.open(CreateProductSuccessComponent);
-    },
-    error: (error) => {
-      console.error('Error al crear el producto:', error);
-    },
-  })
+      },
+      error: (error) => {
+        console.error('Error al crear el producto:', error);
+      },
+    })
   }
 }

@@ -36,7 +36,7 @@ export class MarcaService {
     return this.http.get<Marca[]>(`${this.apiUrl}/search?term=${term}`);
   }
 
-  getMarcasPorCategoria(categoryName: string): Observable<Marca[]> {
-    return this.http.get<Marca[]>(`${this.apiUrl}/buscar/categoria/${categoryName}`);
-  }
+  getMarcasPorCategoria(categoryId: string): Observable<Marca[]> {
+  return this.http.get<Marca[]>(`${this.apiUrl}/filter?categoryId=${categoryId}`);
+}
 }

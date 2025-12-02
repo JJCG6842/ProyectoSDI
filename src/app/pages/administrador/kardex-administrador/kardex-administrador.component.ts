@@ -246,17 +246,22 @@ export class KardexAdministradorComponent {
     doc.setFontSize(12);
     doc.text(`Fecha de generación: ${new Date().toLocaleString()}`, 14, 25);
 
-    const rows = this.movimientosFiltrados.map((m, i) => [
-      i + 1,
-      new Date(m.fecha).toLocaleDateString(),
-      m.movimiento,
-      m.producto,
-      m.cantidad
-    ]);
+    let saldo = 0;
+    const rows = this.movimientosFiltrados.map((m, i) => {
+      saldo += m.movimiento === 'Entrada' ? m.cantidad : -m.cantidad;
+      return [
+        i + 1,
+        new Date(m.fecha).toLocaleDateString(),
+        m.movimiento,
+        m.producto,
+        m.cantidad,
+        saldo 
+      ];
+    });
 
     autoTable(doc, {
       startY: 35,
-      head: [['#', 'Fecha', 'Movimiento', 'Producto', 'Cantidad']],
+      head: [['#', 'Fecha', 'Movimiento', 'Producto', 'Cantidad', 'Monto']],
       body: rows,
       theme: 'grid'
     });
@@ -271,85 +276,75 @@ export class KardexAdministradorComponent {
       .filter(m => m.movimiento === 'Salida')
       .reduce((a, b) => a + b.cantidad, 0);
 
+    const saldoFinal = totalEntradas - totalSalidas;
+
     doc.setFontSize(14);
     doc.text(`Total Entradas: ${totalEntradas}`, 14, finalY);
     doc.text(`Total Salidas: ${totalSalidas}`, 14, finalY + 8);
+    doc.text(`Cantidad restante: ${saldoFinal}`, 14, finalY + 16);
 
     doc.save(`Kardex-${Date.now()}.pdf`);
   }
 
   exportarExcel() {
-    const workbook = new ExcelJS.Workbook();
-    const sheet = workbook.addWorksheet('Kardex');
+  const workbook = new ExcelJS.Workbook();
+  const sheet = workbook.addWorksheet('Kardex');
 
-    const titleRow = sheet.addRow(['Reporte de Kardex']);
-    titleRow.font = { size: 18, bold: true };
-    sheet.mergeCells('A1:E1');
-    titleRow.alignment = { horizontal: 'center' };
+  sheet.columns = [
+    { header: '#', key: 'index', width: 30 },              
+    { header: 'Fecha', key: 'fecha', width: 20 },        
+    { header: 'Movimiento', key: 'movimiento', width: 20 }, 
+    { header: 'Producto', key: 'producto', width: 142 },  
+    { header: 'Cantidad', key: 'cantidad', width: 14 }, 
+    { header: 'Monto', key: 'monto', width: 14 },       
+  ];
 
-    sheet.addRow([]);
-    sheet.addRow(['Fecha de generación:', new Date().toLocaleString()]);
-    sheet.addRow([]);
+  const titleRow = sheet.addRow(['Reporte de Kardex']);
+  titleRow.font = { size: 18, bold: true };
+  sheet.mergeCells('A1:F1');
+  titleRow.alignment = { horizontal: 'center' };
 
-    const headerRow = sheet.addRow(['#', 'Fecha', 'Movimiento', 'Producto', 'Cantidad']);
-    headerRow.eachCell((cell) => {
-      cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
-      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
-      cell.border = {
-        top: { style: 'thin' },
-        left: { style: 'thin' },
-        bottom: { style: 'thin' },
-        right: { style: 'thin' }
-      };
+  sheet.addRow([]);
+  sheet.addRow(['Fecha de generación:', new Date().toLocaleString()]);
+  sheet.addRow([]);
+
+  const headerRow = sheet.addRow(['#', 'Fecha', 'Movimiento', 'Producto', 'Cantidad', 'Monto']);
+  headerRow.eachCell((cell) => {
+    cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+    cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+    cell.alignment = { horizontal: 'center' };
+  });
+
+  let saldo = 0;
+  this.movimientosFiltrados.forEach((m, i) => {
+    saldo += m.movimiento === 'Entrada' ? m.cantidad : -m.cantidad;
+    const row = sheet.addRow([i + 1, new Date(m.fecha).toLocaleDateString(), m.movimiento, m.producto, m.cantidad, saldo]);
+    row.eachCell((cell) => {
+      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
       cell.alignment = { horizontal: 'center' };
     });
+  });
 
-    this.movimientosFiltrados.forEach((m, i) => {
-      const row = sheet.addRow([
-        i + 1,
-        new Date(m.fecha).toLocaleDateString(),
-        m.movimiento,
-        m.producto,
-        m.cantidad
-      ]);
+  sheet.addRow([]);
 
-      row.eachCell((cell) => {
-        cell.border = {
-          top: { style: 'thin' },
-          left: { style: 'thin' },
-          bottom: { style: 'thin' },
-          right: { style: 'thin' }
-        };
-        cell.alignment = { horizontal: 'center' };
-      });
-    });
+  const totalEntradas = this.movimientosFiltrados
+    .filter(m => m.movimiento === 'Entrada')
+    .reduce((a, b) => a + b.cantidad, 0);
 
-    sheet.addRow([]);
+  const totalSalidas = this.movimientosFiltrados
+    .filter(m => m.movimiento === 'Salida')
+    .reduce((a, b) => a + b.cantidad, 0);
 
-    const totalEntradas = this.movimientosFiltrados
-      .filter(m => m.movimiento === 'Entrada')
-      .reduce((a, b) => a + b.cantidad, 0);
+  const saldoFinal = totalEntradas - totalSalidas;
 
-    const totalSalidas = this.movimientosFiltrados
-      .filter(m => m.movimiento === 'Salida')
-      .reduce((a, b) => a + b.cantidad, 0);
+  const totalsRow = sheet.addRow(['', '', '', 'Totales:', `E: ${totalEntradas} / S: ${totalSalidas}`, saldoFinal]);
+  totalsRow.eachCell(cell => (cell.font = { bold: true }));
 
-    const totalsRow = sheet.addRow([
-      '',
-      '',
-      '',
-      'Total Entradas / Salidas:',
-      `${totalEntradas} / ${totalSalidas}`
-    ]);
-
-    totalsRow.eachCell(cell => (cell.font = { bold: true }));
-
-    workbook.xlsx.writeBuffer().then((buffer) => {
-      saveAs(
-        new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
-        `Kardex-${Date.now()}.xlsx`
-      );
-    });
-  }
+  workbook.xlsx.writeBuffer().then((buffer) => {
+    saveAs(new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+      `Kardex-${Date.now()}.xlsx`);
+  });
+}
 
 }

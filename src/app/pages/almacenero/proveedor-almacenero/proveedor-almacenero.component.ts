@@ -32,7 +32,7 @@ export class ProveedorAlmaceneroComponent implements OnInit, AfterViewInit {
 
   readonly dialog = inject(MatDialog);
   readonly cd = inject(ChangeDetectorRef);
-  
+
   proveedores: Proveedor[] = [];
   pageSize = 8;
   pageIndex = 0;
@@ -41,7 +41,7 @@ export class ProveedorAlmaceneroComponent implements OnInit, AfterViewInit {
   isLoading = false;
   searchTerm: string = '';
 
-  constructor(private proveedorService: ProveedorService) {}
+  constructor(private proveedorService: ProveedorService) { }
 
   ngOnInit(): void {
     this.obtenerSuppliers();
@@ -146,15 +146,23 @@ export class ProveedorAlmaceneroComponent implements OnInit, AfterViewInit {
   }
 
   view(proveedores: Proveedor) {
-      const dialogRef = this.dialog.open(ViewSupplierComponent, {
-        width: '600px',
-        maxWidth: 'none',
-        panelClass: 'custom-dialog-container',
-        data: proveedores
-      });
-  
-      dialogRef.afterClosed().subscribe(result => {
-        console.log(`Dialog result: ${result}`);
-      })
+    const dialogRef = this.dialog.open(ViewSupplierComponent, {
+      width: '600px',
+      maxWidth: 'none',
+      panelClass: 'custom-dialog-container',
+      data: proveedores
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    })
+  }
+
+  onSearchTermChange(term: string) {
+    this.searchTerm = term.trim();
+
+    if (!this.searchTerm) {
+      this.obtenerSuppliers();
     }
+  }
 }
