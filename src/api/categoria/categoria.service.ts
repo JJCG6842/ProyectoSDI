@@ -7,13 +7,13 @@ export class CategoriaService {
 
   async findAll() {
     return this.prisma.category.findMany({
-      include: {subcategories: true,products: true,},
+      include: {subcategories: true,products: true,marcas:true},
     });
   }
 
   async findOne(id: string) {
     const category = await this.prisma.category.findUnique({ where: { id }, 
-    include: { subcategories: true, products: true,} });
+    include: { subcategories: true, products: true,marcas:true} });
     if (!category) throw new NotFoundException('No hay categoria');
     return category;
   }
@@ -21,7 +21,7 @@ export class CategoriaService {
   async findName(name: string) {
     const category = await this.prisma.category.findFirst({
       where: { name: { equals: name, mode: 'insensitive'}},
-      include: {subcategories: true, products: true},
+      include: {subcategories: true, products: true,marcas:true},
     });
 
     if (!category) {
@@ -34,7 +34,7 @@ export class CategoriaService {
       where: {
         name: { contains: term, mode: 'insensitive' },
       },
-      include: { subcategories: true, products: true },
+      include: { subcategories: true, products: true, marcas:true },
     });
 
     if (categories.length === 0) {

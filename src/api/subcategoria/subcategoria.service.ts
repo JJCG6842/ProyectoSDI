@@ -5,10 +5,17 @@ import { PrismaClient } from '@prisma/client';
 export class SubcategoriaService {
     private prisma = new PrismaClient();
 
-    async findAll(){
+    async findAll() {
         return this.prisma.subcategory.findMany({
-            include: {category:{select:{id: true, name: true,}}}
-        })
+            include: {
+                categories: {
+                select: {
+                    id: true,
+                    name: true
+                }
+                }
+            }
+        });
     }
 
     async findName(name: string){
@@ -25,16 +32,26 @@ export class SubcategoriaService {
 
     async findByCategoryId(categoryId: string) {
         return this.prisma.subcategory.findMany({
-            where: { categoryId },
-        });
+        where: {
+            categories: {
+                some: {
+                    id: categoryId
+                }
+            }
+        },
+
+    include: {
+      categories: true
     }
+  });
+}
 
     async searchByName(term:string){
         const subcategory = await this.prisma.subcategory.findMany({
             where: {
                 name:{ contains: term, mode:'insensitive'},
             },
-            include:{category: {select: {id:true, name:true},},products:true},
+            include:{categories: {select: {id:true, name:true},},products:true},
         });
 
         if(subcategory.length === 0){
@@ -44,39 +61,85 @@ export class SubcategoriaService {
         return subcategory;
     }
 
-    async findOne(id: string){
-        const subcategory = await this.prisma.subcategory.findUnique({where:{id},
-            include: {category:{select:{id: true, name: true}}} 
+    async findOne(id: string) {
+  const subcategory = await this.prisma.subcategory.findUnique({
+    where: { id },
+
+        include: {
+            categories: {
+                select: {
+                    id: true,
+                    name: true
+                }
+            }
+        }
+    });
+
+  if (!subcategory) {
+    throw new NotFoundException('Subcategory not found');
+  }
+
+  return subcategory;
+}
+
+    async create(data:{ name:string; description: string; categoryIds: string[];}){
+        const categories = await this.prisma.category.findMany({
+            where: { id: { in:data.categoryIds}},
         });
 
-        if (!subcategory) {throw new NotFoundException('Subcategory not found');}
-        return subcategory;
-    }
-
-    async create(data:{ name:string; description: string; categoryId: string}){
-        const category = await this.prisma.category.findUnique({
-            where: { id: data.categoryId},
-        });
-
-        if (!category){
-            throw new NotFoundException('No hay categoria')
+        if (categories.length !== data.categoryIds.length) {
+            throw new NotFoundException('Una o más categorías no existen');
         }
 
-        return this.prisma.subcategory.create({data});
-    }
+        return this.prisma.subcategory.create({
+            data: {
+                name: data.name,
+                description: data.description,
 
-    async update(id: string, data: { name?: string; description?: string; categoryId?: string }){
+            categories: {
+                connect: data.categoryIds.map(id => ({ id }))
+            }
+        },
+
+        include: {
+            categories: true
+        }
+  });
+}
+
+    async update(id: string, data: { name?: string; description?: string; categoryIds?: string[] }){
         await this.findOne(id);
 
-        if (data.categoryId){
-            const category = await this.prisma.category.findUnique({
-                where: {id: data.categoryId},
+        if (data.categoryIds){
+            const categories = await this.prisma.category.findMany({
+                where: {id: {in: data.categoryIds}}
             });
-            if(!category) throw new NotFoundException('No hay categoria');
+
+            if (categories.length !== data.categoryIds.length) {
+                throw new NotFoundException('Una o más categorías no existen');
+            }
         }
 
-        return this.prisma.subcategory.update({where:{id},data});
-    }
+        return this.prisma.subcategory.update({
+            where: { id },
+
+            data: {
+                name: data.name,
+                description: data.description,
+
+                ...(data.categoryIds && {
+                    categories: {
+                    set: [],
+                    connect: data.categoryIds.map(id => ({ id }))
+                }
+            })
+        },
+
+        include: {
+            categories: true
+        }
+    });;
+}
 
     async delete(id: string){
         await this.findOne(id);
@@ -89,7 +152,7 @@ export class SubcategoriaService {
                 name: { contains: term, mode: 'insensitive' }, 
             },
             include: {
-                category: { select: { id: true, name: true } }, 
+                categories: { select: { id: true, name: true } }, 
                 products: true, 
             },
   });

@@ -12,15 +12,12 @@ export class MarcaController {
   }
 
   @Post()
-  async create(@Body() data: Prisma.MarcaCreateInput) {
+  async create(@Body() data: {name: string;description: string;categoryIds: string[]}) {
     return this.marcaService.create(data);
   }
 
   @Put(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() data: Prisma.MarcaUpdateInput,
-  ) {
+  async update(@Param('id') id: string,@Body() data: {name?: string;description?: string;categoryIds?: string[];}) {
     return this.marcaService.update(id, data);
   }
 

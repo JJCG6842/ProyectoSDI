@@ -11,6 +11,7 @@ export class EntradaService {
         detalles: {
           include: {
             product: { select: { id: true, name: true, categoryId: true } },
+            serialNumbers: true
           },
         },
         supplier: { select: { id: true, name: true, phone: true } },
@@ -26,6 +27,7 @@ export class EntradaService {
         detalles: {
           include: {
             product: { select: { id: true, name: true, categoryId: true } },
+            serialNumbers: true
           },
         },
         supplier: { select: { id: true, name: true } },
@@ -38,56 +40,102 @@ export class EntradaService {
   }
 
   async createEntrada(data: {
-    supplierId?: string;
-    productos: { productId: string; quantity: number; price: number }[];
-  }) {
-    if (!data.productos?.length) {
-      throw new BadRequestException('Debe enviar al menos un producto');
+  supplierId?: string;
+  productos: { productId: string; quantity: number; price: number; serialNumbers?: string[]}[];
+}) {
+  if (!data.productos?.length) {
+    throw new BadRequestException('Debe enviar al menos un producto');
+  }
+
+  const productIds = data.productos.map(p => p.productId);
+
+  const productosDB = await this.prisma.products.findMany({
+    where: { id: { in: productIds } },
+  });
+
+  if (productosDB.length !== data.productos.length) {
+    throw new NotFoundException('Uno o más productos no existen');
+  }
+
+  for (const p of data.productos) {
+
+    if (p.serialNumbers && !Array.isArray(p.serialNumbers)) {
+      throw new BadRequestException(
+        `Los números de serie de ${p.productId} no tienen formato válido`
+      );
     }
 
-    const productIds = data.productos.map(p => p.productId);
-
-    const productosDB = await this.prisma.products.findMany({
-      where: { id: { in: productIds } },
-    });
-
-    if (productosDB.length !== data.productos.length) {
-      throw new NotFoundException('Uno o más productos no existen');
+    if (p.quantity > 1 && (!p.serialNumbers || p.serialNumbers.length === 0)) {
+      throw new BadRequestException(
+        `Debe enviar números de serie para el producto ${p.productId}`
+      );
     }
 
-    const entrada = await this.prisma.$transaction(async prisma => {
-      const entradaCreada = await prisma.entrance.create({
-        data: {
-          supplierId: data.supplierId ?? null,
-          detalles: {
-            create: data.productos.map(p => ({
-              productId: p.productId,
-              quantity: p.quantity,
-              price: p.price, 
-              total: p.quantity * p.price,
-            })),
-          },
-        },
-        include: { detalles: true },
+    if (p.serialNumbers && p.serialNumbers.length !== p.quantity) {
+      throw new BadRequestException(
+        `La cantidad (${p.quantity}) no coincide con los números de serie enviados (${p.serialNumbers.length}) para el producto ${p.productId}`
+      );
+    }
+
+    if (p.serialNumbers) {
+      const set = new Set(p.serialNumbers);
+      if (set.size !== p.serialNumbers.length) {
+        throw new BadRequestException(
+          `Hay números de serie duplicados para el producto ${p.productId}`
+        );
+      }
+    }
+
+    if (p.serialNumbers && p.serialNumbers.length) {
+      const existentes = await this.prisma.serialNumber.findMany({
+        where: { serial: { in: p.serialNumbers } },
+        select: { serial: true }
       });
 
-      for (const p of data.productos) {
-        const prodActual = productosDB.find(x => x.id === p.productId)!;
-
-        await prisma.products.update({
-          where: { id: p.productId },
-          data: {
-            quantity: prodActual.quantity + p.quantity,
-            status: 'Instock',
-          },
-        });
+      if (existentes.length > 0) {
+        throw new BadRequestException(
+          `Los siguientes números de serie ya existen: ${existentes.map(e => e.serial).join(', ')}`
+        );
       }
+    }
+  }
 
-      return entradaCreada;
+  const entrada = await this.prisma.$transaction(async prisma => {
+    const entradaCreada = await prisma.entrance.create({
+      data: {
+        supplierId: data.supplierId ?? null,
+        detalles: {
+          create: data.productos.map(p => ({
+            productId: p.productId,
+            quantity: p.quantity,
+            price: p.price,
+            total: p.quantity * p.price,
+            serialNumbers: p.serialNumbers?.length
+              ? { create: p.serialNumbers.map(sn => ({ serial: sn })) }
+              : undefined,
+          })),
+        },
+      },
+      include: { detalles: true },
     });
 
-    return entrada;
-  }
+    for (const p of data.productos) {
+      const prodActual = productosDB.find(x => x.id === p.productId)!;
+
+      await prisma.products.update({
+        where: { id: p.productId },
+        data: {
+          quantity: prodActual.quantity + p.quantity,
+          status: 'Instock',
+        },
+      });
+    }
+
+    return entradaCreada;
+  });
+
+  return entrada;
+}
 
   async deleteEntrada(id: string) {
     const entrada = await this.prisma.entrance.findUnique({ where: { id } });

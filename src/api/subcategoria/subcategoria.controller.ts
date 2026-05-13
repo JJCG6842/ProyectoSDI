@@ -32,12 +32,13 @@ export class SubcategoriaController {
     }
 
     @Post()
-    create(@Body() body:{name: string; description: string; categoryId: string}){
+    create(@Body() body:{name: string;description: string;categoryIds: string[]}) {
         return this.subcategoriaservice.create(body);
     }
 
     @Put(':id')
-    update(@Param('id') id:string, @Body() body:{name?: string; description?: string; categoryId?: string}){
+    update(@Param('id') id:string,@Body() body:{name?: string;description?: string;categoryIds?: string[]}
+    ) {
         return this.subcategoriaservice.update(id, body);
     }
 
