@@ -19,6 +19,7 @@ export interface Entrada {
     quantity: number;
     price: number;
     total?: number;
+    serialNumbers?: string[];
   }[];
 }
 
@@ -29,4 +30,9 @@ export interface EntradaDetalle {
   price: number;
   total: number;
   product: Producto;
+
+  serialNumbers?: {          
+    id: string;
+    serial: string;
+  }[];
 }

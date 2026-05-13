@@ -31,7 +31,7 @@ export class AddSubcategoriaComponent implements OnInit{
     this.formSubcategory = this.fb.group({
       name:['', Validators.required],
       description:['', Validators.required],
-      category: ['', Validators.required],
+      categories: [[], Validators.required],
     });
   }
 
@@ -58,8 +58,8 @@ export class AddSubcategoriaComponent implements OnInit{
     return this.formSubcategory.get('description') as FormControl;
   }
 
-  get category(){
-    return this.formSubcategory.get('category') as FormControl;
+  get categories(){
+    return this.formSubcategory.get('categories') as FormControl;
   }
 
   process(){
@@ -71,17 +71,21 @@ export class AddSubcategoriaComponent implements OnInit{
     const data = {
       name: this.name.value,
       description: this.description.value,
-      categoryId: this.category.value
+      categoryIds: this.categories.value
     };
 
     this.subcategoriaService.crearSubcategoria(data).subscribe({
-      next: () => {
-        this.dialogRef.close(true);
-        this.dialog.open(CreateSubcategorySuccessComponent);
-      },
-      error: (fail) => {
-        console.error('Error al crear subcategoria', fail);
-      },
-    });
+    next: () => {
+      this.dialog.open(CreateSubcategorySuccessComponent, {
+        width: '400px',
+        disableClose: true
+      });
+
+      this.dialogRef.close(true);
+    },
+    error: (fail) => {
+      console.error('Error al crear subcategoria', fail);
+    }
+  });
   }
 }

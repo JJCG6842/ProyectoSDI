@@ -20,12 +20,12 @@ export class MarcaService {
     return this.http.get<Marca>(`${this.apiUrl}/${id}`);
   }
 
-  crearMarca(data: { name: string; description: string; categoryId: string }): Observable<Marca> {
-    return this.http.post<Marca>(this.apiUrl, data);
+  crearMarca(data: {name: string;description: string;categoryIds: string[];}): Observable<Marca>{
+    return this.http.post<Marca>(this.apiUrl,data);
   }
 
-  editarMarca(id: string, data: { name?: string; description?: string; categoryId?: string }): Observable<Marca> {
-    return this.http.put<Marca>(`${this.apiUrl}/${id}`, data);
+  editarMarca(id: string, data: {name?: string;description?: string;categoryIds?: string[];}): Observable<Marca>{
+    return this.http.put<Marca>(`${this.apiUrl}/${id}`,data);
   }
 
   eliminarMarca(id: string): Observable<void> {

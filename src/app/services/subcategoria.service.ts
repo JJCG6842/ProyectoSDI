@@ -35,12 +35,12 @@ export class SubcategoriaService {
     return this.http.get<Subcategoria[]>(`${this.apiUrl}/categoria/nombre/${categoryName}`);
   }
 
-  crearSubcategoria(subcategoria: { name: string; description: string; categoryId: string }): Observable<Subcategoria>{
-    return this.http.post<Subcategoria>(this.apiUrl, subcategoria);
+  crearSubcategoria(subcategoria: {name: string;description: string;categoryIds: string[];}): Observable<Subcategoria>{
+    return this.http.post<Subcategoria>(this.apiUrl,subcategoria);
   }
 
-  actualizarSubcategoria(id: string, data: {name?: string; description?: string; categoryId?: string}): Observable<Subcategoria> {
-    return this.http.put<Subcategoria>(`${this.apiUrl}/${id}`, data);
+  actualizarSubcategoria(id: string, data: {name?: string;description?: string;categoryIds?: string[];}): Observable<Subcategoria>{
+    return this.http.put<Subcategoria>(`${this.apiUrl}/${id}`,data);
   }
 
   eliminarSubcategoria(id: string): Observable<Subcategoria>{

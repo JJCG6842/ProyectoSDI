@@ -16,9 +16,9 @@ import { EntradaService } from '../../../services/entrada.service';
 import { AddEntradaComponent } from '../../../shared/modals-almacenero/add-entrada/add-entrada.component';
 import { AddEntradaSuccessComponent } from '../../../shared/modals-almacenero/add-entrada/modals-entrada/add-entrada-success/add-entrada-success.component';
 import { ProductNullComponent } from '../../../shared/modals-almacenero/add-entrada/modals-entrada/product-null/product-null.component';
-import { ClienteNullComponent } from '../../../shared/modals-almacenero/add-entrada/modals-entrada/cliente-null/cliente-null.component';
 import { ProveedorNullComponent } from '../../../shared/modals-almacenero/add-entrada/modals-entrada/proveedor-null/proveedor-null.component';
-import { TipoEntradaNullComponent } from '../../../shared/modals-almacenero/add-entrada/modals-entrada/tipo-entrada-null/tipo-entrada-null.component';
+import { shareReplay } from 'rxjs';
+
 
 @Component({
   selector: 'app-entrada-panel',
@@ -114,10 +114,10 @@ export class EntradaPanelComponent implements OnInit, AfterViewInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        const { productId, productName, quantity, price, category } = result;
+        const { productId, productName, quantity, price, category,serialNumbers } = result;
         const total = quantity * price;
 
-        this.entradasRegistradas.push({ productId, productName, quantity, price, total, category });
+        this.entradasRegistradas.push({ productId, productName, quantity, price, total, category, serialNumbers });
 
         this.pageIndex = 0;
         this.aplicarPaginacion();
@@ -154,7 +154,8 @@ export class EntradaPanelComponent implements OnInit, AfterViewInit {
   const productos = this.entradasRegistradas.map(p => ({
     productId: p.productId,
     quantity: p.quantity,
-    price: p.price
+    price: p.price,
+    serialNumbers: p.serialNumbers
   }));
 
   const payload = {

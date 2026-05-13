@@ -29,9 +29,9 @@
       <thead>
         <tr>
           <th>N°</th>
-          <th>Categoría</th>
           <th>Producto</th>
           <th>Cantidad</th>
+          <th>Nro° de serie registrados</th>
           <th>Precio</th>
           <th>Total</th>
         </tr>
@@ -39,9 +39,20 @@
       <tbody>
         <tr *ngFor="let d of detallesPaginados; let i = index" style="text-align: center;">
           <td>{{ (pageIndex * pageSize) + i + 1 }}</td>
-          <td>{{getCategoriaName(d.product.categoryId)}}</td>
           <td>{{d.product.name}}</td>
           <td>{{d.quantity}}</td>
+          <td>
+            <div style="white-space: pre-line;">
+              <ng-container *ngIf="d.serialNumbers?.length; else noSerie">
+                <span *ngFor="let sn of d.serialNumbers; let i = index">
+                  {{ sn.serial }}<span *ngIf="i < d.serialNumbers.length - 1">, </span>
+                  <br *ngIf="(i + 1) % 5 === 0">
+                </span>
+              </ng-container>
+
+              <ng-template #noSerie>---</ng-template>
+            </div>
+          </td>
           <td>S/ {{d.price}}</td>
           <td>S/ {{d.total}}</td>
         </tr>

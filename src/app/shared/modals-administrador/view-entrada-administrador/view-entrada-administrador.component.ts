@@ -141,16 +141,18 @@ export class ViewEntradaAdministradorComponent implements OnInit {
 
     const rows = this.entrada.detalles.map((d, index) => [
       index + 1,
-      this.getCategoriaName(d.product.categoryId),
       d.product.name,
       d.quantity,
+      d.serialNumbers?.length
+        ? d.serialNumbers.map(sn => sn.serial).join(', ')
+        : '---',
       `S/. ${d.price}`,
       `S/. ${d.total}`
     ]);
 
     autoTable(doc, {
       startY: 55,
-      head: [['#', 'Categoría', 'Producto', 'Cantidad', 'Precio', 'Total']],
+      head: [['#', 'Producto', 'Cantidad', 'N° Serie', 'Precio', 'Total']],
       body: rows,
       theme: 'grid',
       styles: { fontSize: 10 },
@@ -174,12 +176,12 @@ export class ViewEntradaAdministradorComponent implements OnInit {
     const sheet = workbook.addWorksheet('Entrada');
 
     sheet.columns = [
-      { header: '#', key: 'index', width: 38 },
-      { header: 'Categoría', key: 'categoria', width: 20 },
-      { header: 'Producto', key: 'producto', width: 65 },
+      { header: '#', key: 'index', width: 10 },
+      { header: 'Producto', key: 'producto', width: 60 },
       { header: 'Cantidad', key: 'cantidad', width: 18 },
+      { header: 'N° Serie', key: 'serie', width: 50 },
       { header: 'Precio', key: 'precio', width: 20 },
-      { header: 'Total', key: 'total', width: 30 },
+      { header: 'Total', key: 'total', width: 25 },
     ];
 
     const titleRow = sheet.addRow(['Detalle de Entrada']);
@@ -201,7 +203,10 @@ export class ViewEntradaAdministradorComponent implements OnInit {
     });
 
     this.entrada.detalles.forEach((d, i) => {
-      const row = sheet.addRow([i + 1, this.getCategoriaName(d.product.categoryId), d.product.name, d.quantity, d.price, d.total]);
+      const row = sheet.addRow([i + 1, this.getCategoriaName(d.product.categoryId), d.product.name, d.quantity, d.serialNumbers?.length
+        ? d.serialNumbers.map(sn => sn.serial).join(', ')
+        : '---',
+      d.price, d.total]);
       row.eachCell((cell) => {
         cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
         cell.alignment = { horizontal: 'center' };

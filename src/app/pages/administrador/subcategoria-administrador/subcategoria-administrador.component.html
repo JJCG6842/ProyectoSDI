@@ -51,7 +51,11 @@
              <th>{{ i + 1 + (paginator.pageIndex * paginator.pageSize) }}</th>
              <th>{{sub.name}}</th>
              <th>{{sub.description}}</th>
-             <th>{{sub.category.name}}</th>
+             <th>
+                <span *ngFor="let cat of sub.categories; let last = last">
+                  {{ cat.name }}<span *ngIf="!last">, </span>
+                </span>
+            </th>
              <th>{{sub.createAt | date:'dd-MM-yyyy'}}</th>
            </tr>
          </tbody>

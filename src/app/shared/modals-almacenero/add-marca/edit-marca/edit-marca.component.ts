@@ -32,7 +32,7 @@ formMarca!: FormGroup;
     this.formMarca = this.fb.group({
       name: ['',Validators.required],
       description:['',Validators.required],
-      category: ['', Validators.required],
+      categories: [[], Validators.required],
     });
   }
 
@@ -43,7 +43,7 @@ formMarca!: FormGroup;
       this.formMarca.patchValue({
         name: this.data.name,
         description: this.data.description,
-        category: this.data.category.id
+        categories: this.data.categories?.map(cat => cat.id) || []
       });
     }
   }
@@ -67,8 +67,8 @@ formMarca!: FormGroup;
     return this.formMarca.get('description') as FormControl;
   }
 
-  get category(){
-    return this.formMarca.get('category') as FormControl;
+  get categories(){
+    return this.formMarca.get('categories') as FormControl;
   }
 
   editar(){
@@ -77,11 +77,12 @@ formMarca!: FormGroup;
     const dataToSend = {
       name: this.name.value,
       description: this.description.value,
-      categoryId: this.category.value
+      categoryIds: this.categories.value
     };
 
 
-    this.marcaService.editarMarca(this.data.id, dataToSend).subscribe({
+    this.marcaService.editarMarca(this.data.id!, dataToSend).
+    subscribe({
       next:() => {
         this.dialog.open(EditMarcaSuccessComponent,{
           width:'400px',disableClose: true});

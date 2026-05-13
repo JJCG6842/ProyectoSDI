@@ -104,7 +104,7 @@ export class SubcategoriaAlmaceneroComponent implements OnInit{
     if (!this.selectCategoryId) {
       this.subcategoriasFiltrada = this.subcategorias;
     } else {
-      this.subcategoriasFiltrada = this.subcategorias.filter(s => s.category.id === this.selectCategoryId);
+      this.subcategoriasFiltrada = this.subcategorias.filter(s => s.categories?.some(cat => cat.id === this.selectCategoryId));
     }
 
     this.dataSource = new MatTableDataSource(this.subcategoriasFiltrada);

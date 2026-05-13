@@ -33,7 +33,7 @@ export class EditSubcategoryComponent implements OnInit{
     this.formSubcategory = this.fb.group({
       name:['', Validators.required],
       description:['', Validators.required],
-      category: ['', Validators.required],
+      categories: [[], Validators.required],
     });
   }
 
@@ -44,7 +44,7 @@ export class EditSubcategoryComponent implements OnInit{
       this.formSubcategory.patchValue({
         name: this.data.name,
         description: this.data.description,
-        category: this.data.category.id
+        categories: this.data.categories?.map(cat => cat.id) || []
       });
     }
   }
@@ -68,8 +68,8 @@ export class EditSubcategoryComponent implements OnInit{
     return this.formSubcategory.get('description') as FormControl;
   }
 
-  get category(){
-    return this.formSubcategory.get('category') as FormControl;
+  get categories(){
+    return this.formSubcategory.get('categories') as FormControl;
   }
 
   editar(){
@@ -78,20 +78,22 @@ export class EditSubcategoryComponent implements OnInit{
     const dataToSend = {
       name: this.name.value,
       description: this.description.value,
-      categoryId: this.category.value
+      categoryIds: this.categories.value
     };
 
     
-
-    this.subcategoriaService.actualizarSubcategoria(this.data.id, dataToSend).subscribe({
-      next:() => {
-        this.dialog.open(EditSubcategorySuccessComponent,{
-                width:'400px',disableClose: true,});
+    this.subcategoriaService.actualizarSubcategoria(this.data.id!, dataToSend)
+    .subscribe({
+      next: () => {
         this.dialogRef.close(true);
+        this.dialog.open(EditSubcategorySuccessComponent, {
+          width: '400px',
+          disableClose: true
+        });
       },
-      error: (erroneo) => {
-        console.error('error al editar la subcategoria', erroneo);
+      error: (err) => {
+        console.error(err);
       }
-    })
+    });
   }
 }

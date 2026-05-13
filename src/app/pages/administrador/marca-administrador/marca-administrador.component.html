@@ -50,7 +50,11 @@
         <th>{{i + 1+ (paginator.pageIndex * paginator.pageSize)}}</th>
         <th>{{marca.name}}</th>
         <th>{{marca.description}}</th>
-        <th>{{marca.category.name}}</th>
+        <th>
+          <span *ngFor="let cat of marca.categories; let last = last">
+            {{ cat.name }}<span *ngIf="!last">, </span>
+          </span>
+        </th>
         <th>{{marca.createAt | date:'dd-MM-yyyy'}}</th>
       </tr>
     </tbody>

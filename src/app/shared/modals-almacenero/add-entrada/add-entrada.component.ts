@@ -1,15 +1,18 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, ChangeDetectorRef, signal } from '@angular/core';
 import { ProductoService } from '../../../services/producto.service';
 import { ProveedorService } from '../../../services/proveedor.service';
 import { EntradaService } from '../../../services/entrada.service';
 import { Producto } from '../../../interface/producto.interface';
+import {LiveAnnouncer} from '@angular/cdk/a11y';
 import { Proveedor } from '../../../interface/proveedor.interface';
 import { AddEntradaSuccessComponent } from './modals-entrada/add-entrada-success/add-entrada-success.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule, MatInput } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import {MatChipInputEvent, MatChipsModule} from '@angular/material/chips';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TextFieldModule } from '@angular/cdk/text-field';
@@ -17,7 +20,7 @@ import { TextFieldModule } from '@angular/cdk/text-field';
 @Component({
   selector: 'app-add-entrada',
   imports: [MatDialogModule, MatFormFieldModule, MatSelectModule, MatInput, MatButtonModule, TextFieldModule, CommonModule,
-    FormsModule, ReactiveFormsModule],
+    FormsModule, ReactiveFormsModule,MatChipsModule,MatIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './add-entrada.component.html',
   styleUrl: './add-entrada.component.scss'
@@ -45,7 +48,8 @@ export class AddEntradaComponent implements OnInit {
       marca: [''],
       product: ['', Validators.required],
       quantity: [1, [Validators.required, Validators.min(1)]],
-      price: [0,[Validators.required, Validators.min(1)] ]
+      price: [0,[Validators.required, Validators.min(1)] ],
+      serialNumbers: [[]]
     });
   }
 
@@ -107,6 +111,35 @@ export class AddEntradaComponent implements OnInit {
     this.cd.detectChanges();
   }
 
+  addSerial(event: MatChipInputEvent): void {
+  const value = (event.value || '').trim();
+  if (value) {
+    const current = this.formEntrance.get('serialNumbers')?.value || [];
+    this.formEntrance.get('serialNumbers')?.setValue([...current, value]);
+  }
+  event.chipInput!.clear();
+}
+
+validateSerialNumbers(group: FormGroup) {
+  const quantity = group.get('quantity')?.value;
+  const serials: string[] = group.get('serialNumbers')?.value || [];
+
+  if (!quantity) return null;
+  if (quantity > 1 && serials.length === 0) {
+    return { serialRequired: true };
+  }
+  if (serials.length !== quantity) {
+    return { serialCountMismatch: true };
+  }
+
+  return null;
+}
+
+removeSerial(serial: string): void {
+  const current = this.formEntrance.get('serialNumbers')?.value || [];
+  this.formEntrance.get('serialNumbers')?.setValue(current.filter((s: string) => s !== serial));
+}
+
   get product() { return this.formEntrance.get('product') as FormControl; }
   get quantity() { return this.formEntrance.get('quantity') as FormControl; }
   get price() {return this.formEntrance.get('price') as FormControl}
@@ -127,6 +160,7 @@ export class AddEntradaComponent implements OnInit {
       category: producto.category?.name,
       quantity: formValue.quantity,
       price: formValue.price,
+      serialNumbers: formValue.serialNumbers,
       total: formValue.quantity * formValue.price
     };
 

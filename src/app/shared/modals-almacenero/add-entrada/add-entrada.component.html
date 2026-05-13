@@ -51,6 +51,36 @@
             <span *ngIf="quantity.errors?.['min']">Debe haber almenos un producto</span>
         </div>
 
+        <h3>Nroº de serie</h3>
+
+        <mat-form-field appearance="fill" class="example-chip-list">
+            <mat-label>Agregar nro. de serie</mat-label>
+
+            <mat-chip-grid #chipGrid aria-label="Números de serie">
+
+                <mat-chip-row *ngFor="let serial of formEntrance.get('serialNumbers')?.value"
+                    (removed)="removeSerial(serial)">
+                    {{serial}}
+                    <button matChipRemove>
+                        <mat-icon>cancel</mat-icon>
+                    </button>
+                </mat-chip-row>
+
+            </mat-chip-grid>
+
+            <input placeholder="Escriba y presione Enter" [matChipInputFor]="chipGrid"
+                [matChipInputSeparatorKeyCodes]="[13, 188]" (matChipInputTokenEnd)="addSerial($event)" />
+
+        </mat-form-field>
+        <div class="error" *ngIf="formEntrance.errors?.['serialRequired'] && formEntrance.touched">
+            Debe ingresar números de serie para la cantidad indicada.
+        </div>
+
+        <div class="error" *ngIf="formEntrance.errors?.['serialCountMismatch'] && formEntrance.touched">
+            La cantidad de números de serie no coincide con la cantidad ingresada.
+        </div>
+
+
         <h3>Precio unitario:</h3>
         <mat-form-field appearance="fill">
             <mat-label>Precio</mat-label>

@@ -24,19 +24,23 @@
     <h3>Categoria:</h3>
     <mat-form-field appearance="fill">
         <mat-label>Categorias:</mat-label>
-        <mat-select formControlName="category">
-            <mat-option *ngFor="let cat of categorias" [value]="cat.id">
-              {{cat.name}}
-            </mat-option>
+        <mat-select formControlName="categories" multiple>
+        <mat-select-trigger>
+          {{ categories.value?.length }} categorías seleccionadas
+        </mat-select-trigger>
+
+        <mat-option *ngFor="let cat of categorias" [value]="cat.id">
+            {{ cat.name }}
+        </mat-option>
         </mat-select>
     </mat-form-field>
-    <div [hidden]="category.valid || category.pristine" class="error">
-            <span *ngIf="category.errors?.['required']">El campo es requerido</span>
+    <div [hidden]="categories.valid || categories.pristine" class="error">
+          <span *ngIf="categories.errors?.['required']">El campo es requerido</span>
     </div>
   </form>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-    <button mat-flat-button [mat-dialog-close]="true" style="background-color: blue;" (click)="create()">Agregar</button>
+    <button mat-flat-button style="background-color: blue;" (click)="create()">Agregar</button>
     <button mat-flat-button mat-dialog-close style="background-color: red;">Cancelar</button>
 </mat-dialog-actions>

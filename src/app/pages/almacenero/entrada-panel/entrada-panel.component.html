@@ -39,9 +39,9 @@
     <thead>
       <tr>
         <th>Nro°</th>
-        <th>Categoria</th>
         <th>Producto</th>
         <th>Cantidad</th>
+        <th>Nro° de serie</th>
         <th>Precio unitario</th>
         <th>Monto total</th>
         <th>Acciones</th>
@@ -50,9 +50,11 @@
     <tbody>
       <tr *ngFor="let entrada of paginadasEntradas; let i = index">
         <th>{{ (pageIndex * pageSize) + i + 1 }}</th>
-        <th>{{entrada.category}}</th>
         <th>{{entrada.productName}}</th>
         <th>{{entrada.quantity}}</th>
+        <th><span *ngIf="entrada.serialNumbers?.length > 0">{{ entrada.serialNumbers.join(', ') }}</span>
+            <span *ngIf="!entrada.serialNumbers?.length">---</span>
+        </th>
         <th>S/.{{entrada.price}}</th>
         <th>S/.{{entrada.total}}</th>
         <th>

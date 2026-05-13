@@ -1,11 +1,16 @@
 export interface Marca {
-    id: string;
+    id?: string;
+
     name: string;
     description: string;
+
+    categoryIds?: string[];
+
     createAt?: string;
     updateAt?: string;
-    category: {
-        id:string;
-        name:string;
-    };
+
+    categories?: {
+        id: string;
+        name: string;
+    }[];
 }

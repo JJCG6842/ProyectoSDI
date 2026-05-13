@@ -88,8 +88,8 @@ export class MarcaAdministradorComponent implements OnInit{
       this.marcaFiltrada = this.marcas;
     } else {
       this.marcaFiltrada = this.marcas.filter(
-        s => s.category.id === this.selectCategoryId
-      );
+  s => s.categories?.some(cat => cat.id === this.selectCategoryId)
+);
     }
     if (this.paginator) {
           this.paginator.firstPage();

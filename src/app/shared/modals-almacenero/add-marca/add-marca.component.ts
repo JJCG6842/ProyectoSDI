@@ -31,7 +31,7 @@ export class AddMarcaComponent implements OnInit{
     this.formMarca = this.fb.group({
       name: ['',Validators.required],
       description:['',Validators.required],
-      category: ['', Validators.required],
+      categories: [[], Validators.required],
     });
   }
 
@@ -58,11 +58,9 @@ export class AddMarcaComponent implements OnInit{
     return this.formMarca.get('description') as FormControl;
   }
 
-  get category(){
-    return this.formMarca.get('category') as FormControl;
+  get categories(){
+    return this.formMarca.get('categories') as FormControl;
   }
-
-  
 
   create(){
     if(this.formMarca.invalid){
@@ -72,18 +70,22 @@ export class AddMarcaComponent implements OnInit{
     const data = {
       name: this.name.value,
       description: this.description.value,
-      categoryId: this.category.value
+      categoryIds: this.categories.value
     };
 
     this.marcaService.crearMarca(data).subscribe({
-      next: () => {
-        this.dialogRef.close(true);
-        this.dialog.open(AddMarcaSuccessComponent);
-      },
-      error: (fail) => {
-        console.error('Error al crear la marca', fail);
-      },
-    })
+    next: () => {
+      this.dialog.open(AddMarcaSuccessComponent, {
+        width: '400px',
+        disableClose: true
+      });
+
+      this.dialogRef.close(true);
+    },
+    error: (fail) => {
+      console.error('Error al crear la marca', fail);
+    }
+  });
   }
 
 }
