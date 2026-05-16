@@ -42,8 +42,6 @@
         <th>Producto</th>
         <th>Cantidad</th>
         <th>Nro° de serie</th>
-        <th>Precio unitario</th>
-        <th>Monto total</th>
         <th>Acciones</th>
       </tr>
     </thead>
@@ -55,8 +53,6 @@
         <th><span *ngIf="entrada.serialNumbers?.length > 0">{{ entrada.serialNumbers.join(', ') }}</span>
             <span *ngIf="!entrada.serialNumbers?.length">---</span>
         </th>
-        <th>S/.{{entrada.price}}</th>
-        <th>S/.{{entrada.total}}</th>
         <th>
           <button class="delete" (click)="eliminarEntrada(i)">
             <mat-icon aria-hidden="false" fontIcon="remove"></mat-icon>
@@ -72,12 +68,6 @@
 <br><br>
 
 <div style="display: flex; gap: 30px;">
-
-  <div>
-    <h2>Monto total:</h2>
-    <h3>S/.{{getMontoTotal()}}</h3>
-  </div>
-
 
   <br>
   <div>

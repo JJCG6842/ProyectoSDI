@@ -50,11 +50,6 @@ export class InicioAlmaceneroComponent implements OnInit{
   next: (entradas: Entrada[]) => {
     this.totalEntradas = entradas.length;
 
-    this.totalMontoEntradas = entradas.reduce((acc, entrada) => {
-      const totalEntrada = entrada.detalles.reduce((sum, d) => sum + d.total, 0);
-      return acc + totalEntrada;
-    }, 0);
-
   },
   error: (err) => console.error('Error al cargar entradas:', err)
 });

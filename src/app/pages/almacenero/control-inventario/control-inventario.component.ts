@@ -6,6 +6,8 @@ import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Producto } from '../../../interface/producto.interface';
 import { ProductoService } from '../../../services/producto.service';
+import { Almacen } from '../../../interface/almacen.interface';
+import { AlmacenService } from '../../../services/almacen.service';
 import { Categoria } from '../../../interface/categoria.interface';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { CategoriaService } from '../../../services/categoria.service';
@@ -14,6 +16,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MarcaService } from '../../../services/marca.service';
 import { Router } from '@angular/router';
 import { ViewProductInventarioComponent } from '../../../shared/view-product-inventario/view-product-inventario.component';
+import { ViewAlmacenComponent } from '../../../shared/modals-almacenero/view-almacen/view-almacen.component';
+import { EditAlmacenComponent } from '../../../shared/modals-almacenero/edit-almacen/edit-almacen.component';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 
 @Component({
@@ -36,17 +40,19 @@ export class ControlInventarioComponent implements OnInit {
   selectMarcaId: string = '';
   categorias: Categoria[] = [];
   productos: Producto[] = [];
+  almacen!: Almacen;
   marcas: Marca[] = [];
   selectStock: 'Instock' | 'Outstock' | '' = '';
 
   constructor(private router: Router, private categoriaService: CategoriaService, private marcaService: MarcaService,
-    private productoService: ProductoService
+    private productoService: ProductoService, private almacenService: AlmacenService
   ) { }
 
   ngOnInit(): void {
     this.cargarProductos();
     this.cargarCategorias();
     this.cargarMarca();
+    this.cargarAlmacen();
   }
 
   ngAfterViewInit(): void {
@@ -98,6 +104,31 @@ export class ControlInventarioComponent implements OnInit {
       error: (err) => console.error('Error al cargar marcas', err),
     });
   }
+
+
+cargarAlmacen() {
+  this.almacenService.getAlmacenes().subscribe({
+    next: (res) => {
+
+      if (res.length > 0) {
+        this.almacen = res[0];
+      }
+
+      console.log('Almacén:', this.almacen);
+
+      this.reload.markForCheck();
+    },
+
+    error: (err) => {
+      console.error(
+        'Error al cargar almacén',
+        err
+      );
+    },
+  });
+}
+
+
 
   search() {
     const term = this.searchTerm.trim();
@@ -193,6 +224,59 @@ export class ControlInventarioComponent implements OnInit {
       console.log(`Dialog result: ${result}`);
     })
   }
+
+
+  viewAlmacen(almacen: Almacen) {
+
+    if (!almacen) {
+      console.error('No existe almacén');
+      return;
+    }
+
+    const dialogRef = this.dialog.open(
+      ViewAlmacenComponent,
+      {
+        width: '600px',
+        maxWidth: 'none',
+        panelClass: 'custom-dialog-container',
+        data: almacen
+      }
+    );
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
+  }
+
+editAlmacen(almacen: Almacen) {
+
+  if (!almacen) {
+
+    console.error('No existe almacén');
+
+    return;
+  }
+
+  const dialogRef = this.dialog.open(
+    EditAlmacenComponent,
+    {
+      width: '600px',
+      maxWidth: 'none',
+      panelClass: 'custom-dialog-container',
+      data: almacen
+    }
+  );
+
+  dialogRef.afterClosed().subscribe(result => {
+
+    if (result) {
+      this.cargarAlmacen();
+      this.reload.detectChanges();
+    }
+    console.log(`Dialog result: ${result}`);
+  });
+}
+
 
   filtrarPorStock() {
     if (!this.selectStock) {

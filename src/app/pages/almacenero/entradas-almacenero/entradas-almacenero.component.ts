@@ -228,10 +228,6 @@ export class EntradasAlmaceneroComponent implements OnInit {
     return entrada.detalles?.reduce((acc, p) => acc + p.quantity, 0) ?? 0;
   }
 
-  getMontoTotal(entrada: Entrada): number {
-    return entrada.detalles?.reduce((acc, p) => acc + p.quantity * p.price, 0) ?? 0;
-  }
-
   getNombreProveedor(entrada: Entrada): string {
     return entrada.supplier?.name || 'Sin proveedor';
   }

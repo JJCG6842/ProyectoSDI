@@ -48,13 +48,42 @@ export class ProductoService {
     return this.http.get<Producto[]>(`${this.apiUrl}/filtrar/estado/${state}`);
   }
 
-  crearProducto(producto: Omit<Producto, 'id' | 'createAt' | 'updateAt'>): Observable<Producto> {
-    return this.http.post<Producto>(this.apiUrl, producto);
-  }
+  crearProducto(producto: {
+  image: string;
+  name: string;
+  description: string;
+  marcaId?: string;
+  quantity: number;
+  model: string;
+  categoryId: string;
+  subcategoryId: string;
+}): Observable<Producto> {
 
-  actualizarProducto(id: string, producto: Partial<Producto>): Observable<Producto> {
-    return this.http.put<Producto>(`${this.apiUrl}/${id}`, producto);
+  return this.http.post<Producto>(
+    this.apiUrl,
+    producto
+  );
+}
+
+  actualizarProducto(
+  id: string,
+  producto: {
+    image?: string;
+    name?: string;
+    description?: string;
+    marcaId?: string;
+    quantity?: number;
+    model?: string;
+    categoryId?: string;
+    subcategoryId?: string;
   }
+): Observable<Producto> {
+
+  return this.http.put<Producto>(
+    `${this.apiUrl}/${id}`,
+    producto
+  );
+}
 
   eliminarProducto(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);

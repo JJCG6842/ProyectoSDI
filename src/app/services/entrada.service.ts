@@ -26,8 +26,7 @@ export class EntradaService {
   crearEntrada(data: {
     tipoentrada: string;
     supplierId?: string;
-    clienteId?: string
-    productos: { productId: string; quantity: number; price: number; serialNumbers?:string[];}[];
+    productos: { productId: string; quantity: number; serialNumbers?:string[];}[];
   }): Observable<Entrada> {
     return this.http.post<Entrada>(this.apiUrl, data);
   }

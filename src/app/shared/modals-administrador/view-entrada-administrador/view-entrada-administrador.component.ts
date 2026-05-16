@@ -36,7 +36,6 @@ export class ViewEntradaAdministradorComponent implements OnInit {
   detallesPaginados: any[] = [];
   entrada: Entrada | null = null
   cantidadTotal = 0;
-  montoTotal = 0;
   categorias: Categoria[] = [];
 
   private cd = inject(ChangeDetectorRef);
@@ -69,10 +68,6 @@ export class ViewEntradaAdministradorComponent implements OnInit {
       next: (data) => {
         this.entrada = data;
         this.cantidadTotal = data.detalles.reduce((acc, d) => acc + d.quantity, 0);
-        this.montoTotal = data.detalles.reduce((acc, d) => acc + d.total, 0);
-
-        if (data.tipoentrada === 'Devolucion' && data.clienteId) {
-        }
 
         this.aplicarPaginacion();
         this.cd.markForCheck();
@@ -145,14 +140,12 @@ export class ViewEntradaAdministradorComponent implements OnInit {
       d.quantity,
       d.serialNumbers?.length
         ? d.serialNumbers.map(sn => sn.serial).join(', ')
-        : '---',
-      `S/. ${d.price}`,
-      `S/. ${d.total}`
+        : '---'
     ]);
 
     autoTable(doc, {
       startY: 55,
-      head: [['#', 'Producto', 'Cantidad', 'N° Serie', 'Precio', 'Total']],
+      head: [['#', 'Producto', 'Cantidad', 'N° Serie']],
       body: rows,
       theme: 'grid',
       styles: { fontSize: 10 },
@@ -163,65 +156,118 @@ export class ViewEntradaAdministradorComponent implements OnInit {
     const finalY = (doc as any).lastAutoTable.finalY + 10;
     doc.setFontSize(14);
     doc.text(`Cantidad total: ${this.cantidadTotal}`, 14, finalY);
-    doc.text(`Monto total: S/. ${this.montoTotal}`, 14, finalY + 10);
 
     doc.save(`Entrada-${this.entrada.id}.pdf`);
   }
 
-
   exportarExcel() {
     if (!this.entrada) return;
-
+  
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet('Entrada');
-
+  
     sheet.columns = [
-      { header: '#', key: 'index', width: 10 },
-      { header: 'Producto', key: 'producto', width: 60 },
-      { header: 'Cantidad', key: 'cantidad', width: 18 },
-      { header: 'N° Serie', key: 'serie', width: 50 },
-      { header: 'Precio', key: 'precio', width: 20 },
-      { header: 'Total', key: 'total', width: 25 },
+      { header: '#', key: 'index', width: 16 },
+      { header: 'Categoría', key: 'categoria', width: 26 },
+      { header: 'Producto', key: 'producto', width: 72 },
+      { header: 'Cantidad', key: 'cantidad', width: 16 },
+      { header: 'N° Serie', key: 'serie', width: 56 },
     ];
-
-    const titleRow = sheet.addRow(['Detalle de Entrada']);
-    titleRow.font = { size: 18, bold: true };
-    sheet.mergeCells('A1:F1');
-    titleRow.alignment = { horizontal: 'center' };
+  
+    const titleRow = sheet.addRow(['Detalle de entrada']);
+  
+    sheet.mergeCells('A1:E1');
+  
+    const titleCell = titleRow.getCell(1);
+    titleCell.font = { size: 18, bold: true };
+    titleCell.alignment = {
+      horizontal: 'center',
+      vertical: 'middle'
+    };
+  
+    titleRow.height = 25;
+  
     sheet.addRow([]);
-
+  
     sheet.addRow(['Fecha:', new Date(this.entrada.createdAt).toLocaleString()]);
     sheet.addRow(['Proveedor:', this.entrada.supplier?.name || 'Sin proveedor']);
-
+  
     sheet.addRow([]);
-    const headerRow = sheet.addRow(['#', 'Categoría', 'Producto', 'Cantidad', 'Precio', 'Total']);
+  
+    const headerRow = sheet.addRow([
+      '#',
+      'Categoría',
+      'Producto',
+      'Cantidad',
+      'N° Serie'
+    ]);
+  
     headerRow.eachCell((cell) => {
       cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
-      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
-      cell.alignment = { horizontal: 'center' };
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FF1F4E78' }
+      };
+      cell.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' }
+      };
+      cell.alignment = { horizontal: 'center', vertical: 'middle' };
     });
-
+  
     this.entrada.detalles.forEach((d, i) => {
-      const row = sheet.addRow([i + 1, this.getCategoriaName(d.product.categoryId), d.product.name, d.quantity, d.serialNumbers?.length
+      const series = d.serialNumbers?.length
         ? d.serialNumbers.map(sn => sn.serial).join(', ')
-        : '---',
-      d.price, d.total]);
-      row.eachCell((cell) => {
-        cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
-        cell.alignment = { horizontal: 'center' };
+        : '---';
+  
+      const row = sheet.addRow([
+        i + 1,
+        this.getCategoriaName(d.product.categoryId),
+        d.product.name,
+        d.quantity,
+        series
+      ]);
+  
+      row.eachCell((cell, colNumber) => {
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' }
+        };
+  
+        cell.alignment = {
+          horizontal: colNumber === 5 ? 'left' : 'center',
+          vertical: 'middle',
+          wrapText: true
+        };
       });
+  
+      row.height = 20;
     });
-
+  
     sheet.addRow([]);
-    const totalCantidad = sheet.addRow(['Cantidad Total:', this.cantidadTotal]);
-    const totalMonto = sheet.addRow(['Monto Total:', this.montoTotal]);
-    totalCantidad.eachCell(cell => (cell.font = { bold: true }));
-    totalMonto.eachCell(cell => (cell.font = { bold: true }));
-
+  
+    const totalCantidad = sheet.addRow([
+      'Cantidad Total:',
+      this.cantidadTotal
+    ]);
+  
+    totalCantidad.eachCell(cell => {
+      cell.font = { bold: true };
+      cell.alignment = { horizontal: 'left' };
+    });
+  
     workbook.xlsx.writeBuffer().then((buffer) => {
-      saveAs(new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
-        `Entrada-${this.entrada!.id}.xlsx`);
+      saveAs(
+        new Blob([buffer], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        }),
+        `Entrada-${this.entrada!.id}.xlsx`
+      );
     });
   }
 

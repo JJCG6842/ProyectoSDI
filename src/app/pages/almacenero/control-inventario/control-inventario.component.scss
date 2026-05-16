@@ -18,6 +18,11 @@
     cursor: pointer;
 }
 
+.entrance,
+.salida:hover{
+  opacity: 0.8;
+}
+
 .salida{
     background-color: red;
 }
@@ -39,17 +44,20 @@
 
 .icon{
     font-size: 35px;  
-    height: 30px;
-    width: 30px;
+    height: 40px;
+    width: 40px;
     margin-right: 35px;
 }
 
 .icon-btn {
-  font-size: 30px;
-  margin-right: 12px;
-  vertical-align: middle;
-  bottom: 4px;
-  position: relative;
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  position: static;
 }
 
 .enter{
@@ -79,20 +87,19 @@ input{
 }
 
 .boton1 {
-  width: 180px;
+  width: 190px;
   height: 56px;
   cursor: pointer;
   background-color: #045CFF;
   border: none;
   border-radius: 8px;
   color: white;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 500;
   display: flex;
   align-items: center;
-  position: relative;
-  bottom: 10px;
   justify-content: center;
+  gap: 8px; 
 }
 
 .view{
@@ -167,4 +174,8 @@ input{
 
 mat-accordion {
   width: 180px;   
+}
+
+.boton1:hover{
+  opacity: 0.8;
 }

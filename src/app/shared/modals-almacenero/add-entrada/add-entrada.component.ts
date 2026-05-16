@@ -48,7 +48,6 @@ export class AddEntradaComponent implements OnInit {
       marca: [''],
       product: ['', Validators.required],
       quantity: [1, [Validators.required, Validators.min(1)]],
-      price: [0,[Validators.required, Validators.min(1)] ],
       serialNumbers: [[]]
     });
   }
@@ -121,17 +120,20 @@ export class AddEntradaComponent implements OnInit {
 }
 
 validateSerialNumbers(group: FormGroup) {
+
   const quantity = group.get('quantity')?.value;
-  const serials: string[] = group.get('serialNumbers')?.value || [];
+
+  const serials: string[] =
+    group.get('serialNumbers')?.value || [];
 
   if (!quantity) return null;
-  if (quantity > 1 && serials.length === 0) {
+  
+  if (serials.length === 0) {
     return { serialRequired: true };
   }
   if (serials.length !== quantity) {
     return { serialCountMismatch: true };
   }
-
   return null;
 }
 
@@ -142,7 +144,6 @@ removeSerial(serial: string): void {
 
   get product() { return this.formEntrance.get('product') as FormControl; }
   get quantity() { return this.formEntrance.get('quantity') as FormControl; }
-  get price() {return this.formEntrance.get('price') as FormControl}
 
   addEntrance() {
     if (this.formEntrance.invalid) {
@@ -159,9 +160,7 @@ removeSerial(serial: string): void {
       productName: producto.name,
       category: producto.category?.name,
       quantity: formValue.quantity,
-      price: formValue.price,
-      serialNumbers: formValue.serialNumbers,
-      total: formValue.quantity * formValue.price
+      serialNumbers: formValue.serialNumbers
     };
 
     this.dialogRef.close(newEntrada);

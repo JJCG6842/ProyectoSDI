@@ -190,4 +190,8 @@ page1(){
   this.router.navigate(['/almacenero/categoria-almacenero'])
 }
 
+page2() {
+    this.router.navigate(['/almacenero/subcategoria'])
+}
+
 }

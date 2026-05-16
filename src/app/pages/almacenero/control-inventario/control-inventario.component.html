@@ -10,7 +10,6 @@
   </div>
 </div>
 
-
 <div class="content1">
   <p class="enter">Ingrese Producto:</p>
   <input type="text" placeholder="Buscar producto..." [(ngModel)]="searchTerm"
@@ -23,7 +22,16 @@
         Buscar
       </button>
 
+      <button class="boton1" (click)="editAlmacen(almacen)">
+        <mat-icon fontIcon="edit" class="icon-btn"></mat-icon>
+        Editar info.
+      </button>
 
+      
+    <button class="boton1" (click)="viewAlmacen(almacen)">
+      <mat-icon fontIcon="visibility" class="icon-btn"></mat-icon>
+      Ver info.
+    </button>
 
 
     </div>

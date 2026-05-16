@@ -1,0 +1,16 @@
+<h2 mat-dialog-title>Datos del almacén</h2>
+
+<mat-dialog-content class="">
+  <div class="grid-container">
+    <div><strong>Nombre de Almacén:</strong> {{data.nombre}}</div>
+    <div><strong>Dirección:</strong> {{data.direccion}}</div>
+    <div><strong>Telefono:</strong> {{data.telefono}}</div>
+  </div>
+
+  <div class="descripcion">
+    <strong>Descripción del producto:</strong> {{data.descripcion}}
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+<button mat-flat-button mat-dialog-close style="background-color: red; color: white;">Cerrar</button>
+</mat-dialog-actions>

@@ -54,7 +54,6 @@ export class EntradaPanelComponent implements OnInit, AfterViewInit {
   constructor(
     private fb: FormBuilder,
     private proveedorService: ProveedorService,
-    private clienteService: ClienteService,
     private productoService: ProductoService,
     private entradaService: EntradaService,
     private route: Router
@@ -66,7 +65,6 @@ export class EntradaPanelComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.cargarProveedores();
-    this.cargarClientes();
   }
 
   ngAfterViewInit(): void {
@@ -93,14 +91,6 @@ export class EntradaPanelComponent implements OnInit, AfterViewInit {
     });
   }
 
-  cargarClientes() {
-    this.clienteService.getClientes().subscribe({
-      next: (clientes) => this.clientes = clientes,
-      error: (err) => console.error('Error al cargar clientes', err)
-    });
-  }
-
-
   get proveedor() {
     return this.formProveedor.get('proveedor') as FormControl;
   }
@@ -114,10 +104,10 @@ export class EntradaPanelComponent implements OnInit, AfterViewInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        const { productId, productName, quantity, price, category,serialNumbers } = result;
-        const total = quantity * price;
+        const { productId, productName, quantity,category,serialNumbers } = result;
 
-        this.entradasRegistradas.push({ productId, productName, quantity, price, total, category, serialNumbers });
+
+        this.entradasRegistradas.push({ productId, productName, quantity, category, serialNumbers });
 
         this.pageIndex = 0;
         this.aplicarPaginacion();
@@ -154,7 +144,6 @@ export class EntradaPanelComponent implements OnInit, AfterViewInit {
   const productos = this.entradasRegistradas.map(p => ({
     productId: p.productId,
     quantity: p.quantity,
-    price: p.price,
     serialNumbers: p.serialNumbers
   }));
 
@@ -177,10 +166,6 @@ export class EntradaPanelComponent implements OnInit, AfterViewInit {
 
   gestor() {
     this.route.navigate(['/almacenero/entrada-almacenero']);
-  }
-
-  getMontoTotal(): number {
-    return this.entradasRegistradas.reduce((sum, item) => sum + item.total, 0);
   }
 
   getCantidadTotal(): number {

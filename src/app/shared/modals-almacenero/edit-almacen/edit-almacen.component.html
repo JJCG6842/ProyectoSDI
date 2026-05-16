@@ -1,0 +1,134 @@
+
+<h2 mat-dialog-title>Editar almacén</h2>
+
+<mat-dialog-content>
+
+  <form [formGroup]="formAlmacen">
+
+    <div class="form-grid">
+
+      <div class="form-field">
+        <h3>Nombre:</h3>
+
+        <mat-form-field appearance="fill">
+
+          <mat-label>
+            Nombre del almacén
+          </mat-label>
+
+          <input
+            matInput
+            formControlName="nombre">
+
+        </mat-form-field>
+
+        <div
+          [hidden]="nombre.valid || nombre.pristine"
+          class="error">
+
+          <span *ngIf="nombre.errors?.['required']">
+            El nombre es requerido
+          </span>
+
+        </div>
+      </div>
+
+
+      <div class="form-field">
+
+        <h3>Dirección:</h3>
+
+        <mat-form-field appearance="fill">
+
+          <mat-label>
+            Dirección
+          </mat-label>
+
+          <input
+            matInput
+            formControlName="direccion">
+
+        </mat-form-field>
+
+        <div
+          [hidden]="direccion.valid || direccion.pristine"
+          class="error">
+
+          <span *ngIf="direccion.errors?.['required']">
+            La dirección es requerida
+          </span>
+
+        </div>
+      </div>
+
+
+      <div class="form-field">
+
+        <h3>Teléfono:</h3>
+
+        <mat-form-field appearance="fill">
+
+          <mat-label>
+            Teléfono
+          </mat-label>
+
+          <input
+            matInput
+            formControlName="telefono">
+
+        </mat-form-field>
+
+        <div
+          [hidden]="telefono.valid || telefono.pristine"
+          class="error">
+
+          <span *ngIf="telefono.errors?.['required']">
+            El teléfono es requerido
+          </span>
+
+        </div>
+      </div>
+
+
+      <div
+        class="form-field"
+        id="descripcion">
+
+        <h3>Descripción:</h3>
+
+        <mat-form-field appearance="fill">
+
+          <mat-label>
+            Descripción del almacén
+          </mat-label>
+
+          <textarea
+            matInput
+            rows="4"
+            formControlName="descripcion">
+          </textarea>
+
+        </mat-form-field>
+
+        <div
+          [hidden]="descripcion.valid || descripcion.pristine"
+          class="error">
+
+          <span *ngIf="descripcion.errors?.['required']">
+            La descripción es requerida
+          </span>
+
+        </div>
+      </div>
+
+    </div>
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-flat-button (click)="editAlmacen()" style="background-color: blue; color: white;">Guardar</button>
+  <button mat-flat-button mat-dialog-close style="background-color: red; color: white;">Cancelar</button>
+</mat-dialog-actions>
+
