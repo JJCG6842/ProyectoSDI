@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException,} from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
 @Injectable()
@@ -46,11 +46,44 @@ export class CategoriaService {
   
 
   async create(data: { name: string; description: string }) {
+    const existingCategory = await this.prisma.category.findFirst({
+    where: {
+      name: {
+        equals: data.name,
+        mode: 'insensitive',
+      },
+    },
+  });
+
+  if (existingCategory) {
+    throw new BadRequestException('La categoría ya existe');
+  }
     return this.prisma.category.create({ data });
   }
 
   async update(id: string, data: { name?: string; description?: string }) {
     await this.findOne(id);
+
+    if (data.name) {
+    const existingCategory = await this.prisma.category.findFirst({
+      where: {
+        AND: [
+          { NOT: { id } },
+          {
+            name: {
+              equals: data.name,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      },
+    });
+
+    if (existingCategory) {
+      throw new BadRequestException('La categoría ya existe');
+    }
+  }
+  
     return this.prisma.category.update({
       where: { id },
       data,

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable,BadRequestException,NotFoundException } from '@nestjs/common';
 import { PrismaClient, Prisma, Marca } from '@prisma/client';
 
 @Injectable()
@@ -34,6 +34,19 @@ export class MarcaService {
 
   async create(data: {name: string;description: string;categoryIds: string[];}): Promise<Marca> {
 
+  const existingMarca = await this.prisma.marca.findFirst({
+    where: {
+      name: {
+        equals: data.name,
+        mode: 'insensitive',
+      },
+    },
+  });
+
+  if (existingMarca) {
+    throw new BadRequestException('La marca ya existe');
+  }
+
   const categories = await this.prisma.category.findMany({
     where: {
       id: {
@@ -63,6 +76,27 @@ export class MarcaService {
 }
 
   async update(id: string,data: {name?: string;description?: string;categoryIds?: string[];}): Promise<Marca> {
+
+  if (data.name) {
+
+    const existingMarca = await this.prisma.marca.findFirst({
+      where: {
+        AND: [
+          { NOT: { id } },
+          {
+            name: {
+              equals: data.name,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      },
+    });
+
+    if (existingMarca) {
+      throw new BadRequestException('La marca ya existe');
+    }
+  }
 
   if (data.categoryIds) {
 

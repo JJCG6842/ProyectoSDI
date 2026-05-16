@@ -1,4 +1,4 @@
-import { Injectable , NotFoundException} from '@nestjs/common';
+import { Injectable , NotFoundException, BadRequestException} from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
 @Injectable()
@@ -83,6 +83,20 @@ export class SubcategoriaService {
 }
 
     async create(data:{ name:string; description: string; categoryIds: string[];}){
+
+    const existingSubcategory = await this.prisma.subcategory.findFirst({
+        where: {
+            name: {
+                equals: data.name,
+                mode: 'insensitive'
+            }
+        }
+    });
+
+    if (existingSubcategory) {
+        throw new BadRequestException('La subcategoría ya existe');
+    }
+
         const categories = await this.prisma.category.findMany({
             where: { id: { in:data.categoryIds}},
         });
@@ -109,6 +123,27 @@ export class SubcategoriaService {
 
     async update(id: string, data: { name?: string; description?: string; categoryIds?: string[] }){
         await this.findOne(id);
+
+        if (data.name) {
+
+        const existingSubcategory = await this.prisma.subcategory.findFirst({
+            where: {
+                AND: [
+                    { NOT: { id } },
+                    {
+                        name: {
+                            equals: data.name,
+                            mode: 'insensitive'
+                        }
+                    }
+                ]
+            }
+        });
+
+        if (existingSubcategory) {
+            throw new BadRequestException('La subcategoría ya existe');
+        }
+    }
 
         if (data.categoryIds){
             const categories = await this.prisma.category.findMany({

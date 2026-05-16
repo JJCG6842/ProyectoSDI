@@ -18,7 +18,7 @@ export class EntradaController {
 
   @Post()
   crearEntrada(
-    @Body() body: {supplierId?: string; productos: { productId: string; quantity: number; price: number;
+    @Body() body: {supplierId?: string; productos: { productId: string; quantity: number;
       serialNumbers?:string[];
      }[] },
   ) {

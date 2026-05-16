@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { PrismaClient, Role, UserStatus } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
@@ -41,6 +41,31 @@ export class UsuarioService {
   // }
 
   async createUser(data: { nombre: string; lastname: string; email: string; dni: number; password: string; role?: Role }) {
+
+    const existingUser = await this.prisma.users.findFirst({
+    where: {
+      OR: [
+        { nombre: data.nombre },
+        { email: data.email },
+        { dni: data.dni },
+      ],
+    },
+  });
+
+  if (existingUser) {
+    if (existingUser.nombre === data.nombre) {
+      throw new BadRequestException('El nombre ya está registrado');
+    }
+
+    if (existingUser.email === data.email) {
+      throw new BadRequestException('El email ya está registrado');
+    }
+
+    if (existingUser.dni === data.dni) {
+      throw new BadRequestException('El DNI ya está registrado');
+    }
+  }
+
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
     return this.prisma.users.create({
@@ -62,6 +87,35 @@ export class UsuarioService {
     data: Partial<{ nombre: string; lastname: string; email: string; dni: number; password: string; role: Role }>,
   ) {
     await this.findOne(id);
+
+    const existingUser = await this.prisma.users.findFirst({
+    where: {
+      AND: [
+        { NOT: { id } },
+        {
+          OR: [
+            data.nombre ? { nombre: data.nombre } : {},
+            data.email ? { email: data.email } : {},
+            data.dni ? { dni: data.dni } : {},
+          ],
+        },
+      ],
+    },
+  });
+
+  if (existingUser) {
+    if (existingUser.nombre === data.nombre) {
+      throw new BadRequestException('El nombre ya está registrado');
+    }
+
+    if (existingUser.email === data.email) {
+      throw new BadRequestException('El email ya está registrado');
+    }
+
+    if (existingUser.dni === data.dni) {
+      throw new BadRequestException('El DNI ya está registrado');
+    }
+  }
 
     const updateData: any = { ...data };
 

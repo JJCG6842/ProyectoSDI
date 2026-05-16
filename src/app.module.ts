@@ -10,11 +10,12 @@ import { MarcaModule } from './api/marca/marca.module';
 import { EntradaModule } from './api/entrada/entrada.module';
 import { SalidaModule } from './api/salida/salida.module';
 import { KardexModule } from './api/kardex/kardex.module';
-import { ClienteModule } from './api/cliente/cliente.module';
+
+import { AlmacenModule } from './api/almacen/almacen.module';
 
 
 @Module({
-  imports: [CategoriaModule, ProductosModule, SubcategoriaModule, UsuarioModule,ProveedoresModule,MarcaModule, EntradaModule, SalidaModule, KardexModule, ClienteModule],
+  imports: [CategoriaModule, ProductosModule, SubcategoriaModule, UsuarioModule,ProveedoresModule,MarcaModule, EntradaModule, SalidaModule, KardexModule, AlmacenModule],
   controllers: [AppController],
   providers: [AppService],
 })

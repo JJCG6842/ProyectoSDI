@@ -9,10 +9,10 @@ datasource db {
 
 model Users {
   id             String     @id @default(uuid())
-  nombre         String
+  nombre         String     @unique
   lastname       String
-  email          String
-  dni            Int
+  email          String     @unique
+  dni            Int        @unique
   password       String
   salidas        Salida[]
   role           Role       @default(Almacenero)
@@ -24,7 +24,7 @@ model Users {
 
 model Category {
   id            String         @id @default(uuid())
-  name          String
+  name          String         @unique
   description   String
   createAt      DateTime       @default(now())
   updateAt      DateTime       @updatedAt
@@ -35,7 +35,7 @@ model Category {
 
 model Subcategory {
   id           String        @id @default(uuid())
-  name         String
+  name         String        @unique
   description  String
   categories   Category[]
   products     Products[]
@@ -45,7 +45,7 @@ model Subcategory {
 
 model Marca {
   id          String       @id @default(uuid())
-  name        String
+  name        String       @unique
   description String
   categories  Category[]
   createAt    DateTime     @default(now())
@@ -53,10 +53,21 @@ model Marca {
   products    Products[]
 }
 
+model Almacen {
+  id          String     @id @default(uuid())
+  nombre      String
+  descripcion String
+  direccion   String
+  telefono    String
+  products    Products[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
 model Products {
   id            String            @id @default(uuid())
   image         String
-  name          String
+  name          String            @unique
   description   String
   marcaId       String?
   quantity      Float             @default(0)
@@ -65,7 +76,8 @@ model Products {
   model         String
   categoryId    String
   subcategoryId String
-  storeId       String?
+  almacenId     String
+  almacen       Almacen           @relation(fields: [almacenId], references: [id])
   entrances     EntranceDetalle[]
   salidas       SalidaDetalle[]
   category      Category          @relation(fields: [categoryId], references: [id])
@@ -77,23 +89,14 @@ model Products {
 
 model Supplier {
   id          String     @id @default(uuid())
-  ruc         String
+  ruc         String     @unique
   address     String
-  name        String
-  phone       Int
+  name        String     @unique
+  phone       Int        @unique
   description String
   entrances   Entrance[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-}
-
-model Cliente {
-  id        String   @id @default(uuid())
-  dni       Int
-  name      String
-  phone     Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model Entrance {
@@ -109,8 +112,6 @@ model EntranceDetalle {
   entranceId    String
   productId     String
   quantity      Float
-  price         Float
-  total         Float
   serialNumbers SerialNumber[]
   product       Products       @relation(fields: [productId], references: [id])
   entrance      Entrance       @relation(fields: [entranceId], references: [id], onDelete: Cascade)
@@ -121,7 +122,6 @@ model SerialNumber {
   serial    String
   detalleId String
   detalle   EntranceDetalle @relation(fields: [detalleId], references: [id], onDelete: Cascade)
-
   createdAt DateTime @default(now())
 }
 

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException,BadRequestException } from '@nestjs/common';
 import { PrismaClient, ProductStatus, ProductState } from '@prisma/client';
 
 @Injectable()
@@ -8,20 +8,64 @@ export class ProductosService {
   async findAll() {
     return this.prisma.products.findMany({
       include: {
-        category: { select: { id: true, name: true }, },
-        subcategory: { select: { id: true, name: true }, },
-        marca: { select: { id: true, name: true } }
+        almacen: {
+          select: {
+            id: true,
+            nombre: true,
+          },
+        },
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        subcategory: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        marca: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
   }
 
   async findAllInventory() {
     return this.prisma.products.findMany({
-      where: { state: ProductState.Habilitado, },
+      where: {
+        state: ProductState.Habilitado,
+      },
       include: {
-        category: { select: { id: true, name: true }, },
-        subcategory: { select: { id: true, name: true }, },
-        marca: { select: { id: true, name: true } }
+        almacen: {
+          select: {
+            id: true,
+            nombre: true,
+          },
+        },
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        subcategory: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        marca: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
   }
@@ -30,13 +74,37 @@ export class ProductosService {
     const product = await this.prisma.products.findUnique({
       where: { id },
       include: {
-        category: { select: { id: true, name: true } },
-        subcategory: { select: { id: true, name: true } },
-        marca: { select: { id: true, name: true } },
+        almacen: {
+          select: {
+            id: true,
+            nombre: true,
+          },
+        },
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        subcategory: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        marca: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
 
-    if (!product) throw new NotFoundException('Producto no encontrado');
+    if (!product) {
+      throw new NotFoundException('Producto no encontrado');
+    }
+
     return product;
   }
 
@@ -46,16 +114,37 @@ export class ProductosService {
         state: ProductState.Habilitado,
         name: {
           contains: name,
-          mode: 'insensitive'
+          mode: 'insensitive',
         },
       },
       include: {
-        category: { select: { id: true, name: true } },
-        subcategory: { select: { id: true, name: true } }
-      }
+        almacen: {
+          select: {
+            id: true,
+            nombre: true,
+          },
+        },
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        subcategory: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        marca: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
   }
-
 
   async findCategoryName(categoryName: string) {
     return this.prisma.products.findMany({
@@ -69,26 +158,70 @@ export class ProductosService {
         },
       },
       include: {
-        category: { select: { id: true, name: true } },
-        subcategory: { select: { id: true, name: true } },
-        marca: { select: { id: true, name: true } }
+        almacen: {
+          select: {
+            id: true,
+            nombre: true,
+          },
+        },
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        subcategory: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        marca: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
   }
-
 
   async findMarca(name: string) {
     return this.prisma.products.findMany({
       where: {
         state: ProductState.Habilitado,
         marca: {
-          name: { contains: name, mode: 'insensitive' },
+          name: {
+            contains: name,
+            mode: 'insensitive',
+          },
         },
       },
       include: {
-        category: { select: { id: true, name: true } },
-        subcategory: { select: { id: true, name: true } },
-        marca: { select: { id: true, name: true } },
+        almacen: {
+          select: {
+            id: true,
+            nombre: true,
+          },
+        },
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        subcategory: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        marca: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
   }
@@ -105,19 +238,69 @@ export class ProductosService {
     subcategoryId: string;
   }) {
 
+    const existingProduct = await this.prisma.products.findFirst({
+  where: {
+    name: {
+      equals: data.name,
+      mode: 'insensitive',
+    },
+  },
+});
+
+if (existingProduct) {
+  throw new BadRequestException(
+    'Ya existe un producto con ese nombre',
+  );
+}
+
+    const almacen = await this.prisma.almacen.findFirst();
+
+    if (!almacen) {
+      throw new NotFoundException(
+        'No existe un almacén registrado',
+      );
+    }
+
     const category = await this.prisma.category.findUnique({
-      where: { id: data.categoryId },
+      where: {
+        id: data.categoryId,
+      },
     });
-    if (!category) throw new NotFoundException('Categoría no encontrada');
+
+    if (!category) {
+      throw new NotFoundException(
+        'Categoría no encontrada',
+      );
+    }
 
     const subcategory = await this.prisma.subcategory.findUnique({
-      where: { id: data.subcategoryId },
+      where: {
+        id: data.subcategoryId,
+      },
     });
-    if (!subcategory)
-      throw new NotFoundException('Subcategoría no encontrada');
+
+    if (!subcategory) {
+      throw new NotFoundException(
+        'Subcategoría no encontrada',
+      );
+    }
+
+    if (data.marcaId) {
+      const marca = await this.prisma.marca.findUnique({
+        where: {
+          id: data.marcaId,
+        },
+      });
+
+      if (!marca) {
+        throw new NotFoundException(
+          'Marca no encontrada',
+        );
+      }
+    }
 
     const status =
-      data.quantity && data.quantity > 0
+      data.quantity > 0
         ? ProductStatus.Instock
         : ProductStatus.Outstock;
 
@@ -125,6 +308,14 @@ export class ProductosService {
       data: {
         ...data,
         status,
+        almacenId: almacen.id,
+      },
+
+      include: {
+        almacen: true,
+        category: true,
+        subcategory: true,
+        marca: true,
       },
     });
   }
@@ -145,19 +336,70 @@ export class ProductosService {
   ) {
     await this.findOne(id);
 
+    if (data.name) {
+
+  const existingProduct = await this.prisma.products.findFirst({
+    where: {
+      AND: [
+        { NOT: { id } },
+        {
+          name: {
+            equals: data.name,
+            mode: 'insensitive',
+          },
+        },
+      ],
+    },
+  });
+
+  if (existingProduct) {
+    throw new BadRequestException(
+      'Ya existe un producto con ese nombre',
+    );
+  }
+}
+
     if (data.categoryId) {
       const category = await this.prisma.category.findUnique({
-        where: { id: data.categoryId },
+        where: {
+          id: data.categoryId,
+        },
       });
-      if (!category) throw new NotFoundException('Categoría no encontrada');
+
+      if (!category) {
+        throw new NotFoundException(
+          'Categoría no encontrada',
+        );
+      }
     }
 
     if (data.subcategoryId) {
-      const subcategory = await this.prisma.subcategory.findUnique({
-        where: { id: data.subcategoryId },
+      const subcategory =
+        await this.prisma.subcategory.findUnique({
+          where: {
+            id: data.subcategoryId,
+          },
+        });
+
+      if (!subcategory) {
+        throw new NotFoundException(
+          'Subcategoría no encontrada',
+        );
+      }
+    }
+
+    if (data.marcaId) {
+      const marca = await this.prisma.marca.findUnique({
+        where: {
+          id: data.marcaId,
+        },
       });
-      if (!subcategory)
-        throw new NotFoundException('Subcategoría no encontrada');
+
+      if (!marca) {
+        throw new NotFoundException(
+          'Marca no encontrada',
+        );
+      }
     }
 
     if (data.quantity !== undefined) {
@@ -167,36 +409,54 @@ export class ProductosService {
           : ProductStatus.Outstock;
     }
 
-
     return this.prisma.products.update({
       where: { id },
+
       data,
+
+      include: {
+        almacen: true,
+        category: true,
+        subcategory: true,
+        marca: true,
+      },
     });
   }
 
   async delete(id: string) {
     await this.findOne(id);
-    return this.prisma.products.delete({ where: { id } });
+
+    return this.prisma.products.delete({
+      where: { id },
+    });
   }
 
   async findByCategoryId(categoryId: string) {
     return this.prisma.products.findMany({
-      where: { categoryId },
+      where: {
+        categoryId,
+      },
+
       include: {
-        category: { select: { id: true, name: true } },
-        subcategory: { select: { id: true, name: true } },
-        marca: { select: { id: true, name: true } },
+        almacen: true,
+        category: true,
+        subcategory: true,
+        marca: true,
       },
     });
   }
 
   async findByMarcaId(marcaId: string) {
     return this.prisma.products.findMany({
-      where: { marcaId },
+      where: {
+        marcaId,
+      },
+
       include: {
-        category: { select: { id: true, name: true } },
-        subcategory: { select: { id: true, name: true } },
-        marca: { select: { id: true, name: true } },
+        almacen: true,
+        category: true,
+        subcategory: true,
+        marca: true,
       },
     });
   }
@@ -206,7 +466,10 @@ export class ProductosService {
 
     return this.prisma.products.update({
       where: { id },
-      data: { state: ProductState.Habilitado },
+
+      data: {
+        state: ProductState.Habilitado,
+      },
     });
   }
 
@@ -215,31 +478,41 @@ export class ProductosService {
 
     return this.prisma.products.update({
       where: { id },
-      data: { state: ProductState.Deshabilitado },
+
+      data: {
+        state: ProductState.Deshabilitado,
+      },
     });
   }
 
   async findByStock(status: ProductStatus) {
     return this.prisma.products.findMany({
-      where: { status },
+      where: {
+        status,
+      },
+
       include: {
-        category: { select: { id: true, name: true } },
-        subcategory: { select: { id: true, name: true } },
-        marca: { select: { id: true, name: true } },
+        almacen: true,
+        category: true,
+        subcategory: true,
+        marca: true,
       },
     });
   }
 
   async findByState(state: ProductState) {
     return this.prisma.products.findMany({
-      where: { state },
+      where: {
+        state,
+      },
+
       include: {
-        category: { select: { id: true, name: true } },
-        subcategory: { select: { id: true, name: true } },
-        marca: { select: { id: true, name: true } },
+        almacen: true,
+        category: true,
+        subcategory: true,
+        marca: true,
       },
     });
   }
-
-
 }
+

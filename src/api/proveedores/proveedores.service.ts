@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException,BadRequestException } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
 @Injectable()
@@ -44,6 +44,50 @@ export class ProveedoresService {
   }
 
   async create(data: { name: string; phone: number; description: string , ruc: string, address: string}) {
+
+    const existingSupplier = await this.prisma.supplier.findFirst({
+    where: {
+      OR: [
+        {
+          name: {
+            equals: data.name,
+            mode: 'insensitive',
+          },
+        },
+        {
+          ruc: data.ruc,
+        },
+        {
+          phone: data.phone,
+        },
+      ],
+    },
+  });
+
+  if (existingSupplier) {
+
+    if (
+      existingSupplier.name.toLowerCase() ===
+      data.name.toLowerCase()
+    ) {
+      throw new BadRequestException(
+        'El proveedor ya existe',
+      );
+    }
+
+    if (existingSupplier.ruc === data.ruc) {
+      throw new BadRequestException(
+        'El RUC ya está registrado',
+      );
+    }
+
+    if (existingSupplier.phone === data.phone) {
+      throw new BadRequestException(
+        'El teléfono ya está registrado',
+      );
+    }
+  }
+
     return this.prisma.supplier.create({ data });
   }
  
@@ -52,6 +96,70 @@ export class ProveedoresService {
     data: { name?: string; phone?: number; description?: string, ruc?: string, address?: string },
   ) {
     await this.findOne(id);
+
+    const existingSupplier = await this.prisma.supplier.findFirst({
+    where: {
+      AND: [
+        { NOT: { id } },
+        {
+          OR: [
+            data.name
+              ? {
+                  name: {
+                    equals: data.name,
+                    mode: 'insensitive',
+                  },
+                }
+              : {},
+
+            data.ruc
+              ? {
+                  ruc: data.ruc,
+                }
+              : {},
+
+            data.phone
+              ? {
+                  phone: data.phone,
+                }
+              : {},
+          ],
+        },
+      ],
+    },
+  });
+
+  if (existingSupplier) {
+
+    if (
+      data.name &&
+      existingSupplier.name.toLowerCase() ===
+        data.name.toLowerCase()
+    ) {
+      throw new BadRequestException(
+        'El proveedor ya existe',
+      );
+    }
+
+    if (
+      data.ruc &&
+      existingSupplier.ruc === data.ruc
+    ) {
+      throw new BadRequestException(
+        'El RUC ya está registrado',
+      );
+    }
+
+    if (
+      data.phone &&
+      existingSupplier.phone === data.phone
+    ) {
+      throw new BadRequestException(
+        'El teléfono ya está registrado',
+      );
+    }
+  }
+
     return this.prisma.supplier.update({
       where: { id },
       data,
