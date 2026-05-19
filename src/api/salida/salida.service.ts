@@ -9,7 +9,6 @@ export class SalidaService {
     return this.prisma.salida.findMany({
       include: {
         user: true,
-        destino: true,
         detalles: {
           include: { product: true },
         },
@@ -23,7 +22,6 @@ export class SalidaService {
       where: { id },
       include: {
         user: true,
-        destino: true,
         detalles: {
           include: { product: true },
         },
@@ -49,7 +47,6 @@ export class SalidaService {
       },
       include: {
         user: true,
-        destino: true,
         detalles: {
           include: { product: true },
         },
@@ -66,7 +63,6 @@ export class SalidaService {
       where: { userId },
       include: {
         user: true,
-        destino: true,
         detalles: {
           include: {
             product: true
@@ -93,7 +89,6 @@ export class SalidaService {
       },
       include: {
         user: true,
-        destino: true,
         detalles: {
           include: { product: true }
         }
@@ -102,20 +97,8 @@ export class SalidaService {
     });
   }
 
-  async getSalidasByDestino(destinoId: string) {
-    return this.prisma.salida.findMany({
-      where: { destinoId },
-      include: {
-        user: true,
-        destino: true,
-        detalles: { include: { product: true } },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
-  }
-
   async crearSalida(body: any) {
-    let { productos, userId, destinoId } = body;
+    let { productos, userId } = body;
 
     if (!productos || !Array.isArray(productos) || productos.length === 0) {
       throw new BadRequestException("Debe enviar al menos un producto");
@@ -141,7 +124,6 @@ export class SalidaService {
       const salida = await prisma.salida.create({
         data: {
           userId: body.userId,
-          destinoId: body.destinoId,
           detalles: {
             create: productos.map(item => ({
               productId: item.productId,
@@ -151,7 +133,6 @@ export class SalidaService {
         },
         include: {
           user: true,
-          destino: true,
           detalles: { include: { product: true } },
         },
       });
