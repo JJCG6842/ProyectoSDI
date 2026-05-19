@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, ChangeDetectionStrategy, inject, OnInit } from '@angular/core';
+import { Component, ChangeDetectorRef, ChangeDetectionStrategy, inject} from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,17 +7,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddSalidaComponent } from '../../../shared/modals-almacenero/add-salida/add-salida.component';
-import { ProveedorService } from '../../../services/proveedor.service';
-import { ClienteService } from '../../../services/cliente.service';
 import { ProductoService } from '../../../services/producto.service';
 import { SalidaService } from '../../../services/salida.service';
-import { Proveedor } from '../../../interface/proveedor.interface';
-import { Cliente } from '../../../interface/cliente.interface';
 import { AddSalidaSuccessComponent } from '../../../shared/modals-almacenero/add-salida/modals-salida/add-salida-success/add-salida-success.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { TipoSalida } from '../../../environments/tipos-salida.type';
 import { ProductNullComponent } from '../../../shared/modals-almacenero/add-entrada/modals-entrada/product-null/product-null.component';
-import { TipoSalidaNullComponent } from '../../../shared/modals-almacenero/add-salida/modals-salida/tipo-salida-null/tipo-salida-null.component';
 import { Usuario } from '../../../interface/usuario.interface';
 import { UsuarioService } from '../../../services/usuario.service';
 
@@ -32,15 +26,11 @@ import { UsuarioService } from '../../../services/usuario.service';
   styleUrl: './salida-panel.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SalidaPanelComponent implements OnInit {
+export class SalidaPanelComponent {
 
   private dialog = inject(MatDialog);
   private cd = inject(ChangeDetectorRef);
-
   salidas: any[] = [];
-  usuarios: Usuario[] = [];
-  destinoId: string = "";
-
   pageSize = 5;
   pageIndex = 0;
 
@@ -48,15 +38,7 @@ export class SalidaPanelComponent implements OnInit {
     private router: Router,
     private productoService: ProductoService,
     private salidaService: SalidaService,
-    private usuarioService: UsuarioService
   ) { }
-
-  ngOnInit(): void {
-  this.usuarioService.getUsuario().subscribe(res => {
-    this.usuarios = res;
-    this.cd.markForCheck();
-  });
-}
 
   get pagedSalidas() {
     const start = this.pageIndex * this.pageSize;
@@ -110,11 +92,6 @@ export class SalidaPanelComponent implements OnInit {
         return;
       }
 
-      if (!this.destinoId) {
-        alert("Debe seleccionar un destino para la salida");
-        return;
-      }
-
       if (item.quantity > producto.quantity) {
         alert(`Cantidad solicitada de ${item.productName} supera el stock`);
         return;
@@ -132,7 +109,6 @@ export class SalidaPanelComponent implements OnInit {
 
     const data = {
       userId: user?.id,
-      destinoId: this.destinoId,
       productos
     };
 

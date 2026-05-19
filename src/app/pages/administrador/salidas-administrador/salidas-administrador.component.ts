@@ -16,11 +16,9 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { ProveedorService } from '../../../services/proveedor.service';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTimepickerModule } from '@angular/material/timepicker';
-import { ClienteService } from '../../../services/cliente.service';
 import { Usuario } from '../../../interface/usuario.interface';
 import { UsuarioService } from '../../../services/usuario.service';
 
@@ -44,8 +42,6 @@ export class SalidasAdministradorComponent implements OnInit {
   pageSize = 5;
   pageIndex = 0;
   salidas: Salida[] = [];
-  destinoId: string = '';
-  destinos: Usuario[] = [];
   salidasFiltradas: any[] = [];
   selectedOpcion: string = '';
   selectedUserId: string = '';
@@ -54,8 +50,7 @@ export class SalidasAdministradorComponent implements OnInit {
 
 
   constructor(private router: Router, private productoService: ProductoService,
-    private salidaService: SalidaService, private proveedorService: ProveedorService, private clienteService: ClienteService,
-    private usuarioService: UsuarioService) { }
+    private salidaService: SalidaService,private usuarioService: UsuarioService) { }
 
   ngOnInit(): void {
     this.cargarSalidas();
@@ -207,30 +202,6 @@ export class SalidasAdministradorComponent implements OnInit {
   getCantidadTotal(salida: Salida): number {
     return salida.detalles?.reduce((acc, d) => acc + d.quantity, 0) ?? 0;
   }
-
-  filtrarPorDestino() {
-  if (!this.destinoId) {
-    this.salidasFiltradas = [...this.salidas];
-    this.pageIndex = 0;
-    this.reload.markForCheck();
-    return;
-  }
-
-  this.salidaService.getSalidasByDestino(this.destinoId)
-    .subscribe({
-      next: (salidas) => {
-        this.salidasFiltradas = salidas;
-        this.pageIndex = 0;
-        this.reload.markForCheck();
-      },
-      error: (err) => {
-        console.error('Error filtrando por destino:', err);
-        this.salidasFiltradas = [];
-        this.pageIndex = 0;
-        this.reload.markForCheck();
-      },
-    });
-}
 
   view(id: string) {
     this.router.navigate(['administrador/view-salida-administrador', id]);

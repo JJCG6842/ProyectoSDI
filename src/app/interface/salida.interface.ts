@@ -5,9 +5,7 @@ export interface Salida {
   id: string;
   createdAt: string;
   userId: string;
-  destinoId?: string;
-  user?: Usuario;
-  destino?: Usuario;     
+  user?: Usuario;   
   detalles: SalidaDetalle[];
 }
 

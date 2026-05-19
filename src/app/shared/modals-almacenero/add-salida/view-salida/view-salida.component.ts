@@ -125,7 +125,6 @@ export class ViewSalidaComponent implements OnInit {
     doc.setFontSize(12);
     doc.text(`Fecha: ${new Date(this.salida.createdAt).toLocaleString()}`, 14, 35);
     doc.text(`Usuario: ${this.salida.user?.nombre || 'N/A'}`, 14, 42);
-    doc.text(`Destino: ${this.salida.destino?.nombre || 'Sin destino'}`, 14, 49);
 
     const rows = this.salida.detalles.map((d, index) => [
       index + 1,
@@ -135,7 +134,7 @@ export class ViewSalidaComponent implements OnInit {
     ]);
 
     autoTable(doc, {
-      startY: 55,
+      startY: 50,
       head: [['#', 'Categoría', 'Producto', 'Cantidad']],
       body: rows,
       theme: 'grid'
@@ -156,10 +155,10 @@ export class ViewSalidaComponent implements OnInit {
     const sheet = workbook.addWorksheet('Salida');
 
     sheet.columns = [
-      { header: '#', key: 'index', width: 10 },
-      { header: 'Categoría', key: 'categoria', width: 20 },
-      { header: 'Producto', key: 'producto', width: 40 },
-      { header: 'Cantidad', key: 'cantidad', width: 15 },
+      { header: '#', key: 'index', width: 20 },
+      { header: 'Categoría', key: 'categoria', width: 30 },
+      { header: 'Producto', key: 'producto', width: 62 },
+      { header: 'Cantidad', key: 'cantidad', width: 21 },
     ];
 
     const titleRow = sheet.addRow(['Detalle de Salida']);
@@ -170,7 +169,6 @@ export class ViewSalidaComponent implements OnInit {
     sheet.addRow([]);
     sheet.addRow(['Fecha:', new Date(this.salida.createdAt).toLocaleString()]);
     sheet.addRow(['Usuario:', this.salida.user?.nombre || 'N/A']);
-    sheet.addRow(['Destino:', this.salida.destino?.nombre || 'Sin destino']);
     sheet.addRow([]);
 
     const headerRow = sheet.addRow(['#', 'Categoría', 'Producto', 'Cantidad']);
