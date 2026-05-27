@@ -12,10 +12,11 @@ import { SalidaModule } from './api/salida/salida.module';
 import { KardexModule } from './api/kardex/kardex.module';
 
 import { AlmacenModule } from './api/almacen/almacen.module';
+import { GuiaRemisionModule } from './api/guia_remision/guia_remision.module';
 
 
 @Module({
-  imports: [CategoriaModule, ProductosModule, SubcategoriaModule, UsuarioModule,ProveedoresModule,MarcaModule, EntradaModule, SalidaModule, KardexModule, AlmacenModule],
+  imports: [CategoriaModule, ProductosModule, SubcategoriaModule, UsuarioModule,ProveedoresModule,MarcaModule, EntradaModule, SalidaModule, KardexModule, AlmacenModule, GuiaRemisionModule],
   controllers: [AppController],
   providers: [AppService],
 })

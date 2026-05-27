@@ -15,6 +15,8 @@ export class EntradaService {
           },
         },
         supplier: { select: { id: true, name: true, phone: true } },
+        guia: { select: { id: true, numero: true }
+      }
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -31,6 +33,9 @@ export class EntradaService {
           },
         },
         supplier: { select: { id: true, name: true } },
+        guia: {
+        select: {id: true,numero: true}
+      }
       },
     });
 
@@ -41,6 +46,7 @@ export class EntradaService {
 
   async createEntrada(data: {
   supplierId?: string;
+  guiaId?: string;
   productos: {
     productId: string;
     quantity: number;
@@ -147,6 +153,8 @@ export class EntradaService {
               supplierId:
                 data.supplierId ?? null,
 
+                guiaId: data.guiaId ?? null,
+
               detalles: {
                 create: data.productos.map(
                   p => ({
@@ -175,7 +183,6 @@ export class EntradaService {
           });
 
         for (const p of data.productos) {
-
           const prodActual =
             productosDB.find(
               x => x.id === p.productId
@@ -186,8 +193,9 @@ export class EntradaService {
 
             data: {
               quantity:
-                prodActual.quantity +
-                p.quantity,
+                {
+                  increment: p.quantity
+                },
 
               status: 'Instock',
             },

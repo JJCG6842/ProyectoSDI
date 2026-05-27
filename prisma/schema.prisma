@@ -8,47 +8,47 @@ datasource db {
 }
 
 model Users {
-  id             String     @id @default(uuid())
-  nombre         String     @unique
-  lastname       String
-  email          String     @unique
-  dni            Int        @unique
-  password       String
-  salidas        Salida[]
-  role           Role       @default(Almacenero)
-  status         UserStatus @default(Habilitado)
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
+  id        String     @id @default(uuid())
+  nombre    String     @unique
+  lastname  String
+  email     String     @unique
+  dni       Int        @unique
+  password  String
+  salidas   Salida[]
+  role      Role       @default(Almacenero)
+  status    UserStatus @default(Habilitado)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
 model Category {
-  id            String         @id @default(uuid())
-  name          String         @unique
+  id            String        @id @default(uuid())
+  name          String        @unique
   description   String
-  createAt      DateTime       @default(now())
-  updateAt      DateTime       @updatedAt
+  createAt      DateTime      @default(now())
+  updateAt      DateTime      @updatedAt
   subcategories Subcategory[]
   marcas        Marca[]
   products      Products[]
 }
 
 model Subcategory {
-  id           String        @id @default(uuid())
-  name         String        @unique
-  description  String
-  categories   Category[]
-  products     Products[]
-  createAt     DateTime      @default(now())
-  updateAt     DateTime      @updatedAt
+  id          String     @id @default(uuid())
+  name        String     @unique
+  description String
+  categories  Category[]
+  products    Products[]
+  createAt    DateTime   @default(now())
+  updateAt    DateTime   @updatedAt
 }
 
 model Marca {
-  id          String       @id @default(uuid())
-  name        String       @unique
+  id          String     @id @default(uuid())
+  name        String     @unique
   description String
   categories  Category[]
-  createAt    DateTime     @default(now())
-  updateAt    DateTime     @updatedAt
+  createAt    DateTime   @default(now())
+  updateAt    DateTime   @updatedAt
   products    Products[]
 }
 
@@ -64,43 +64,77 @@ model Almacen {
 }
 
 model Products {
-  id            String            @id @default(uuid())
+  id            String                @id @default(uuid())
   image         String
-  name          String            @unique
+  name          String                @unique
   description   String
   marcaId       String?
-  quantity      Float             @default(0)
-  status        ProductStatus     @default(Outstock)
-  state         ProductState      @default(Habilitado)
+  quantity      Float                 @default(0)
+  status        ProductStatus         @default(Outstock)
+  state         ProductState          @default(Habilitado)
   model         String
   categoryId    String
   subcategoryId String
   almacenId     String
-  almacen       Almacen           @relation(fields: [almacenId], references: [id])
+  almacen       Almacen               @relation(fields: [almacenId], references: [id])
+  guiaDetalles  GuiaRemisionDetalle[]
   entrances     EntranceDetalle[]
   salidas       SalidaDetalle[]
-  category      Category          @relation(fields: [categoryId], references: [id])
-  subcategory   Subcategory       @relation(fields: [subcategoryId], references: [id])
-  marca         Marca?            @relation(fields: [marcaId], references: [id])
-  createAt      DateTime          @default(now())
-  updateAt      DateTime          @updatedAt
+  category      Category              @relation(fields: [categoryId], references: [id])
+  subcategory   Subcategory           @relation(fields: [subcategoryId], references: [id])
+  marca         Marca?                @relation(fields: [marcaId], references: [id])
+  createAt      DateTime              @default(now())
+  updateAt      DateTime              @updatedAt
 }
 
 model Supplier {
-  id          String     @id @default(uuid())
-  ruc         String     @unique
+  id          String         @id @default(uuid())
+  ruc         String         @unique
   address     String
-  name        String     @unique
-  phone       Int        @unique
+  name        String         @unique
+  phone       Int            @unique
   description String
   entrances   Entrance[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  guias       GuiaRemision[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model GuiaRemision {
+  id           String                @id @default(uuid())
+  numero       String                @unique
+  supplierId   String
+  fechaEmision DateTime              @default(now())
+  estado       GuiaEstado            @default(PENDIENTE)
+  supplier     Supplier              @relation(fields: [supplierId], references: [id])
+  detalles     GuiaRemisionDetalle[]
+  entrance     Entrance?
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+}
+
+model GuiaRemisionDetalle {
+  id            String       @id @default(uuid())
+  guiaId        String
+  productId     String
+  cantidad      Float
+  serialNumbers GuiaSerial[]
+  guia          GuiaRemision @relation(fields: [guiaId], references: [id], onDelete: Cascade)
+  product       Products     @relation(fields: [productId], references: [id])
+}
+
+model GuiaSerial {
+  id        String              @id @default(uuid())
+  serial    String              @unique
+  detalleId String
+  detalle   GuiaRemisionDetalle @relation(fields: [detalleId], references: [id], onDelete: Cascade)
 }
 
 model Entrance {
   id         String            @id @default(uuid())
   supplierId String?
+  guiaId     String?           @unique
+  guia       GuiaRemision?     @relation(fields: [guiaId], references: [id])
   createdAt  DateTime          @default(now())
   detalles   EntranceDetalle[]
   supplier   Supplier?         @relation(fields: [supplierId], references: [id], onDelete: Cascade)
@@ -118,10 +152,10 @@ model EntranceDetalle {
 
 model SerialNumber {
   id        String          @id @default(uuid())
-  serial    String
+  serial    String          @unique
   detalleId String
   detalle   EntranceDetalle @relation(fields: [detalleId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
+  createdAt DateTime        @default(now())
 }
 
 model Salida {
@@ -159,4 +193,10 @@ enum UserStatus {
 enum ProductState {
   Habilitado
   Deshabilitado
+}
+
+enum GuiaEstado {
+  PENDIENTE
+  RECIBIDO
+  CANCELADO
 }
