@@ -18,7 +18,10 @@
 <div *ngIf="entrada">
   <h2>Información general</h2>
   <p><strong>Fecha:</strong> {{entrada.createdAt | date: 'dd-MM-yyyy'}}</p>
+  <p><strong>Tipo:</strong> {{ entrada.guia ? 'GUIA' : 'DIRECTA'}}</p>
+  <p><strong>Nroº guia:</strong> {{ entrada.guia?.numero || '---'}}</p>
   <p><strong>Proveedor:</strong> {{entrada.supplier?.name || 'Sin proveedor'}}</p>
+  
 
   <br>
 
@@ -36,10 +39,10 @@
       </thead>
       <tbody>
         <tr *ngFor="let d of detallesPaginados; let i = index" style="text-align: center;">
-          <td>{{ (pageIndex * pageSize) + i + 1 }}</td>
-          <td>{{d.product.name}}</td>
-          <td>{{d.quantity}}</td>
-          <td>
+          <th>{{ (pageIndex * pageSize) + i + 1 }}</th>
+          <th>{{d.product.name}}</th>
+          <th>{{d.quantity}}</th>
+          <th>
             <div style="white-space: pre-line;">
               <ng-container *ngIf="d.serialNumbers?.length; else noSerie">
                 <span *ngFor="let sn of d.serialNumbers; let i = index">
@@ -50,7 +53,7 @@
 
               <ng-template #noSerie>---</ng-template>
             </div>
-          </td>
+          </th>
         </tr>
       </tbody>
     </table>

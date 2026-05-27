@@ -46,12 +46,9 @@ export class EditProductComponent {
     });
   }
 
-  ngOnInit(): void{
-    this.cargarCategorias();
-    this.cargarSubcategorias();
-    this.cargarMarca();
-
-    if (this.data) {
+  ngOnInit(): void {
+  this.cargarCategorias();
+  if (this.data) {
     this.formProduct.patchValue({
       name: this.data.name,
       description: this.data.description,
@@ -61,8 +58,34 @@ export class EditProductComponent {
       category: this.data.categoryId,
       subcategory: this.data.subcategoryId,
     });
+
+    this.cargarSubcategoriasPorCategoria(
+      this.data.categoryId
+    );
+
+    this.cargarMarcasPorCategoria(
+      this.data.categoryId
+    );
   }
-  }
+
+  this.category.valueChanges.subscribe(
+    (categoryId) => {
+      if (categoryId) {
+        this.subcategory.reset();
+        this.marca.reset();
+        this.cargarSubcategoriasPorCategoria(
+          categoryId
+        );
+        this.cargarMarcasPorCategoria(
+          categoryId
+        );
+      } else {
+        this.subcategorias = [];
+        this.marcas = [];
+      }
+    }
+  );
+}
 
   cargarCategorias(){
     this.categoriaService.getCategorias().subscribe({
@@ -74,6 +97,40 @@ export class EditProductComponent {
       },
     });
   }
+
+  cargarSubcategoriasPorCategoria(categoryId: string) {
+  this.subcategoriaService
+    .getSubcategoriasPorCategoriaId(categoryId)
+    .subscribe({
+      next: (subs) => {
+        this.subcategorias = subs;
+      },
+      error: (err) => {
+        console.error(
+          'Error al cargar subcategorías',
+          err
+        );
+        this.subcategorias = [];
+      },
+    });
+}
+
+cargarMarcasPorCategoria(categoryId: string) {
+  this.marcaService
+    .getMarcasPorCategoria(categoryId)
+    .subscribe({
+      next: (marcas) => {
+        this.marcas = marcas;
+      },
+      error: (err) => {
+        console.error(
+          'Error al cargar marcas',
+          err
+        );
+        this.marcas = [];
+      },
+    });
+}
 
   cargarSubcategorias(){
     this.subcategoriaService.getSubcategorias().subscribe({

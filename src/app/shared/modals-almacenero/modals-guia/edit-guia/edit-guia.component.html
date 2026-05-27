@@ -1,0 +1,32 @@
+<h2 mat-dialog-title>Cambiar estado</h2>
+
+<div mat-dialog-content>
+
+  <mat-form-field appearance="fill" style="width: 100%;">
+
+    <mat-label>Estado</mat-label>
+
+    <mat-select [formControl]="estado">
+
+      <mat-option value="PENDIENTE">
+        Pendiente
+      </mat-option>
+
+      <mat-option value="RECIBIDO">
+        Recibido
+      </mat-option>
+
+      <mat-option value="CANCELADO">
+        Cancelado
+      </mat-option>
+
+    </mat-select>
+
+  </mat-form-field>
+
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-raised-button color="primary" (click)="guardarCambios()" [disabled]="loading" style="background-color: blue; color: white;">Guardar</button>
+  <button mat-button (click)="cerrar()" style="background-color: red; color: white;">Cerrar</button>
+</div>

@@ -191,4 +191,8 @@ export class EntradasAdministradorComponent implements OnInit {
     this.router.navigate(['administrador/view-entrada-administrador', id]);
   }
 
+  guia(){
+    this.router.navigate(['/administrador/guia-remision-administrador'])
+  }
+
 }

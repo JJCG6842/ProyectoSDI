@@ -20,6 +20,9 @@ import { SalidaPanelComponent } from './pages/almacenero/salida-panel/salida-pan
 import { ViewSalidaComponent } from './shared/modals-almacenero/add-salida/view-salida/view-salida.component';
 import { EntradaPanelComponent } from './pages/almacenero/entrada-panel/entrada-panel.component';
 import { ViewEntradaComponent } from './shared/modals-almacenero/add-entrada/view-entrada/view-entrada.component';
+import { GuiaRemisionAlmaceneroComponent } from './pages/almacenero/guia-remision-almacenero/guia-remision-almacenero.component';
+import { ViewGuiaComponent } from './shared/modals-almacenero/modals-guia/view-guia/view-guia.component';
+
 
 import { InicioAdministradorComponent } from './pages/administrador/inicio-administrador/inicio-administrador.component';
 import { CategoriaAdministradorComponent } from './pages/administrador/categoria-administrador/categoria-administrador.component';
@@ -35,6 +38,9 @@ import { ControlInventarioAdministradorComponent } from './pages/administrador/c
 import { ClienteAdministradorComponent } from './pages/administrador/cliente-administrador/cliente-administrador.component';
 import { ViewEntradaAdministradorComponent } from './shared/modals-administrador/view-entrada-administrador/view-entrada-administrador.component';
 import { ViewSalidaAdministradorComponent } from './shared/modals-administrador/view-salida-administrador/view-salida-administrador.component';
+import { GuiaPanelComponent } from './pages/almacenero/guia-panel/guia-panel.component';
+import { GuiaRemisionAdministradorComponent } from './pages/administrador/guia-remision-administrador/guia-remision-administrador.component';
+import { ViewGuiaAdministradorComponent } from './shared/modals-administrador/view-guia-administrador/view-guia-administrador.component';
 
 export const routes: Routes = [
   {
@@ -128,6 +134,18 @@ export const routes: Routes = [
       {
         path: 'view-entrada-almacenero/:id',
         component: ViewEntradaComponent
+      },
+      {
+        path: 'guia-remision-almacenero',
+        component: GuiaRemisionAlmaceneroComponent
+      },
+      {
+        path: 'guia-panel-almacenero',
+        component: GuiaPanelComponent
+      },
+      {
+        path: 'view-guia-almacenero/:id',
+        component: ViewGuiaComponent
       }
     ]
   },
@@ -197,6 +215,14 @@ export const routes: Routes = [
       {
         path: 'view-entrada-administrador/:id',
         component: ViewEntradaAdministradorComponent
+      },
+      {
+        path: 'guia-remision-administrador',
+        component: GuiaRemisionAdministradorComponent
+      },
+      {
+        path: 'view-guia-administrador/:id',
+        component: ViewGuiaAdministradorComponent
       }
     ]
   }

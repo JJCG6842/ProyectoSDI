@@ -1,5 +1,6 @@
 import { Producto } from "./producto.interface";
 import { Proveedor } from "./proveedor.interface";
+import { GuiaRemision } from "./guia_remision";
 
 export interface Entrada {
   id: string;
@@ -8,7 +9,6 @@ export interface Entrada {
   detalles: EntradaDetalle[]
   supplier?: Proveedor;
 
-
   productos: {
     productId: string;
     productName?: string;
@@ -16,6 +16,11 @@ export interface Entrada {
     quantity: number;
     serialNumbers?: string[];
   }[];
+
+  guia?: {
+    id: string;
+    numero: string;
+  };
 }
 
 export interface EntradaDetalle {

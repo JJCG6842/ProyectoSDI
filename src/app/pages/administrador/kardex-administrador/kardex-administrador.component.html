@@ -74,6 +74,7 @@
         <th>Movimiento</th>
         <th>Nombre del producto</th>
         <th>Cantidad</th>
+        <th>Restante</th>
       </tr>
     </thead>
     <tbody>
@@ -82,6 +83,7 @@
         <td [ngStyle]="{ color: mov.movimiento === 'Entrada' ? '#27F53F' : 'red' }">{{ mov.movimiento }}</td>
         <th>{{ mov.producto }}</th>
         <th>{{ mov.cantidad }}</th>
+        <th>{{mov.restante}}</th>
       </tr>
     </tbody>
   </table>

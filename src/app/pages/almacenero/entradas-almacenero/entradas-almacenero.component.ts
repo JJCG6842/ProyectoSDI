@@ -243,4 +243,8 @@ export class EntradasAlmaceneroComponent implements OnInit {
   salidas() {
     this.router.navigate(['/almacenero/entrada-panel-almacenero'])
   }
+
+  guia(){
+    this.router.navigate(['/almacenero/guia-remision-almacenero'])
+  }
 }

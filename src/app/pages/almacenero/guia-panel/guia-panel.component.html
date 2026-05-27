@@ -1,0 +1,120 @@
+
+<div class="header-row">
+  <h1>Generar guia:</h1>
+
+  <div class="botons">
+
+    <button
+      class="salida"
+      (click)="gestor()"
+      style="background-color: blueviolet;"
+    >
+      Guia de remision
+    </button>
+
+    <button class="add" (click)="addProduct()">
+      <mat-icon fontIcon="add" class="icon-btn"></mat-icon>
+      Añadir producto
+    </button>
+
+  </div>
+</div>
+
+<div class="forms">
+
+  <div>
+    <h3>Seleccione Proveedor:</h3>
+
+    <mat-form-field appearance="fill" style="width: 280px;">
+
+      <mat-label>Proveedor</mat-label>
+
+      <mat-select [formControl]="proveedor">
+
+        <mat-option
+          *ngFor="let prov of proveedores"
+          [value]="prov.id"
+        >
+          {{ prov.name }}
+        </mat-option>
+
+      </mat-select>
+
+    </mat-form-field>
+  </div>
+
+</div>
+
+<br><br>
+
+<div>
+  <h2>Productos registrados:</h2>
+</div>
+
+<div class="table">
+
+  <table>
+
+    <thead>
+      <tr>
+        <th>Nro°</th>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Nro° de serie</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      <tr *ngFor="let item of paginadasEntradas; let i = index">
+
+        <th>{{ (pageIndex * pageSize) + i + 1 }}</th>
+        <th>{{ item.productName }}</th>
+        <th>{{ item.quantity }}</th>
+        <th>
+          <span *ngIf="item.serialNumbers?.length > 0">
+            {{ item.serialNumbers.join(', ') }}
+          </span>
+
+          <span *ngIf="!item.serialNumbers?.length">---</span>
+        </th>
+
+        <th>
+
+          <button class="delete" (click)="eliminarEntrada(i)">
+            <mat-icon aria-hidden="false" fontIcon="remove"></mat-icon>
+          </button>
+
+        </th>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+  <mat-paginator [length]="entradasRegistradas.length" [pageSize]="pageSize" [pageSizeOptions]="[5,10,20]"></mat-paginator>
+
+</div>
+
+<br><br>
+
+<div style="display: flex; gap: 30px;">
+
+  <div>
+    <h2>Cantidad total:</h2>
+    <h3>{{ getCantidadTotal() }}</h3>
+  </div>
+
+</div>
+
+<br>
+
+<button
+  class="salida"
+  style="height: 52px; width: 220px; background-color: blueviolet;"
+  (click)="realizarGuia()"
+>
+  Generar guia
+</button>

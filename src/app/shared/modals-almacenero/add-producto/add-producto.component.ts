@@ -164,35 +164,43 @@ export class AddProductoComponent implements OnInit {
   }
 
   addProduct() {
-    if (this.formProduct.invalid) {
-      this.formProduct.markAllAsTouched();
-      return;
-    }
 
-    const formValue = this.formProduct.value;
-
-    const status: 'Instock' | 'Outstock' = formValue.quantity === 0 ? 'Outstock' : 'Instock';
-
-    const newProduct = {
-      image: formValue.image,
-      name: formValue.name,
-      description: formValue.description,
-      status,
-      quantity: formValue.quantity,
-      model: formValue.model,
-      categoryId: formValue.category,
-      subcategoryId: formValue.subcategory,
-      marcaId: formValue.marca
-    }
-
-    this.productoService.crearProducto(newProduct).subscribe({
-      next: () => {
-        this.dialogRef.close(true);
-        this.dialog.open(CreateProductSuccessComponent);
-      },
-      error: (error) => {
-        console.error('Error al crear el producto:', error);
-      },
-    })
+  if (this.formProduct.invalid) {
+    this.formProduct.markAllAsTouched();
+    return;
   }
+
+  const formValue = this.formProduct.value;
+
+  const newProduct = {
+    image: formValue.image,
+    name: formValue.name,
+    description: formValue.description,
+
+    quantity: 0,
+
+    model: formValue.model,
+    categoryId: formValue.category,
+    subcategoryId: formValue.subcategory,
+    marcaId: formValue.marca
+  };
+
+  this.productoService.crearProducto(newProduct).subscribe({
+    next: () => {
+
+      this.dialogRef.close(true);
+
+      this.dialog.open(
+        CreateProductSuccessComponent
+      );
+    },
+
+    error: (error) => {
+      console.error(
+        'Error al crear el producto:',
+        error
+      );
+    },
+  });
+}
 }

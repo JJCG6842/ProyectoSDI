@@ -8,6 +8,9 @@
       <mat-icon fontIcon="add" class="icon-btn"></mat-icon>
       Generar entrada
     </button>
+    <button class="entrance" (click)="guia()" style="background-color: blueviolet;">
+      Guia de remision
+    </button>
   </div>
 </div>
 
@@ -30,6 +33,7 @@
     <thead>
       <tr>
         <th>Nro°</th>
+        <th>Nro de Guia</th>
         <th>Fecha de registro</th>
         <th>Proveedor</th>
         <th>Cantidad total</th>
@@ -39,6 +43,7 @@
     <tbody>
       <tr *ngFor="let entrada of pagedEntradas; let i = index">
         <th>{{i + 1}}</th>
+        <th>{{entrada.guia?.numero || '---' }}</th>
         <th>{{entrada.createdAt | date: 'dd-MM-yy'}}</th>
         <th>{{getNombreProveedor(entrada)}}</th>
         <th>{{getCantidadTotal(entrada)}}</th>

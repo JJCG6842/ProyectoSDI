@@ -1,0 +1,124 @@
+<div class="header-row">
+  <h1>Guia de remision:</h1>
+  <div class="botons">
+    <button class="entrance" (click)="kardex()">
+      Panel de Inventario
+    </button>
+    <button class="salida"  style="background-color: rgb(132, 1, 255);" (click)="addguia()">
+      <mat-icon fontIcon="add" class="icon-btn"></mat-icon>
+      Generar guia
+    </button>
+  </div>
+</div>
+
+<h2>Filtros:</h2>
+
+<div class="filters">
+
+  <mat-form-field style="width: 220px;">
+
+    <mat-label>Proveedor</mat-label>
+
+    <mat-select
+      [(ngModel)]="selectedProveedorId"
+      (selectionChange)="aplicarFiltros()"
+    >
+
+      <mat-option value="">
+        Todos
+      </mat-option>
+
+      <mat-option
+        *ngFor="let p of proveedores"
+        [value]="p.id"
+      >
+        {{ p.name }}
+      </mat-option>
+
+    </mat-select>
+
+  </mat-form-field>
+
+  <mat-form-field style="width: 220px; margin-left: 20px;">
+    <mat-label>Estado</mat-label>
+
+    <mat-select
+      [(ngModel)]="selectedEstado"
+      (selectionChange)="aplicarFiltros()">
+
+      <mat-option value="">
+        Todos
+      </mat-option>
+
+      <mat-option value="PENDIENTE">
+        Pendiente
+      </mat-option>
+
+      <mat-option value="RECIBIDO">
+        Recibido
+      </mat-option>
+
+      <mat-option value="CANCELADO">
+        Cancelado
+      </mat-option>
+
+    </mat-select>
+  </mat-form-field>
+
+</div>
+
+<div class="table">
+  <table>
+    <thead>
+      <tr>
+        <th>Nro° de guia</th>
+        <th>Fecha de registro</th>
+        <th>Proveedor</th>
+        <th>Cantidad total</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+
+  <tr *ngFor="let guia of guiasFiltradas">
+
+    <th>{{ guia.numero }}</th>
+
+    <th>
+      {{ guia.createdAt | date:'dd-MM-yyyy' }}
+    </th>
+
+    <th>
+      {{ guia.supplier?.name || 'Sin proveedor' }}
+    </th>
+
+    <th>
+      {{ getCantidadTotal(guia) }}
+    </th>
+
+    <th>
+      <span [ngStyle]="{ color:guia.estado === 'PENDIENTE'? 'orange' : guia.estado === 'RECIBIDO' ? '#03FF13' : 'red'}">
+        {{ guia.estado }}
+      </span>
+    </th>
+
+    <th>
+
+      <button class="delete" style="background-color: rgb(1,255,1);" (click)="viewGuia(guia.id)">
+        <mat-icon fontIcon="visibility"></mat-icon>
+      </button>
+
+      <button class="edit" (click)="editarEstado(guia)">
+        <mat-icon fontIcon="edit"></mat-icon>
+      </button>
+
+      <button class="delete" (click)="eliminarGuia(guia.id)">
+        <mat-icon fontIcon="delete"></mat-icon>
+      </button>
+    </th>
+  </tr>
+</tbody>
+  </table>
+
+</div>

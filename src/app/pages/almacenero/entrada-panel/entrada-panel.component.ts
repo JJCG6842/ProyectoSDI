@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { ClienteService } from '../../../services/cliente.service';
 import { ProveedorService } from '../../../services/proveedor.service';
+import { GuiaRemisionService } from '../../../services/guia_remision.service';
 import { ProductoService } from '../../../services/producto.service';
 import { EntradaService } from '../../../services/entrada.service';
 import { AddEntradaComponent } from '../../../shared/modals-almacenero/add-entrada/add-entrada.component';
@@ -43,9 +44,13 @@ export class EntradaPanelComponent implements OnInit, AfterViewInit {
   tipoentrada = new FormControl('', Validators.required);
   cliente = new FormControl('');
   clientes: any[] = [];
+  tipoEntrada: 'DIRECTA' | 'GUIA' = 'DIRECTA';
   entradasRegistradas: any[] = [];
   paginadasEntradas: any[] = [];
-
+  guias: any[] = [];
+  guiaSeleccionadaId: string = '';
+  numeroGuia: string = '';
+  motivo: string = 'COMPRA';
   pageSize: number = 5;
   pageIndex: number = 0;
 
@@ -56,6 +61,7 @@ export class EntradaPanelComponent implements OnInit, AfterViewInit {
     private proveedorService: ProveedorService,
     private productoService: ProductoService,
     private entradaService: EntradaService,
+    private guiaService: GuiaRemisionService,
     private route: Router
   ) {
     this.formProveedor = this.fb.group({
@@ -65,6 +71,7 @@ export class EntradaPanelComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.cargarProveedores();
+    this.cargarGuias();
   }
 
   ngAfterViewInit(): void {
@@ -84,12 +91,91 @@ export class EntradaPanelComponent implements OnInit, AfterViewInit {
     this.cd.markForCheck();
   }
 
+  onTipoEntradaChange() {
+  this.guiaSeleccionadaId = '';
+  this.entradasRegistradas = [];
+  this.proveedor.reset();
+  this.aplicarPaginacion();
+}
+
   cargarProveedores() {
     this.proveedorService.getProveedores().subscribe({
       next: (proveedores) => this.proveedores = proveedores,
       error: (err) => console.error('Error al cargar proveedores', err)
     });
   }
+
+  cargarGuias() {
+
+  this.guiaService.getGuias().subscribe({
+    next: (res) => {
+      this.guias = res.filter(
+        (g: any) => g.estado === 'RECIBIDO'
+      );
+
+      this.cd.markForCheck();
+    },
+
+    error: (err) => {
+      console.error(
+        'Error al cargar guías',
+        err
+      );
+    }
+  });
+}
+
+cargarGuia() {
+
+  if (!this.guiaSeleccionadaId) return;
+
+  this.guiaService
+    .getGuiaById(this.guiaSeleccionadaId)
+    .subscribe({
+
+      next: (guia) => {
+
+        this.proveedor.setValue(
+          guia.supplierId
+        );
+
+        this.entradasRegistradas = [];
+
+        this.entradasRegistradas =
+          guia.detalles.map((d: any) => ({
+
+            tipoentrada: 'GUIA',
+
+            guiaRemision: {
+              numeroGuia: guia.numero
+            },
+
+            productId: d.productId,
+
+            productName:
+              d.product?.name,
+
+            quantity:
+              d.cantidad,
+
+            serialNumbers:
+              d.serialNumbers?.map(
+                (s: any) => s.serial
+              ) || []
+
+          }));
+
+        this.pageIndex = 0;
+        this.aplicarPaginacion();
+        this.cd.markForCheck();
+
+      },
+
+      error: (err) => {
+        console.error('Error al cargar guía',err);
+      }
+    });
+}
 
   get proveedor() {
     return this.formProveedor.get('proveedor') as FormControl;
@@ -148,10 +234,15 @@ export class EntradaPanelComponent implements OnInit, AfterViewInit {
   }));
 
   const payload = {
-    tipoentrada: 'Proveedor',     
-    supplierId: this.proveedor.value,
-    productos
-  };
+  tipoentrada: this.tipoEntrada,
+  supplierId: this.proveedor.value,
+
+  guiaId:
+    this.tipoEntrada === 'GUIA'
+      ? this.guiaSeleccionadaId
+      : null,
+  productos
+};
 
   this.entradaService.crearEntrada(payload).subscribe({
     next: res => {

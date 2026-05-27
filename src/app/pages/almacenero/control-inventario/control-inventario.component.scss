@@ -5,6 +5,16 @@
   margin-bottom: 20px;            
 }
 
+.title-group{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.almacen-name{
+  font-weight: 700;
+}
+
 .entrance,
 .salida{
     width: 250px;
