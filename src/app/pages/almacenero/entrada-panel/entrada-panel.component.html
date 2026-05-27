@@ -27,7 +27,7 @@
       </mat-option>
 
       <mat-option value="GUIA">
-        Desde guía de remisión
+        Desde una solicitud
       </mat-option>
 
     </mat-select>
@@ -36,10 +36,10 @@
 
 <div *ngIf="tipoEntrada === 'GUIA'">
 
-  <h3>Seleccione guía:</h3>
+  <h3>Seleccione Pedido:</h3>
 
   <mat-form-field appearance="fill" style="width: 280px;">
-    <mat-label>Guía</mat-label>
+    <mat-label>Pedidos</mat-label>
 
     <mat-select [(ngModel)]="guiaSeleccionadaId" (selectionChange)="cargarGuia()">
       <mat-option *ngFor="let guia of guias" [value]="guia.id">{{ guia.numero }}</mat-option>
@@ -74,7 +74,7 @@
       <tr>
         <th>Nro°</th>
         <th>Tipo</th>
-        <th>Guia</th>
+        <th>Nroº pedido</th>
         <th>Producto</th>
         <th>Cantidad</th>
         <th>Nro° de serie</th>

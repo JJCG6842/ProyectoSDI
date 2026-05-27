@@ -51,6 +51,8 @@ export class KardexAlmaceneroComponent {
   fechaFiltroRango: Date | null = null;
   ordenFecha: 'asc' | 'desc' = 'desc';
   fechaFiltro: Date | null = null;
+  fechaInicio: Date | null = null;
+  fechaFin: Date | null = null;
   movimientosPaginados: any[] = [];
   isLoading = true;
   productos: Producto[] = [];
@@ -178,10 +180,23 @@ export class KardexAlmaceneroComponent {
           !this.fechaFiltroRango ||
           new Date(mov.fecha) >= this.fechaFiltroRango;
 
-        const coincideFecha =
-          !this.fechaFiltro ||
-          new Date(mov.fecha).toDateString() === this.fechaFiltro.toDateString();
-        return coincideProducto && coincideTipo && coincideFecha && coincideRango;
+        const fechaMovimiento = new Date(mov.fecha);
+
+const coincideFecha =
+  !this.fechaFiltro ||
+  fechaMovimiento.toDateString() === this.fechaFiltro.toDateString();
+
+const coincideFechaRango =
+  (!this.fechaInicio || fechaMovimiento >= this.fechaInicio) &&
+  (!this.fechaFin || fechaMovimiento <= this.fechaFin);
+
+return (
+  coincideProducto &&
+  coincideTipo &&
+  coincideFecha &&
+  coincideRango &&
+  coincideFechaRango
+);
       })
       .sort((a, b) =>
         this.ordenFecha === 'desc'
@@ -265,6 +280,8 @@ export class KardexAlmaceneroComponent {
     this.tipoFiltro = 'todos';
     this.ordenFecha = 'desc';
     this.fechaFiltro = null;
+    this.fechaInicio = null;
+    this.fechaFin = null;
 
     this.pageIndex = 0;
     this.actualizarPaginacion();

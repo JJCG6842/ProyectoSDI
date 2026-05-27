@@ -136,7 +136,7 @@ export class ViewGuiaComponent implements OnInit,AfterViewInit{
   doc.setFontSize(20);
 
   doc.text(
-    'Detalle de Guia de Remision',
+    'Detalle del Pedido',
     100,
     20
   );
@@ -281,7 +281,7 @@ exportarExcel() {
 
   const titleRow =
     sheet.addRow([
-      'Detalle de Guia de Remision'
+      'Detalle del Pedido'
     ]);
 
   sheet.mergeCells('A1:D1');

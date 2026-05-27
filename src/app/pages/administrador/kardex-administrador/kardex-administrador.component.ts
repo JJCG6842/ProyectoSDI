@@ -45,6 +45,8 @@ export class KardexAdministradorComponent {
   fechaFiltroRango: Date | null = null;
   ordenFecha: 'asc' | 'desc' = 'desc';
   fechaFiltro: Date | null = null;
+  fechaInicio: Date | null = null;
+  fechaFin: Date | null = null;
   movimientosPaginados: any[] = [];
   isLoading = true;
   productos: Producto[] = [];
@@ -172,10 +174,31 @@ export class KardexAdministradorComponent {
           !this.fechaFiltroRango ||
           new Date(mov.fecha) >= this.fechaFiltroRango;
 
-        const coincideFecha =
-          !this.fechaFiltro ||
-          new Date(mov.fecha).toDateString() === this.fechaFiltro.toDateString();
-        return coincideProducto && coincideTipo && coincideFecha && coincideRango;
+        const fechaMovimiento = new Date(mov.fecha);
+
+const coincideFecha =
+  !this.fechaFiltro ||
+  fechaMovimiento.toDateString() === this.fechaFiltro.toDateString();
+
+const fechaInicio = this.fechaInicio
+  ? new Date(this.fechaInicio.setHours(0, 0, 0, 0))
+  : null;
+
+const fechaFin = this.fechaFin
+  ? new Date(this.fechaFin.setHours(23, 59, 59, 999))
+  : null;
+
+const coincideFechaRango =
+  (!fechaInicio || fechaMovimiento >= fechaInicio) &&
+  (!fechaFin || fechaMovimiento <= fechaFin);
+
+return (
+  coincideProducto &&
+  coincideTipo &&
+  coincideFecha &&
+  coincideRango &&
+  coincideFechaRango
+);
       })
       .sort((a, b) =>
         this.ordenFecha === 'desc'
@@ -259,6 +282,8 @@ export class KardexAdministradorComponent {
     this.tipoFiltro = 'todos';
     this.ordenFecha = 'desc';
     this.fechaFiltro = null;
+    this.fechaInicio = null;
+    this.fechaFin = null;
 
     this.pageIndex = 0;
     this.actualizarPaginacion();

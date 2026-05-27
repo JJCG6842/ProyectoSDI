@@ -50,6 +50,33 @@
       <mat-datepicker #datepicker></mat-datepicker>
     </mat-form-field>
 
+    <mat-form-field appearance="fill">
+  <mat-label>Rango de fechas</mat-label>
+
+  <mat-date-range-input [rangePicker]="picker">
+    
+    <input
+      matStartDate
+      placeholder="Desde"
+      [(ngModel)]="fechaInicio"
+    />
+
+    <input
+      matEndDate
+      placeholder="Hasta"
+      [(ngModel)]="fechaFin"
+    />
+
+  </mat-date-range-input>
+
+  <mat-datepicker-toggle
+    matSuffix
+    [for]="picker">
+  </mat-datepicker-toggle>
+
+  <mat-date-range-picker #picker></mat-date-range-picker>
+</mat-form-field>
+
     <mat-form-field>
       <mat-label>Rango de tiempo</mat-label>
       <mat-select [(ngModel)]="filtroTiempo" (selectionChange)="filtrarPorTiempo()">

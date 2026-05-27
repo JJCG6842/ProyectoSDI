@@ -133,7 +133,7 @@ export class ViewEntradaComponent implements OnInit {
     doc.setFontSize(12);
     doc.text(`Fecha: ${new Date(this.entrada.createdAt).toLocaleDateString()}`, 50, 35);
     doc.text(`Tipo: ${this.entrada.guia? 'GUIA': 'DIRECTA'}`,50,47);
-    doc.text(`Nro Guia: ${this.entrada.guia?.numero || '---'}`,50,53);
+    doc.text(`Nro Pedido: ${this.entrada.guia?.numero || '---'}`,50,53);
     doc.text(`Proveedor: ${this.entrada.supplier?.name || 'Sin proveedor'}`, 50, 41);
 
     const rows = this.entrada.detalles.map((d, index) => [
@@ -196,7 +196,7 @@ export class ViewEntradaComponent implements OnInit {
   sheet.addRow(['Tipo:', this.entrada.guia ? 'GUIA' : 'DIRECTA']);
 
 sheet.addRow([
-  'Nro Guia:',
+  'Nro Pedido:',
   this.entrada.guia?.numero || '---'
 ]);
 

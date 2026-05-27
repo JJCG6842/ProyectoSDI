@@ -19,7 +19,7 @@
   <h2>Información general</h2>
   <p><strong>Fecha:</strong> {{entrada.createdAt | date: 'dd-MM-yyyy'}}</p>
   <p><strong>Tipo:</strong> {{ entrada.guia ? 'GUIA' : 'DIRECTA'}}</p>
-  <p><strong>Nroº guia:</strong> {{ entrada.guia?.numero || '---'}}</p>
+  <p><strong>Nroº de Pedido:</strong> {{ entrada.guia?.numero || '---'}}</p>
   <p><strong>Proveedor:</strong> {{entrada.supplier?.name || 'Sin proveedor'}}</p>
   
 
