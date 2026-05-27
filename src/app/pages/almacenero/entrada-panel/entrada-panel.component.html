@@ -78,7 +78,6 @@
         <th>Producto</th>
         <th>Cantidad</th>
         <th>Nro° de serie</th>
-        <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
@@ -90,11 +89,6 @@
         <th>{{entrada.quantity}}</th>
         <th><span *ngIf="entrada.serialNumbers?.length > 0">{{ entrada.serialNumbers.join(', ') }}</span>
             <span *ngIf="!entrada.serialNumbers?.length">---</span>
-        </th>
-        <th>
-          <button class="delete" (click)="eliminarEntrada(i)">
-            <mat-icon aria-hidden="false" fontIcon="remove"></mat-icon>
-          </button>
         </th>
       </tr>
     </tbody>
