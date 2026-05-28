@@ -1,5 +1,8 @@
 <div class="header-row">
-  <h1>Control de inventario: {{almacen.nombre}}</h1>
+  <div class="title-group">
+    <h1>Control de inventario:</h1>
+    <h1 class="almacen-name">{{ almacen.nombre }}</h1>
+  </div>
   <div class="botons">
     <button class="entrance" (click)="entradas()">
       Registro entradas

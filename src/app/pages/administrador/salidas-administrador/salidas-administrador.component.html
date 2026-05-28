@@ -39,6 +39,7 @@
         <th>Fecha registro</th>
         <th>Usuario</th>
         <th>Cantidad total</th>
+        <th>Asignado A:</th>
         <th>Acciones</th>
       </tr>
     </thead>
@@ -48,6 +49,7 @@
         <th>{{salida.createdAt | date: 'dd-MM-yyyy'}}</th>
         <th>{{salida.user?.nombre}}</th>
         <th>{{ getCantidadTotal(salida) }}</th>
+        <th>{{ salida.asignadoA || '-' }}</th>
 
         <th>
           <button class="delete" style="background-color: #19ff04" (click)="view(salida.id)"><mat-icon

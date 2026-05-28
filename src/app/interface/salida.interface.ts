@@ -5,6 +5,7 @@ export interface Salida {
   id: string;
   createdAt: string;
   userId: string;
+  asignadoA?: string;
   user?: Usuario;   
   detalles: SalidaDetalle[];
 }

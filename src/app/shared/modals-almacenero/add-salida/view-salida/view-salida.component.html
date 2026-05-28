@@ -20,6 +20,7 @@
   <h2>Información general</h2>
   <p><strong>Fecha:</strong> {{ salida.createdAt | date: 'dd-MM-yyyy' }}</p>
   <p><strong>Usuario:</strong> {{salida.user?.nombre}}</p>
+  <p><strong>Asignado a:</strong> {{salida.asignadoA || 'No definido'}}</p>
 
   <br>
 
@@ -38,10 +39,10 @@
 
       <tbody>
         <tr *ngFor="let d of detallesPaginados; index as i" style="text-align: center;">
-          <td>{{ (pageIndex * pageSize) + i + 1 }}</td>
-          <td>{{getCategoriaName(d.product.categoryId)}}</td>
-          <td>{{ d.product.name }}</td>
-          <td>{{ d.quantity }}</td>
+          <th>{{ (pageIndex * pageSize) + i + 1 }}</th>
+          <th>{{getCategoriaName(d.product.categoryId)}}</th>
+          <th>{{ d.product.name }}</th>
+          <th>{{ d.quantity }}</th>
         </tr>
       </tbody>
     </table>

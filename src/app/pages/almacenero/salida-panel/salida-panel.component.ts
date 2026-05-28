@@ -3,6 +3,7 @@ import { FormControl, FormsModule, ReactiveFormsModule, Validators, FormBuilder,
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -20,7 +21,7 @@ import { UsuarioService } from '../../../services/usuario.service';
   imports: [
     MatFormFieldModule, CommonModule, MatSelectModule, MatIconModule,
     MatDialogModule, FormsModule, ReactiveFormsModule,
-    MatPaginatorModule
+    MatPaginatorModule,MatInputModule
   ],
   templateUrl: './salida-panel.component.html',
   styleUrl: './salida-panel.component.scss',
@@ -31,6 +32,7 @@ export class SalidaPanelComponent {
   private dialog = inject(MatDialog);
   private cd = inject(ChangeDetectorRef);
   salidas: any[] = [];
+  asignadoA: string = '';
   pageSize = 5;
   pageIndex = 0;
 
@@ -109,6 +111,7 @@ export class SalidaPanelComponent {
 
     const data = {
       userId: user?.id,
+      asignadoA: this.asignadoA,
       productos
     };
 

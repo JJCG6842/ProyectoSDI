@@ -12,6 +12,19 @@
 </div>
 
 <div>
+  <h3>Asignado a:</h3>
+
+  <mat-form-field appearance="fill" style="width: 280px;">
+  <mat-label>Asignado a</mat-label>
+
+  <input
+    matInput
+    [(ngModel)]="asignadoA"
+  />
+</mat-form-field>
+</div>
+
+<div>
   <h2>Productos agregados a la salida:</h2>
 </div>
 
@@ -29,10 +42,10 @@
 
     <tbody style="text-align: center;">
       <tr *ngFor="let item of pagedSalidas; let i = index">
-        <td>{{ (pageIndex * pageSize) + i + 1 }}</td>
-        <td>{{ item.productName }}</td>
-        <td>{{ item.productCategory }}</td>
-        <td>{{ item.quantity }}</td>
+        <th>{{ (pageIndex * pageSize) + i + 1 }}</th>
+        <th>{{ item.productName }}</th>
+        <th>{{ item.productCategory }}</th>
+        <th>{{ item.quantity }}</th>
 
         <td>
           <button class="delete" (click)="deleteSalida(i)">
