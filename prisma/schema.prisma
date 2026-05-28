@@ -161,6 +161,7 @@ model SerialNumber {
 model Salida {
   id        String          @id @default(uuid())
   createdAt DateTime        @default(now())
+  asignadoA String?
   detalles  SalidaDetalle[]
   userId    String
   user      Users           @relation(fields: [userId], references: [id], onDelete: Cascade)

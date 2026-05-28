@@ -98,7 +98,7 @@ export class SalidaService {
   }
 
   async crearSalida(body: any) {
-    let { productos, userId } = body;
+    let { productos, userId, asignadoA } = body;
 
     if (!productos || !Array.isArray(productos) || productos.length === 0) {
       throw new BadRequestException("Debe enviar al menos un producto");
@@ -122,15 +122,17 @@ export class SalidaService {
       }
 
       const salida = await prisma.salida.create({
-        data: {
-          userId: body.userId,
-          detalles: {
-            create: productos.map(item => ({
-              productId: item.productId,
-              quantity: item.quantity,
-            })),
-          },
-        },
+  data: {
+    userId: body.userId,
+    asignadoA, 
+
+    detalles: {
+      create: productos.map(item => ({
+        productId: item.productId,
+        quantity: item.quantity,
+      })),
+    },
+  },
         include: {
           user: true,
           detalles: { include: { product: true } },
