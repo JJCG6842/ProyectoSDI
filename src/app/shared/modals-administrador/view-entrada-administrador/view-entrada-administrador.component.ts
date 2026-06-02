@@ -132,6 +132,8 @@ export class ViewEntradaAdministradorComponent implements OnInit {
 
     doc.setFontSize(12);
     doc.text(`Fecha: ${new Date(this.entrada.createdAt).toLocaleDateString()}`, 50, 35);
+    doc.text(`Tipo: ${this.entrada.guia? 'GUIA': 'DIRECTA'}`,50,47);
+    doc.text(`Nro Pedido: ${this.entrada.guia?.numero || '---'}`,50,53);
     doc.text(`Proveedor: ${this.entrada.supplier?.name || 'Sin proveedor'}`, 50, 41);
 
     const rows = this.entrada.detalles.map((d, index) => [
@@ -140,11 +142,11 @@ export class ViewEntradaAdministradorComponent implements OnInit {
       d.quantity,
       d.serialNumbers?.length
         ? d.serialNumbers.map(sn => sn.serial).join(', ')
-        : '---'
+        : '---',
     ]);
 
     autoTable(doc, {
-      startY: 55,
+      startY: 65,
       head: [['#', 'Producto', 'Cantidad', 'N° Serie']],
       body: rows,
       theme: 'grid',
@@ -155,121 +157,158 @@ export class ViewEntradaAdministradorComponent implements OnInit {
 
     const finalY = (doc as any).lastAutoTable.finalY + 10;
     doc.setFontSize(14);
-    doc.text(`Cantidad total: ${this.cantidadTotal}`, 14, finalY);
 
     doc.save(`Entrada-${this.entrada.id}.pdf`);
   }
 
+
   exportarExcel() {
-    if (!this.entrada) return;
-  
-    const workbook = new ExcelJS.Workbook();
-    const sheet = workbook.addWorksheet('Entrada');
-  
-    sheet.columns = [
-      { header: '#', key: 'index', width: 16 },
-      { header: 'Categoría', key: 'categoria', width: 26 },
-      { header: 'Producto', key: 'producto', width: 72 },
-      { header: 'Cantidad', key: 'cantidad', width: 16 },
-      { header: 'N° Serie', key: 'serie', width: 56 },
-    ];
-  
-    const titleRow = sheet.addRow(['Detalle de entrada']);
-  
-    sheet.mergeCells('A1:E1');
-  
-    const titleCell = titleRow.getCell(1);
-    titleCell.font = { size: 18, bold: true };
-    titleCell.alignment = {
+
+  if (!this.entrada) return;
+
+  const workbook = new ExcelJS.Workbook();
+  const sheet = workbook.addWorksheet('Entrada');
+
+  sheet.columns = [
+    { header: '#', key: 'index', width: 16 },
+    { header: 'Categoría', key: 'categoria', width: 26 },
+    { header: 'Producto', key: 'producto', width: 72 },
+    { header: 'Cantidad', key: 'cantidad', width: 16 },
+    { header: 'N° Serie', key: 'serie', width: 56 }
+  ];
+
+  // Título
+  sheet.getCell('B2').value = 'Detalle de Entrada';
+  sheet.mergeCells('B2:E2');
+
+  sheet.getCell('B2').font = {
+    size: 18,
+    bold: true
+  };
+
+  sheet.getCell('B2').alignment = {
+    horizontal: 'center',
+    vertical: 'middle'
+  };
+
+  // Datos
+  sheet.getCell('A4').value = 'Fecha:';
+  sheet.getCell('B4').value =
+    new Date(this.entrada.createdAt).toLocaleString();
+
+  sheet.getCell('A5').value = 'Proveedor:';
+  sheet.getCell('B5').value =
+    this.entrada.supplier?.name || 'Sin proveedor';
+
+  sheet.getCell('A6').value = 'Tipo:';
+  sheet.getCell('B6').value =
+    this.entrada.guia ? 'GUIA' : 'DIRECTA';
+
+  sheet.getCell('A7').value = 'Nro Pedido:';
+  sheet.getCell('B7').value =
+    this.entrada.guia?.numero || '---';
+
+  // Cabecera fila 9
+  const headerRow = sheet.getRow(9);
+
+  headerRow.values = [
+    '#',
+    'Categoría',
+    'Producto',
+    'Cantidad',
+    'N° Serie'
+  ];
+
+  headerRow.eachCell((cell) => {
+
+    cell.font = {
+      bold: true,
+      color: { argb: 'FFFFFFFF' }
+    };
+
+    cell.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FF28A745' }
+    };
+
+    cell.border = {
+      top: { style: 'thin' },
+      left: { style: 'thin' },
+      bottom: { style: 'thin' },
+      right: { style: 'thin' }
+    };
+
+    cell.alignment = {
       horizontal: 'center',
       vertical: 'middle'
     };
-  
-    titleRow.height = 25;
-  
-    sheet.addRow([]);
-  
-    sheet.addRow(['Fecha:', new Date(this.entrada.createdAt).toLocaleString()]);
-    sheet.addRow(['Proveedor:', this.entrada.supplier?.name || 'Sin proveedor']);
-  
-    sheet.addRow([]);
-  
-    const headerRow = sheet.addRow([
-      '#',
-      'Categoría',
-      'Producto',
-      'Cantidad',
-      'N° Serie'
-    ]);
-  
-    headerRow.eachCell((cell) => {
-      cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FF1F4E78' }
-      };
+
+  });
+
+  let currentRow = 10;
+
+  this.entrada.detalles.forEach((d, i) => {
+
+    const series = d.serialNumbers?.length
+      ? d.serialNumbers.map(sn => sn.serial).join(', ')
+      : '---';
+
+    const row = sheet.getRow(currentRow);
+
+    row.values = [
+      i + 1,
+      this.getCategoriaName(d.product.categoryId),
+      d.product.name,
+      d.quantity,
+      series
+    ];
+
+    row.eachCell((cell, colNumber) => {
+
       cell.border = {
         top: { style: 'thin' },
         left: { style: 'thin' },
         bottom: { style: 'thin' },
         right: { style: 'thin' }
       };
-      cell.alignment = { horizontal: 'center', vertical: 'middle' };
+
+      cell.alignment = {
+        horizontal: colNumber === 5 ? 'left' : 'center',
+        vertical: 'middle',
+        wrapText: true
+      };
+
     });
-  
-    this.entrada.detalles.forEach((d, i) => {
-      const series = d.serialNumbers?.length
-        ? d.serialNumbers.map(sn => sn.serial).join(', ')
-        : '---';
-  
-      const row = sheet.addRow([
-        i + 1,
-        this.getCategoriaName(d.product.categoryId),
-        d.product.name,
-        d.quantity,
-        series
-      ]);
-  
-      row.eachCell((cell, colNumber) => {
-        cell.border = {
-          top: { style: 'thin' },
-          left: { style: 'thin' },
-          bottom: { style: 'thin' },
-          right: { style: 'thin' }
-        };
-  
-        cell.alignment = {
-          horizontal: colNumber === 5 ? 'left' : 'center',
-          vertical: 'middle',
-          wrapText: true
-        };
-      });
-  
-      row.height = 20;
-    });
-  
-    sheet.addRow([]);
-  
-    const totalCantidad = sheet.addRow([
-      'Cantidad Total:',
-      this.cantidadTotal
-    ]);
-  
-    totalCantidad.eachCell(cell => {
-      cell.font = { bold: true };
-      cell.alignment = { horizontal: 'left' };
-    });
-  
-    workbook.xlsx.writeBuffer().then((buffer) => {
-      saveAs(
-        new Blob([buffer], {
-          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        }),
-        `Entrada-${this.entrada!.id}.xlsx`
-      );
-    });
-  }
+
+    currentRow++;
+
+  });
+
+  currentRow++;
+
+  const totalRow = sheet.getRow(currentRow);
+
+  totalRow.values = [
+    'Cantidad Total:',
+    this.cantidadTotal
+  ];
+
+  totalRow.getCell(1).font = { bold: true };
+  totalRow.getCell(2).font = { bold: true };
+
+  workbook.xlsx.writeBuffer().then((buffer) => {
+
+    saveAs(
+      new Blob([buffer], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      }),
+      `Entrada-${this.entrada!.id}.xlsx`
+    );
+
+  });
+
+}
 
   getCategoriaName(id: string): string {
     return this.categorias.find(c => c.id === id)?.name || 'No definido';

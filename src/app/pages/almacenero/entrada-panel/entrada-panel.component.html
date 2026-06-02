@@ -48,17 +48,27 @@
 
 </div>
 
-  <div>
-    <h3>Seleccione Proveedor:</h3>
-    <mat-form-field appearance="fill" style="width: 280px;">
-      <mat-label>Proveedor</mat-label>
-      <mat-select [formControl]="proveedor" [disabled]="tipoEntrada === 'GUIA'">
-        <mat-option *ngFor="let prov of proveedores" [value]="prov.id">
-          {{ prov.name }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
+  <div *ngIf="tipoEntrada === 'GUIA'">
+
+  <h3>Seleccione Proveedor:</h3>
+
+  <mat-form-field appearance="fill" style="width: 280px;">
+    <mat-label>Proveedor</mat-label>
+
+    <mat-select [formControl]="proveedor" [disabled]="tipoEntrada === 'GUIA'">
+
+      <mat-option
+        *ngFor="let prov of proveedores"
+        [value]="prov.id"
+      >
+        {{ prov.name }}
+      </mat-option>
+
+    </mat-select>
+
+  </mat-form-field>
+
+</div>
 
 </div>
 
@@ -83,7 +93,7 @@
     <tbody>
       <tr *ngFor="let entrada of paginadasEntradas; let i = index">
         <th>{{ (pageIndex * pageSize) + i + 1 }}</th>
-        <th>{{entrada.tipoentrada}}</th>
+        <th>{{ entrada.tipoentrada === 'DIRECTA' ? 'Entrada directa' : 'Pedido' }}</th>
         <th>{{entrada.guiaRemision?.numeroGuia || '---'}}</th>
         <th>{{entrada.productName}}</th>
         <th>{{entrada.quantity}}</th>

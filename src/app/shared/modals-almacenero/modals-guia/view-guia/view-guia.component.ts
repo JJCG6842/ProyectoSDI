@@ -235,7 +235,7 @@ export class ViewGuiaComponent implements OnInit,AfterViewInit{
   );
 
   doc.save(
-    `Guia-${this.guia.numero}.pdf`
+    `Pedido-${this.guia.numero}.pdf`
   );
 }
 
@@ -243,91 +243,69 @@ exportarExcel() {
 
   if (!this.guia) return;
 
-  const workbook =
-    new ExcelJS.Workbook();
-
-  const sheet =
-    workbook.addWorksheet(
-      'Guia Remision'
-    );
+  const workbook = new ExcelJS.Workbook();
+  const sheet = workbook.addWorksheet('Guia Remision');
 
   sheet.columns = [
-
     {
       header: '#',
       key: 'index',
-      width: 10
+      width: 21
     },
-
     {
       header: 'Producto',
       key: 'producto',
-      width: 40
+      width: 60
     },
-
     {
       header: 'Cantidad',
       key: 'cantidad',
       width: 15
     },
-
     {
       header: 'N° Serie',
       key: 'serie',
       width: 60
     }
-
   ];
 
-  const titleRow =
-    sheet.addRow([
-      'Detalle del Pedido'
-    ]);
+  sheet.getCell('B2').value = 'Detalle del Pedido';
+  sheet.mergeCells('B2:D2');
 
-  sheet.mergeCells('A1:D1');
-
-  titleRow.getCell(1).font = {
+  sheet.getCell('B2').font = {
     size: 18,
     bold: true
   };
 
-  titleRow.getCell(1).alignment = {
-    horizontal: 'center'
+  sheet.getCell('B2').alignment = {
+    horizontal: 'center',
+    vertical: 'middle'
   };
 
-  sheet.addRow([]);
+  sheet.getCell('A4').value = 'Numero:';
+  sheet.getCell('B4').value = this.guia.numero;
 
-  sheet.addRow([
-    'Numero:',
-    this.guia.numero
-  ]);
+  sheet.getCell('A5').value = 'Fecha:';
+  sheet.getCell('B5').value = new Date(
+    this.guia.createdAt
+  ).toLocaleString();
 
-  sheet.addRow([
-    'Fecha:',
-    new Date(
-      this.guia.createdAt
-    ).toLocaleString()
-  ]);
+  sheet.getCell('A6').value = 'Proveedor:';
+  sheet.getCell('B6').value =
+    this.guia.supplier?.name || '';
 
-  sheet.addRow([
-    'Proveedor:',
-    this.guia.supplier?.name
-  ]);
+  sheet.getCell('A7').value = 'Estado:';
+  sheet.getCell('B7').value =
+    this.guia.estado;
 
-  sheet.addRow([
-    'Estado:',
-    this.guia.estado
-  ]);
+  const headerRow = sheet.getRow(9);
 
-  sheet.addRow([]);
-
-  const headerRow =
-    sheet.addRow([
-      '#',
-      'Producto',
-      'Cantidad',
-      'N° Serie'
-    ]);
+  headerRow.values = [
+    '#',
+    'Producto',
+    'Cantidad',
+    'N° Serie'
+  ];
 
   headerRow.eachCell((cell) => {
 
@@ -353,77 +331,79 @@ exportarExcel() {
 
   });
 
+  let currentRow = 10;
+
   this.guia.detalles.forEach(
-    (d:any, i:number) => {
+    (d: any, i: number) => {
 
       const series =
         d.serialNumbers?.length
           ? d.serialNumbers
-              .map((s:any) => s.serial)
+              .map((s: any) => s.serial)
               .join(', ')
           : '---';
 
-      const row =
-        sheet.addRow([
+      const row = sheet.getRow(currentRow);
 
-          i + 1,
-
-          d.product?.name,
-
-          d.cantidad,
-
-          series
-
-        ]);
+      row.values = [
+        i + 1,
+        d.product?.name,
+        d.cantidad,
+        series
+      ];
 
       row.eachCell((cell, colNumber) => {
 
         cell.alignment = {
-
           horizontal:
             colNumber === 4
               ? 'left'
               : 'center',
-
           vertical: 'middle',
-
           wrapText: true
         };
 
       });
 
-    });
+      currentRow++;
 
-  sheet.addRow([]);
+    }
+  );
 
-  const totalRow =
-    sheet.addRow([
-      'Cantidad Total:',
-      this.cantidadTotal
-    ]);
+  currentRow++;
 
-  totalRow.eachCell((cell) => {
 
-    cell.font = {
-      bold: true
-    };
+  const totalRow = sheet.getRow(currentRow);
 
-  });
+  totalRow.values = [
+    'Cantidad Total:',
+    this.cantidadTotal
+  ];
+
+  totalRow.getCell(1).font = {
+    bold: true
+  };
+
+  totalRow.getCell(2).font = {
+    bold: true
+  };
+
+  totalRow.getCell(2).alignment = {
+    horizontal: 'left'
+  };
 
   workbook.xlsx.writeBuffer()
     .then((buffer) => {
 
       saveAs(
-
-        new Blob([buffer], {
-
-          type:
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-
-        }),
-
+        new Blob(
+          [buffer],
+          {
+            type:
+              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+          }
+        ),
         `Guia-${this.guia.numero}.xlsx`
-
       );
 
     });

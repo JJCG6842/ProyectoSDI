@@ -304,4 +304,7 @@ editAlmacen(almacen: Almacen) {
   salidas() {
     this.router.navigate(['/almacenero/salida-almacenero'])
   }
+  guia(){
+    this.router.navigate(['/almacenero/guia-remision-almacenero'])
+  }
 }

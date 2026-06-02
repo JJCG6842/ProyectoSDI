@@ -150,59 +150,138 @@ export class ViewSalidaAdministradorComponent implements OnInit {
   }
 
   exportarExcel() {
-    if (!this.salida) return;
 
-    const workbook = new ExcelJS.Workbook();
-    const sheet = workbook.addWorksheet('Salida');
+  if (!this.salida) return;
 
-    sheet.columns = [
-      { header: '#', key: 'index', width: 20 },
-      { header: 'Categoría', key: 'categoria', width: 30 },
-      { header: 'Producto', key: 'producto', width: 62 },
-      { header: 'Cantidad', key: 'cantidad', width: 21 },
+  const workbook = new ExcelJS.Workbook();
+  const sheet = workbook.addWorksheet('Salida');
+
+  sheet.columns = [
+    { header: '#', key: 'index', width: 20 },
+    { header: 'Categoría', key: 'categoria', width: 30 },
+    { header: 'Producto', key: 'producto', width: 86 },
+    { header: 'Cantidad', key: 'cantidad', width: 21 }
+  ];
+
+  sheet.getCell('B2').value = 'Detalle de Salida';
+  sheet.mergeCells('B2:D2');
+
+  sheet.getCell('B2').font = {
+    size: 18,
+    bold: true
+  };
+
+  sheet.getCell('B2').alignment = {
+    horizontal: 'center',
+    vertical: 'middle'
+  };
+
+  sheet.getCell('A4').value = 'Fecha:';
+  sheet.getCell('B4').value =
+    new Date(this.salida.createdAt).toLocaleString();
+
+  sheet.getCell('A5').value = 'Usuario:';
+  sheet.getCell('B5').value =
+    this.salida.user?.nombre || 'N/A';
+
+  sheet.getCell('A6').value = 'Asignado a:';
+  sheet.getCell('B6').value =
+    this.salida.asignadoA || 'N/A';
+
+  const headerRow = sheet.getRow(9);
+
+  headerRow.values = [
+    '#',
+    'Categoría',
+    'Producto',
+    'Cantidad'
+  ];
+
+  headerRow.eachCell((cell) => {
+
+    cell.font = {
+      bold: true,
+      color: { argb: 'FFFFFFFF' }
+    };
+
+    cell.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFDC3545' }
+    };
+
+    cell.border = {
+      top: { style: 'thin' },
+      left: { style: 'thin' },
+      bottom: { style: 'thin' },
+      right: { style: 'thin' }
+    };
+
+    cell.alignment = {
+      horizontal: 'center',
+      vertical: 'middle'
+    };
+
+  });
+
+  let currentRow = 10;
+
+  this.salida.detalles.forEach((d, i) => {
+
+    const row = sheet.getRow(currentRow);
+
+    row.values = [
+      i + 1,
+      this.getCategoriaName(d.product.categoryId),
+      d.product.name,
+      d.quantity
     ];
 
-    const titleRow = sheet.addRow(['Detalle de Salida']);
-    titleRow.font = { size: 18, bold: true };
-    sheet.mergeCells('A1:D1');
-    titleRow.alignment = { horizontal: 'center' };
+    row.eachCell((cell) => {
 
-    sheet.addRow([]);
-    sheet.addRow(['Fecha:', new Date(this.salida.createdAt).toLocaleString()]);
-    sheet.addRow(['Usuario:', this.salida.user?.nombre || 'N/A']);
-    sheet.addRow(['Asignado a:', this.salida.asignadoA || 'N/A']);
-    sheet.addRow([]);
+      cell.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' }
+      };
 
-    const headerRow = sheet.addRow(['#', 'Categoría', 'Producto', 'Cantidad']);
-    headerRow.eachCell((cell) => {
-      cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
-      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
-      cell.alignment = { horizontal: 'center' };
+      cell.alignment = {
+        horizontal: 'center',
+        vertical: 'middle',
+        wrapText: true
+      };
+
     });
 
-    this.salida.detalles.forEach((d, i) => {
-      const row = sheet.addRow([
-        i + 1,
-        this.getCategoriaName(d.product.categoryId),
-        d.product.name,
-        d.quantity,
-      ]);
-      row.eachCell((cell) => {
-        cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
-        cell.alignment = { horizontal: 'center' };
-      });
-    });
+    row.height = 30;
 
-    sheet.addRow([]);
-    const totalCantidad = sheet.addRow(['Cantidad Total:', this.cantidadTotal]);
-    totalCantidad.eachCell((cell) => (cell.font = { bold: true }));
+    currentRow++;
 
-    workbook.xlsx.writeBuffer().then((buffer) => {
-      saveAs(
-        new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
-        `Salida-${this.salida!.id}.xlsx`
-      );
-    });
-  }
+  });
+
+  currentRow++;
+
+  const totalRow = sheet.getRow(currentRow);
+
+  totalRow.values = [
+    'Cantidad Total:',
+    this.cantidadTotal
+  ];
+
+  totalRow.getCell(1).font = { bold: true };
+  totalRow.getCell(2).font = { bold: true };
+
+  workbook.xlsx.writeBuffer().then((buffer) => {
+
+    saveAs(
+      new Blob([buffer], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      }),
+      `Salida-${this.salida!.id}.xlsx`
+    );
+
+  });
+
+}
 }

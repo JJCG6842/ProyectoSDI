@@ -65,7 +65,7 @@ export class EntradaPanelComponent implements OnInit, AfterViewInit {
     private route: Router
   ) {
     this.formProveedor = this.fb.group({
-      proveedor: ['', Validators.required]
+      proveedor: ['']
     });
   }
 
@@ -193,7 +193,7 @@ cargarGuia() {
         const { productId, productName, quantity,category,serialNumbers } = result;
 
 
-        this.entradasRegistradas.push({ productId, productName, quantity, category, serialNumbers });
+        this.entradasRegistradas.push({ tipoentrada: this.tipoEntrada,guiaRemision: null, productId, productName, quantity, category, serialNumbers });
 
         this.pageIndex = 0;
         this.aplicarPaginacion();
@@ -218,14 +218,18 @@ cargarGuia() {
     return;
   }
 
-  if (!this.proveedor.value) {
-    this.dialog.open(ProveedorNullComponent, {
-      width: '400px',
-      maxWidth: 'none',
-      panelClass: 'custom-dialog-container'
-    });
-    return;
-  }
+  if (
+  this.tipoEntrada === 'GUIA' &&
+  !this.proveedor.value
+) {
+  this.dialog.open(ProveedorNullComponent, {
+    width: '400px',
+    maxWidth: 'none',
+    panelClass: 'custom-dialog-container'
+  });
+
+  return;
+}
 
   const productos = this.entradasRegistradas.map(p => ({
     productId: p.productId,
@@ -235,12 +239,17 @@ cargarGuia() {
 
   const payload = {
   tipoentrada: this.tipoEntrada,
-  supplierId: this.proveedor.value,
+
+  supplierId:
+    this.tipoEntrada === 'GUIA'
+      ? this.proveedor.value
+      : null,
 
   guiaId:
     this.tipoEntrada === 'GUIA'
       ? this.guiaSeleccionadaId
       : null,
+
   productos
 };
 

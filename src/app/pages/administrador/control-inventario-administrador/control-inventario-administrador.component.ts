@@ -262,6 +262,10 @@ export class ControlInventarioAdministradorComponent implements OnInit {
       });
     }
 
+  guia(){
+    this.router.navigate(['/administrador/guia-remision-administrador'])
+  }
+
   entradas() {
     this.router.navigate(['/administrador/entrada-administrador'])
   }

@@ -385,62 +385,61 @@ return (
   exportarExcel() {
 
   const workbook = new ExcelJS.Workbook();
-
-  const sheet =
-    workbook.addWorksheet('Kardex');
+  const sheet = workbook.addWorksheet('Kardex');
 
   sheet.columns = [
-    { header: '#', key: 'index', width: 10 },
-    { header: 'Fecha', key: 'fecha', width: 20 },
-    { header: 'Movimiento', key: 'movimiento', width: 20 },
-    { header: 'Producto', key: 'producto', width: 50 },
-    { header: 'Cantidad', key: 'cantidad', width: 15 },
-    { header: 'Restante', key: 'restante', width: 15 },
+    { header: '#', key: 'index', width: 20 },
+    { header: 'Fecha', key: 'fecha', width: 17 },
+    { header: 'Movimiento', key: 'movimiento', width: 17 },
+    { header: 'Producto', key: 'producto', width: 65 },
+    { header: 'Cantidad', key: 'cantidad', width: 12 },
+    { header: 'Restante', key: 'restante', width: 12 }
   ];
 
-  const titleRow =
-    sheet.addRow(['Reporte de Kardex']);
+  sheet.getCell('D2').value = 'Reporte de Kardex';
+  sheet.mergeCells('D2:F2');
 
-  titleRow.font = {
+  sheet.getCell('D2').font = {
     size: 18,
     bold: true
   };
 
-  sheet.mergeCells('A1:F1');
-
-  titleRow.alignment = {
-    horizontal: 'center'
+  sheet.getCell('D2').alignment = {
+    horizontal: 'center',
+    vertical: 'middle'
   };
 
-  sheet.addRow([]);
+  sheet.getCell('A4').value = 'Fecha de generación:';
+  sheet.getCell('B4').value = new Date().toLocaleString();
 
-  sheet.addRow([
-    'Fecha de generación:',
-    new Date().toLocaleString()
-  ]);
+  const headerRow = sheet.getRow(6);
 
-  sheet.addRow([]);
-
-  const headerRow = sheet.addRow([
+  headerRow.values = [
     '#',
     'Fecha',
     'Movimiento',
     'Producto',
     'Cantidad',
     'Restante'
-  ]);
+  ];
+
+  headerRow.height = 22;
 
   headerRow.eachCell((cell) => {
 
     cell.font = {
       bold: true,
-      color: { argb: 'FFFFFFFF' }
+      color: {
+        argb: 'FFFFFFFF'
+      }
     };
 
     cell.fill = {
       type: 'pattern',
       pattern: 'solid',
-      fgColor: { argb: 'FF1F4E78' }
+      fgColor: {
+        argb: 'FF00B0F0'
+      }
     };
 
     cell.border = {
@@ -451,23 +450,30 @@ return (
     };
 
     cell.alignment = {
-      horizontal: 'center'
+      horizontal: 'center',
+      vertical: 'middle'
     };
 
   });
 
+  let currentRow = 7;
+
   this.movimientosFiltrados.forEach((m, i) => {
 
-    const row = sheet.addRow([
+    const row = sheet.getRow(currentRow);
+
+    row.values = [
       i + 1,
       new Date(m.fecha).toLocaleDateString(),
       m.movimiento,
       m.producto,
       m.cantidad,
       m.restante
-    ]);
+    ];
 
-    row.eachCell((cell) => {
+    row.height = 38;
+
+    row.eachCell((cell, colNumber) => {
 
       cell.border = {
         top: { style: 'thin' },
@@ -477,14 +483,16 @@ return (
       };
 
       cell.alignment = {
-        horizontal: 'center'
+        horizontal: colNumber === 4 ? 'left' : 'center',
+        vertical: 'middle',
+        wrapText: true
       };
 
     });
 
-  });
+    currentRow++;
 
-  sheet.addRow([]);
+  });
 
   const totalEntradas =
     this.movimientosFiltrados
@@ -499,33 +507,36 @@ return (
   const saldoFinal =
     totalEntradas - totalSalidas;
 
-  const totalsRow = sheet.addRow([
-    '',
-    '',
-    '',
+  currentRow++;
+
+  const totalsRow = sheet.getRow(currentRow);
+
+  totalsRow.values = [
     'Totales:',
     `E: ${totalEntradas} / S: ${totalSalidas}`,
     saldoFinal
-  ]);
+  ];
 
-  totalsRow.eachCell(cell => {
-    cell.font = { bold: true };
-  });
+  totalsRow.getCell(1).font = {
+    bold: true
+  };
+
+  totalsRow.getCell(2).font = {
+    bold: true
+  };
+
+  totalsRow.getCell(3).font = {
+    bold: true
+  };
 
   workbook.xlsx.writeBuffer().then((buffer) => {
 
     saveAs(
-
-      new Blob(
-        [buffer],
-        {
-          type:
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        }
-      ),
-
+      new Blob([buffer], {
+        type:
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      }),
       `Kardex-${Date.now()}.xlsx`
-
     );
 
   });

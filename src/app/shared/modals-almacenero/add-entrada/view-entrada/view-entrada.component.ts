@@ -163,6 +163,7 @@ export class ViewEntradaComponent implements OnInit {
 
 
   exportarExcel() {
+
   if (!this.entrada) return;
 
   const workbook = new ExcelJS.Workbook();
@@ -173,73 +174,98 @@ export class ViewEntradaComponent implements OnInit {
     { header: 'Categoría', key: 'categoria', width: 26 },
     { header: 'Producto', key: 'producto', width: 72 },
     { header: 'Cantidad', key: 'cantidad', width: 16 },
-    { header: 'N° Serie', key: 'serie', width: 56 },
+    { header: 'N° Serie', key: 'serie', width: 56 }
   ];
 
-  const titleRow = sheet.addRow(['Detalle de entrada']);
+  // Título
+  sheet.getCell('B2').value = 'Detalle de Entrada';
+  sheet.mergeCells('B2:E2');
 
-  sheet.mergeCells('A1:E1');
+  sheet.getCell('B2').font = {
+    size: 18,
+    bold: true
+  };
 
-  const titleCell = titleRow.getCell(1);
-  titleCell.font = { size: 18, bold: true };
-  titleCell.alignment = {
+  sheet.getCell('B2').alignment = {
     horizontal: 'center',
     vertical: 'middle'
   };
 
-  titleRow.height = 25;
+  // Datos
+  sheet.getCell('A4').value = 'Fecha:';
+  sheet.getCell('B4').value =
+    new Date(this.entrada.createdAt).toLocaleString();
 
-  sheet.addRow([]);
+  sheet.getCell('A5').value = 'Proveedor:';
+  sheet.getCell('B5').value =
+    this.entrada.supplier?.name || 'Sin proveedor';
 
-  sheet.addRow(['Fecha:', new Date(this.entrada.createdAt).toLocaleString()]);
-  sheet.addRow(['Proveedor:', this.entrada.supplier?.name || 'Sin proveedor']);
-  sheet.addRow(['Tipo:', this.entrada.guia ? 'GUIA' : 'DIRECTA']);
+  sheet.getCell('A6').value = 'Tipo:';
+  sheet.getCell('B6').value =
+    this.entrada.guia ? 'GUIA' : 'DIRECTA';
 
-sheet.addRow([
-  'Nro Pedido:',
-  this.entrada.guia?.numero || '---'
-]);
+  sheet.getCell('A7').value = 'Nro Pedido:';
+  sheet.getCell('B7').value =
+    this.entrada.guia?.numero || '---';
 
-  sheet.addRow([]);
+  // Cabecera fila 9
+  const headerRow = sheet.getRow(9);
 
-  const headerRow = sheet.addRow([
+  headerRow.values = [
     '#',
     'Categoría',
     'Producto',
     'Cantidad',
     'N° Serie'
-  ]);
+  ];
 
   headerRow.eachCell((cell) => {
-    cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+
+    cell.font = {
+      bold: true,
+      color: { argb: 'FFFFFFFF' }
+    };
+
     cell.fill = {
       type: 'pattern',
       pattern: 'solid',
-      fgColor: { argb: 'FF1F4E78' }
+      fgColor: { argb: 'FF28A745' }
     };
+
     cell.border = {
       top: { style: 'thin' },
       left: { style: 'thin' },
       bottom: { style: 'thin' },
       right: { style: 'thin' }
     };
-    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+
+    cell.alignment = {
+      horizontal: 'center',
+      vertical: 'middle'
+    };
+
   });
 
+  let currentRow = 10;
+
   this.entrada.detalles.forEach((d, i) => {
+
     const series = d.serialNumbers?.length
       ? d.serialNumbers.map(sn => sn.serial).join(', ')
       : '---';
 
-    const row = sheet.addRow([
+    const row = sheet.getRow(currentRow);
+
+    row.values = [
       i + 1,
       this.getCategoriaName(d.product.categoryId),
       d.product.name,
       d.quantity,
       series
-    ]);
+    ];
 
     row.eachCell((cell, colNumber) => {
+
       cell.border = {
         top: { style: 'thin' },
         left: { style: 'thin' },
@@ -252,31 +278,36 @@ sheet.addRow([
         vertical: 'middle',
         wrapText: true
       };
+
     });
 
-    row.height = 20;
+    currentRow++;
+
   });
 
-  sheet.addRow([]);
+  currentRow++;
 
-  const totalCantidad = sheet.addRow([
+  const totalRow = sheet.getRow(currentRow);
+
+  totalRow.values = [
     'Cantidad Total:',
     this.cantidadTotal
-  ]);
+  ];
 
-  totalCantidad.eachCell(cell => {
-    cell.font = { bold: true };
-    cell.alignment = { horizontal: 'left' };
-  });
+  totalRow.getCell(1).font = { bold: true };
+  totalRow.getCell(2).font = { bold: true };
 
   workbook.xlsx.writeBuffer().then((buffer) => {
+
     saveAs(
       new Blob([buffer], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       }),
       `Entrada-${this.entrada!.id}.xlsx`
     );
+
   });
+
 }
 
   getCategoriaName(id: string): string {

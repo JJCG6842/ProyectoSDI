@@ -385,153 +385,164 @@ return (
 }
 
   exportarExcel() {
-  
-    const workbook = new ExcelJS.Workbook();
-  
-    const sheet =
-      workbook.addWorksheet('Kardex');
-  
-    sheet.columns = [
-      { header: '#', key: 'index', width: 10 },
-      { header: 'Fecha', key: 'fecha', width: 20 },
-      { header: 'Movimiento', key: 'movimiento', width: 20 },
-      { header: 'Producto', key: 'producto', width: 50 },
-      { header: 'Cantidad', key: 'cantidad', width: 15 },
-      { header: 'Restante', key: 'restante', width: 15 },
+
+  const workbook = new ExcelJS.Workbook();
+  const sheet = workbook.addWorksheet('Kardex');
+
+  sheet.columns = [
+    { header: '#', key: 'index', width: 20 },
+    { header: 'Fecha', key: 'fecha', width: 17 },
+    { header: 'Movimiento', key: 'movimiento', width: 17 },
+    { header: 'Producto', key: 'producto', width: 65 },
+    { header: 'Cantidad', key: 'cantidad', width: 12 },
+    { header: 'Restante', key: 'restante', width: 12 }
+  ];
+
+  sheet.getCell('D2').value = 'Reporte de Kardex';
+  sheet.mergeCells('D2:F2');
+
+  sheet.getCell('D2').font = {
+    size: 18,
+    bold: true
+  };
+
+  sheet.getCell('D2').alignment = {
+    horizontal: 'center',
+    vertical: 'middle'
+  };
+
+  sheet.getCell('A4').value = 'Fecha de generación:';
+  sheet.getCell('B4').value = new Date().toLocaleString();
+
+  const headerRow = sheet.getRow(6);
+
+  headerRow.values = [
+    '#',
+    'Fecha',
+    'Movimiento',
+    'Producto',
+    'Cantidad',
+    'Restante'
+  ];
+
+  headerRow.height = 22;
+
+  headerRow.eachCell((cell) => {
+
+    cell.font = {
+      bold: true,
+      color: {
+        argb: 'FFFFFFFF'
+      }
+    };
+
+    cell.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: {
+        argb: 'FF00B0F0'
+      }
+    };
+
+    cell.border = {
+      top: { style: 'thin' },
+      left: { style: 'thin' },
+      bottom: { style: 'thin' },
+      right: { style: 'thin' }
+    };
+
+    cell.alignment = {
+      horizontal: 'center',
+      vertical: 'middle'
+    };
+
+  });
+
+  let currentRow = 7;
+
+  this.movimientosFiltrados.forEach((m, i) => {
+
+    const row = sheet.getRow(currentRow);
+
+    row.values = [
+      i + 1,
+      new Date(m.fecha).toLocaleDateString(),
+      m.movimiento,
+      m.producto,
+      m.cantidad,
+      m.restante
     ];
-  
-    const titleRow =
-      sheet.addRow(['Reporte de Kardex']);
-  
-    titleRow.font = {
-      size: 18,
-      bold: true
-    };
-  
-    sheet.mergeCells('A1:F1');
-  
-    titleRow.alignment = {
-      horizontal: 'center'
-    };
-  
-    sheet.addRow([]);
-  
-    sheet.addRow([
-      'Fecha de generación:',
-      new Date().toLocaleString()
-    ]);
-  
-    sheet.addRow([]);
-  
-    const headerRow = sheet.addRow([
-      '#',
-      'Fecha',
-      'Movimiento',
-      'Producto',
-      'Cantidad',
-      'Restante'
-    ]);
-  
-    headerRow.eachCell((cell) => {
-  
-      cell.font = {
-        bold: true,
-        color: { argb: 'FFFFFFFF' }
-      };
-  
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FF1F4E78' }
-      };
-  
+
+    row.height = 38;
+
+    row.eachCell((cell, colNumber) => {
+
       cell.border = {
         top: { style: 'thin' },
         left: { style: 'thin' },
         bottom: { style: 'thin' },
         right: { style: 'thin' }
       };
-  
+
       cell.alignment = {
-        horizontal: 'center'
+        horizontal: colNumber === 4 ? 'left' : 'center',
+        vertical: 'middle',
+        wrapText: true
       };
-  
+
     });
-  
-    this.movimientosFiltrados.forEach((m, i) => {
-  
-      const row = sheet.addRow([
-        i + 1,
-        new Date(m.fecha).toLocaleDateString(),
-        m.movimiento,
-        m.producto,
-        m.cantidad,
-        m.restante
-      ]);
-  
-      row.eachCell((cell) => {
-  
-        cell.border = {
-          top: { style: 'thin' },
-          left: { style: 'thin' },
-          bottom: { style: 'thin' },
-          right: { style: 'thin' }
-        };
-  
-        cell.alignment = {
-          horizontal: 'center'
-        };
-  
-      });
-  
-    });
-  
-    sheet.addRow([]);
-  
-    const totalEntradas =
-      this.movimientosFiltrados
-        .filter(m => m.movimiento === 'Entrada')
-        .reduce((a, b) => a + b.cantidad, 0);
-  
-    const totalSalidas =
-      this.movimientosFiltrados
-        .filter(m => m.movimiento === 'Salida')
-        .reduce((a, b) => a + b.cantidad, 0);
-  
-    const saldoFinal =
-      totalEntradas - totalSalidas;
-  
-    const totalsRow = sheet.addRow([
-      '',
-      '',
-      '',
-      'Totales:',
-      `E: ${totalEntradas} / S: ${totalSalidas}`,
-      saldoFinal
-    ]);
-  
-    totalsRow.eachCell(cell => {
-      cell.font = { bold: true };
-    });
-  
-    workbook.xlsx.writeBuffer().then((buffer) => {
-  
-      saveAs(
-  
-        new Blob(
-          [buffer],
-          {
-            type:
-              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-          }
-        ),
-  
-        `Kardex-${Date.now()}.xlsx`
-  
-      );
-  
-    });
-  
-  }
+
+    currentRow++;
+
+  });
+
+  const totalEntradas =
+    this.movimientosFiltrados
+      .filter(m => m.movimiento === 'Entrada')
+      .reduce((a, b) => a + b.cantidad, 0);
+
+  const totalSalidas =
+    this.movimientosFiltrados
+      .filter(m => m.movimiento === 'Salida')
+      .reduce((a, b) => a + b.cantidad, 0);
+
+  const saldoFinal =
+    totalEntradas - totalSalidas;
+
+  currentRow++;
+
+  const totalsRow = sheet.getRow(currentRow);
+
+  totalsRow.values = [
+    'Totales:',
+    `E: ${totalEntradas} / S: ${totalSalidas}`,
+    saldoFinal
+  ];
+
+  totalsRow.getCell(1).font = {
+    bold: true
+  };
+
+  totalsRow.getCell(2).font = {
+    bold: true
+  };
+
+  totalsRow.getCell(3).font = {
+    bold: true
+  };
+
+  workbook.xlsx.writeBuffer().then((buffer) => {
+
+    saveAs(
+      new Blob([buffer], {
+        type:
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      }),
+      `Kardex-${Date.now()}.xlsx`
+    );
+
+  });
+
+}
 
 }
