@@ -18,9 +18,16 @@ export class EntradaController {
 
   @Post()
   crearEntrada(
-    @Body() body: {supplierId?: string; productos: { productId: string; quantity: number;
-      serialNumbers?:string[];
-     }[] },
+    @Body() body: {
+  supplierId?: string;
+  guiaId?: string;
+
+  productos: {
+    productId: string;
+    quantity: number;
+    serialNumbers?: string[];
+  }[];
+},
   ) {
     return this.entradasService.createEntrada(body);
   }

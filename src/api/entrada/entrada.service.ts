@@ -100,10 +100,12 @@ export class EntradaService {
       p.serialNumbers &&
       p.serialNumbers.length !== p.quantity
     ) {
-      throw new BadRequestException(
-        `La cantidad (${p.quantity}) no coincide con los números de serie enviados (${p.serialNumbers.length}) para el producto ${p.productId}`
-      );
+      throw new BadRequestException(`La cantidad (${p.quantity}) no coincide con los números de serie enviados (${p.serialNumbers.length}) para el producto ${p.productId}`);
     }
+
+    if (data.guiaId && !data.supplierId) {
+      throw new BadRequestException('La entrada por guía requiere proveedor');
+}
 
     if (p.serialNumbers) {
 
