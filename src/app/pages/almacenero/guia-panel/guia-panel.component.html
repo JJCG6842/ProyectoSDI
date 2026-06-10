@@ -4,12 +4,8 @@
 
   <div class="botons">
 
-    <button
-      class="salida"
-      (click)="gestor()"
-      style="background-color: blueviolet;"
-    >
-      Guia de remision
+    <button class="salida" (click)="gestor()" style="background-color: blueviolet;">
+      Gestion de pedidos
     </button>
 
     <button class="add" (click)="addProduct()">
@@ -31,10 +27,7 @@
 
       <mat-select [formControl]="proveedor">
 
-        <mat-option
-          *ngFor="let prov of proveedores"
-          [value]="prov.id"
-        >
+        <mat-option *ngFor="let prov of proveedores" [value]="prov.id">
           {{ prov.name }}
         </mat-option>
 
@@ -111,10 +104,6 @@
 
 <br>
 
-<button
-  class="salida"
-  style="height: 52px; width: 220px; background-color: blueviolet;"
-  (click)="realizarGuia()"
->
-  Generar guia
+<button class="salida" style="height: 52px; width: 220px; background-color: blueviolet;" (click)="realizarGuia()">
+  Generar pedido
 </button>

@@ -132,7 +132,7 @@ export class ViewEntradaComponent implements OnInit {
 
     doc.setFontSize(12);
     doc.text(`Fecha: ${new Date(this.entrada.createdAt).toLocaleDateString()}`, 50, 35);
-    doc.text(`Tipo: ${this.entrada.guia? 'GUIA': 'DIRECTA'}`,50,47);
+    doc.text(`Tipo: ${this.entrada.guia? 'PEDIDO': 'DIRECTA'}`,50,47);
     doc.text(`Nro Pedido: ${this.entrada.guia?.numero || '---'}`,50,53);
     doc.text(`Proveedor: ${this.entrada.supplier?.name || 'Sin proveedor'}`, 50, 41);
 
@@ -202,13 +202,12 @@ export class ViewEntradaComponent implements OnInit {
 
   sheet.getCell('A6').value = 'Tipo:';
   sheet.getCell('B6').value =
-    this.entrada.guia ? 'GUIA' : 'DIRECTA';
+    this.entrada.guia ? 'PEDIDO' : 'DIRECTA';
 
   sheet.getCell('A7').value = 'Nro Pedido:';
   sheet.getCell('B7').value =
     this.entrada.guia?.numero || '---';
 
-  // Cabecera fila 9
   const headerRow = sheet.getRow(9);
 
   headerRow.values = [
