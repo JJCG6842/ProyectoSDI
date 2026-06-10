@@ -248,17 +248,13 @@ export class ProductosService {
 });
 
 if (existingProduct) {
-  throw new BadRequestException(
-    'Ya existe un producto con ese nombre',
-  );
+  throw new BadRequestException('Ya existe un producto con ese nombre');
 }
 
     const almacen = await this.prisma.almacen.findFirst();
 
     if (!almacen) {
-      throw new NotFoundException(
-        'No existe un almacén registrado',
-      );
+      throw new NotFoundException('No existe un almacén registrado');
     }
 
     const category = await this.prisma.category.findUnique({
@@ -268,9 +264,7 @@ if (existingProduct) {
     });
 
     if (!category) {
-      throw new NotFoundException(
-        'Categoría no encontrada',
-      );
+      throw new NotFoundException('Categoría no encontrada');
     }
 
     const subcategory = await this.prisma.subcategory.findUnique({
@@ -280,9 +274,7 @@ if (existingProduct) {
     });
 
     if (!subcategory) {
-      throw new NotFoundException(
-        'Subcategoría no encontrada',
-      );
+      throw new NotFoundException('Subcategoría no encontrada');
     }
 
     if (data.marcaId) {
@@ -293,9 +285,7 @@ if (existingProduct) {
       });
 
       if (!marca) {
-        throw new NotFoundException(
-          'Marca no encontrada',
-        );
+        throw new NotFoundException('Marca no encontrada');
       }
     }
 
@@ -353,9 +343,7 @@ if (existingProduct) {
   });
 
   if (existingProduct) {
-    throw new BadRequestException(
-      'Ya existe un producto con ese nombre',
-    );
+    throw new BadRequestException('Ya existe un producto con ese nombre');
   }
 }
 
@@ -367,9 +355,7 @@ if (existingProduct) {
       });
 
       if (!category) {
-        throw new NotFoundException(
-          'Categoría no encontrada',
-        );
+        throw new NotFoundException('Categoría no encontrada');
       }
     }
 
@@ -382,9 +368,7 @@ if (existingProduct) {
         });
 
       if (!subcategory) {
-        throw new NotFoundException(
-          'Subcategoría no encontrada',
-        );
+        throw new NotFoundException('Subcategoría no encontrada');
       }
     }
 
@@ -396,9 +380,7 @@ if (existingProduct) {
       });
 
       if (!marca) {
-        throw new NotFoundException(
-          'Marca no encontrada',
-        );
+        throw new NotFoundException('Marca no encontrada');
       }
     }
 
@@ -411,7 +393,6 @@ if (existingProduct) {
 
     return this.prisma.products.update({
       where: { id },
-
       data,
 
       include: {
@@ -466,7 +447,6 @@ if (existingProduct) {
 
     return this.prisma.products.update({
       where: { id },
-
       data: {
         state: ProductState.Habilitado,
       },
@@ -478,7 +458,6 @@ if (existingProduct) {
 
     return this.prisma.products.update({
       where: { id },
-
       data: {
         state: ProductState.Deshabilitado,
       },

@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  BadRequestException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable,BadRequestException,NotFoundException } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
 @Injectable()
@@ -41,9 +37,7 @@ export class AlmacenService {
     const existe = await this.prisma.almacen.count();
 
     if (existe > 0) {
-      throw new BadRequestException(
-        'Solo puede existir un almacén',
-      );
+      throw new BadRequestException('Solo puede existir un almacén');
     }
 
     return this.prisma.almacen.create({

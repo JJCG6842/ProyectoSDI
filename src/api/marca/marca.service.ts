@@ -5,7 +5,6 @@ import { PrismaClient, Prisma, Marca } from '@prisma/client';
 export class MarcaService {
   private prisma = new PrismaClient();
 
-  // Ver todas las marcas
   async findAll(): Promise<Marca[]> {
     return this.prisma.marca.findMany({
       include: {

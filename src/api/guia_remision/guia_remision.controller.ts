@@ -49,10 +49,8 @@ export class GuiaRemisionController {
 @Patch(':id')
 actualizarEstado(
   @Param('id') id: string,
-
   @Body()
   body: { estado: GuiaEstado }
-
 ) {
 
   return this.guiaService

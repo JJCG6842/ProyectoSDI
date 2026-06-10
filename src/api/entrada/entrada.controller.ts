@@ -21,7 +21,6 @@ export class EntradaController {
     @Body() body: {
   supplierId?: string;
   guiaId?: string;
-
   productos: {
     productId: string;
     quantity: number;

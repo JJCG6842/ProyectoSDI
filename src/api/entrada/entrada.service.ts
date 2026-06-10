@@ -55,9 +55,7 @@ export class EntradaService {
 }) {
 
   if (!data.productos?.length) {
-    throw new BadRequestException(
-      'Debe enviar al menos un producto'
-    );
+    throw new BadRequestException('Debe enviar al menos un producto');
   }
 
   const productIds = data.productos.map(
@@ -70,35 +68,22 @@ export class EntradaService {
     });
 
   if (productosDB.length !== data.productos.length) {
-    throw new NotFoundException(
-      'Uno o más productos no existen'
-    );
+    throw new NotFoundException('Uno o más productos no existen');
   }
 
   for (const p of data.productos) {
 
-    if (
-      p.serialNumbers &&
-      !Array.isArray(p.serialNumbers)
+    if (p.serialNumbers && !Array.isArray(p.serialNumbers)
     ) {
-      throw new BadRequestException(
-        `Los números de serie de ${p.productId} no tienen formato válido`
-      );
+      throw new BadRequestException(`Los números de serie de ${p.productId} no tienen formato válido`);
     }
 
-    if (
-      p.quantity > 1 &&
-      (!p.serialNumbers ||
-        p.serialNumbers.length === 0)
+    if (p.quantity > 1 && (!p.serialNumbers || p.serialNumbers.length === 0)
     ) {
-      throw new BadRequestException(
-        `Debe enviar números de serie para el producto ${p.productId}`
-      );
+      throw new BadRequestException(`Debe enviar números de serie para el producto ${p.productId}`);
     }
 
-    if (
-      p.serialNumbers &&
-      p.serialNumbers.length !== p.quantity
+    if (p.serialNumbers && p.serialNumbers.length !== p.quantity
     ) {
       throw new BadRequestException(`La cantidad (${p.quantity}) no coincide con los números de serie enviados (${p.serialNumbers.length}) para el producto ${p.productId}`);
     }
@@ -112,15 +97,11 @@ export class EntradaService {
       const set = new Set(p.serialNumbers);
 
       if (set.size !== p.serialNumbers.length) {
-        throw new BadRequestException(
-          `Hay números de serie duplicados para el producto ${p.productId}`
-        );
+        throw new BadRequestException(`Hay números de serie duplicados para el producto ${p.productId}`);
       }
     }
 
-    if (
-      p.serialNumbers &&
-      p.serialNumbers.length
+    if (p.serialNumbers && p.serialNumbers.length
     ) {
 
       const existentes =
@@ -136,8 +117,7 @@ export class EntradaService {
         });
 
       if (existentes.length > 0) {
-        throw new BadRequestException(
-          `Los siguientes números de serie ya existen: ${existentes
+        throw new BadRequestException(`Los siguientes números de serie ya existen: ${existentes
             .map(e => e.serial)
             .join(', ')}`
         );

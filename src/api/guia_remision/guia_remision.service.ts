@@ -13,9 +13,7 @@ export class GuiaRemisionService {
       include: {
 
         supplier: true,
-
         detalles: {
-
           include: {
             product: true,
             serialNumbers: true
@@ -39,9 +37,7 @@ export class GuiaRemisionService {
         include: {
 
           supplier: true,
-
           detalles: {
-
             include: {
               product: true,
               serialNumbers: true
@@ -51,10 +47,7 @@ export class GuiaRemisionService {
       });
 
     if (!guia) {
-
-      throw new NotFoundException(
-        'Guía no encontrada'
-      );
+      throw new NotFoundException('Guía no encontrada');
     }
 
     return guia;
@@ -91,7 +84,6 @@ export class GuiaRemisionService {
 
     const guiaExiste =
       await this.prisma.guiaRemision.findUnique({
-
         where: {
           numero: data.numero
         }
@@ -124,31 +116,19 @@ export class GuiaRemisionService {
 
     for (const p of data.productos) {
 
-      if (
-  p.serialNumbers &&
-  p.serialNumbers.length > 0
+      if ( p.serialNumbers && p.serialNumbers.length > 0
 ) {
-
   if (
     p.serialNumbers.length !== p.quantity
   ) {
 
-    throw new BadRequestException(
-      `Las series no coinciden con la cantidad del producto ${p.productId}`
-    );
+    throw new BadRequestException(`Las series no coinciden con la cantidad del producto ${p.productId}`);
   }
 
-  const set =
-    new Set(p.serialNumbers);
+  const set = new Set(p.serialNumbers);
 
-  if (
-    set.size !==
-    p.serialNumbers.length
-  ) {
-
-    throw new BadRequestException(
-      `Series duplicadas en el producto ${p.productId}`
-    );
+  if (set.size !== p.serialNumbers.length) {
+    throw new BadRequestException(`Series duplicadas en el producto ${p.productId}`);
   }
 }
     }
@@ -215,15 +195,11 @@ export class GuiaRemisionService {
   });
 
   if (!guia) {
-    throw new NotFoundException(
-      'Guía no encontrada'
-    );
+    throw new NotFoundException('Guía no encontrada');
   }
 
   if (guia.estado !== GuiaEstado.PENDIENTE) {
-    throw new BadRequestException(
-      'Solo se pueden editar guías pendientes'
-    );
+    throw new BadRequestException('Solo se pueden editar guías pendientes');
   }
 
   const supplier =
@@ -234,9 +210,7 @@ export class GuiaRemisionService {
     });
 
   if (!supplier) {
-    throw new NotFoundException(
-      'Proveedor no encontrado'
-    );
+    throw new NotFoundException('Proveedor no encontrado');
   }
 
   const numeroExiste =
@@ -250,9 +224,7 @@ export class GuiaRemisionService {
     });
 
   if (numeroExiste) {
-    throw new BadRequestException(
-      'Ya existe una guía con ese número'
-    );
+    throw new BadRequestException('Ya existe una guía con ese número');
   }
 
   const productIds =
@@ -269,13 +241,8 @@ export class GuiaRemisionService {
       }
     });
 
-  if (
-    productosDB.length !==
-    data.productos.length
-  ) {
-    throw new NotFoundException(
-      'Uno o más productos no existen'
-    );
+  if (productosDB.length !== data.productos.length) {
+    throw new NotFoundException('Uno o más productos no existen');
   }
 
   for (const p of data.productos) {
@@ -449,8 +416,7 @@ async deleteGuia(id: string) {
   });
 
   return {
-    message:
-      'Guía eliminada correctamente'
+    message: 'Guía eliminada correctamente'
   };
 }
 }

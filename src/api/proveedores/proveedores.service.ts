@@ -66,25 +66,17 @@ export class ProveedoresService {
 
   if (existingSupplier) {
 
-    if (
-      existingSupplier.name.toLowerCase() ===
-      data.name.toLowerCase()
+    if (existingSupplier.name.toLowerCase() === data.name.toLowerCase()
     ) {
-      throw new BadRequestException(
-        'El proveedor ya existe',
-      );
+      throw new BadRequestException('El proveedor ya existe');
     }
 
     if (existingSupplier.ruc === data.ruc) {
-      throw new BadRequestException(
-        'El RUC ya está registrado',
-      );
+      throw new BadRequestException('El RUC ya está registrado');
     }
 
     if (existingSupplier.phone === data.phone) {
-      throw new BadRequestException(
-        'El teléfono ya está registrado',
-      );
+      throw new BadRequestException('El teléfono ya está registrado');
     }
   }
 
@@ -131,32 +123,19 @@ export class ProveedoresService {
 
   if (existingSupplier) {
 
-    if (
-      data.name &&
-      existingSupplier.name.toLowerCase() ===
-        data.name.toLowerCase()
+    if ( data.name && existingSupplier.name.toLowerCase() === data.name.toLowerCase()
     ) {
-      throw new BadRequestException(
-        'El proveedor ya existe',
-      );
+      throw new BadRequestException('El proveedor ya existe');
     }
 
-    if (
-      data.ruc &&
-      existingSupplier.ruc === data.ruc
+    if (data.ruc && existingSupplier.ruc === data.ruc
     ) {
-      throw new BadRequestException(
-        'El RUC ya está registrado',
-      );
+      throw new BadRequestException('El RUC ya está registrado');
     }
 
-    if (
-      data.phone &&
-      existingSupplier.phone === data.phone
+    if (data.phone && existingSupplier.phone === data.phone
     ) {
-      throw new BadRequestException(
-        'El teléfono ya está registrado',
-      );
+      throw new BadRequestException('El teléfono ya está registrado');
     }
   }
 
