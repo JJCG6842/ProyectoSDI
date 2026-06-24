@@ -19,6 +19,7 @@ import { AddEntradaSuccessComponent } from '../../../shared/modals-almacenero/ad
 import { ProductNullComponent } from '../../../shared/modals-almacenero/add-entrada/modals-entrada/product-null/product-null.component';
 import { ProveedorNullComponent } from '../../../shared/modals-almacenero/add-entrada/modals-entrada/proveedor-null/proveedor-null.component';
 import { shareReplay } from 'rxjs';
+import { CreateGuiaSuccessComponent } from '../../../shared/modals-almacenero/modals-guia/create-guia-success/create-guia-success.component';
 
 @Component({
   selector: 'app-guia-panel',
@@ -159,12 +160,12 @@ realizarGuia() {
     next: (res) => {
 
       this.dialog.open(
-        AddEntradaSuccessComponent,
+        CreateGuiaSuccessComponent,
         {
           width: '400px',
           disableClose: true,
           data: {
-            message: 'Guía creada correctamente'
+            message: 'Pedido generado correctamente'
           }
         }
       );
