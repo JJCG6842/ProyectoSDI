@@ -33,6 +33,24 @@
   background-color: red;
 }
 
+.total-restante{
+  margin-top: 25px;
+  text-align: left;
+}
+
+.total-restante h2{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.total-restante span{
+  font-size: 26px;
+  font-weight: bold;
+}
+
 .table {
   width: 100%;
   overflow-x: auto;

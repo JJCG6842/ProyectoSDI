@@ -165,6 +165,23 @@ input.input-busqueda {
   display: flex;
 }
 
+.total-restante{
+  margin-top: 25px;
+  text-align: left;
+}
+
+.total-restante h2{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.total-restante span{
+  font-size: 26px;
+  font-weight: bold;
+}
 
 .view {
   padding: 8px 16px;

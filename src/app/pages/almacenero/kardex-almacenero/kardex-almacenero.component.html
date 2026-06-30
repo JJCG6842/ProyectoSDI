@@ -114,4 +114,13 @@
   </mat-paginator>
 </div>
 
+<div *ngIf="filtroProducto" class="total-restante">
+
+  <h2 style="position: relative; top: 26px;">
+    Monto restante:
+    <span>{{ getTotalRestante() }}</span>
+  </h2>
+
+</div>
+
 <br><br><br><br>

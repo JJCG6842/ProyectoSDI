@@ -212,6 +212,27 @@ return (
     return lista;
   }
 
+  getTotalRestante(): number | null {
+
+  if (!this.filtroProducto.trim()) {
+    return null;
+  }
+
+  const movimientosProducto = this.movimientos
+    .filter(m =>
+      m.producto.toLowerCase().includes(this.filtroProducto.toLowerCase())
+    )
+    .sort((a, b) =>
+      new Date(a.fecha).getTime() - new Date(b.fecha).getTime()
+    );
+
+  if (movimientosProducto.length === 0) {
+    return 0;
+  }
+
+  return movimientosProducto[movimientosProducto.length - 1].restante;
+}
+
   ordenarMovimientos() {
     this.movimientos.sort((a, b) =>
       this.ordenFecha === 'desc'

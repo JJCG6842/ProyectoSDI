@@ -44,7 +44,7 @@ export class EntradaPanelComponent implements OnInit, AfterViewInit {
   tipoentrada = new FormControl('', Validators.required);
   cliente = new FormControl('');
   clientes: any[] = [];
-  tipoEntrada: 'DIRECTA' | 'GUIA' = 'DIRECTA';
+  tipoEntrada: 'DIRECTA' | 'GUIA' = 'GUIA';
   entradasRegistradas: any[] = [];
   paginadasEntradas: any[] = [];
   guias: any[] = [];
@@ -65,7 +65,7 @@ export class EntradaPanelComponent implements OnInit, AfterViewInit {
     private route: Router
   ) {
     this.formProveedor = this.fb.group({
-      proveedor: ['']
+      proveedor: [{value: '', disabled: true}]
     });
   }
 
@@ -94,7 +94,7 @@ export class EntradaPanelComponent implements OnInit, AfterViewInit {
   onTipoEntradaChange() {
   this.guiaSeleccionadaId = '';
   this.entradasRegistradas = [];
-  this.proveedor.reset();
+  this.proveedor.reset('');
   this.aplicarPaginacion();
 }
 
@@ -220,7 +220,7 @@ cargarGuia() {
 
   if (
   this.tipoEntrada === 'GUIA' &&
-  !this.proveedor.value
+  !this.proveedor.getRawValue()
 ) {
   this.dialog.open(ProveedorNullComponent, {
     width: '400px',
@@ -242,7 +242,7 @@ cargarGuia() {
 
   supplierId:
     this.tipoEntrada === 'GUIA'
-      ? this.proveedor.value
+      ? this.proveedor.getRawValue()
       : null,
 
   guiaId:

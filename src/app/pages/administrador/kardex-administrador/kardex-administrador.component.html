@@ -55,24 +55,13 @@
 
   <mat-date-range-input [rangePicker]="picker">
     
-    <input
-      matStartDate
-      placeholder="Desde"
-      [(ngModel)]="fechaInicio"
-    />
+    <input matStartDate placeholder="Desde" [(ngModel)]="fechaInicio"/>
 
-    <input
-      matEndDate
-      placeholder="Hasta"
-      [(ngModel)]="fechaFin"
-    />
+    <input matEndDate placeholder="Hasta" [(ngModel)]="fechaFin"/>
 
   </mat-date-range-input>
 
-  <mat-datepicker-toggle
-    matSuffix
-    [for]="picker">
-  </mat-datepicker-toggle>
+  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
 
   <mat-date-range-picker #picker></mat-date-range-picker>
 </mat-form-field>
@@ -117,6 +106,13 @@
   <mat-paginator [length]="movimientosFiltrados.length" [pageSize]="10" [pageSizeOptions]="[5, 10, 20]"
     showFirstLastButtons (page)="onPageChange($event)">
   </mat-paginator>
+</div>
+
+<div *ngIf="filtroProducto" class="total-restante">
+  <h2 style="position: relative; top: 26px;">
+    Monto restante:
+    <span>{{ getTotalRestante() }}</span>
+  </h2>
 </div>
 
 <br><br><br><br>
