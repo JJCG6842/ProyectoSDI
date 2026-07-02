@@ -77,7 +77,7 @@
     </thead>
     <tbody>
 
-  <tr *ngFor="let guia of guiasFiltradas">
+  <tr *ngFor="let guia of guiasPaginadas">
 
     <th>{{ guia.numero }}</th>
 
@@ -116,5 +116,8 @@
   </tr>
 </tbody>
   </table>
-
+  <mat-paginator [length]="guiasFiltradas.length" [pageSize]="6" [pageSizeOptions]="[6]" showFirstLastButtons>
+</mat-paginator>
 </div>
+
+<br><br><br><br>

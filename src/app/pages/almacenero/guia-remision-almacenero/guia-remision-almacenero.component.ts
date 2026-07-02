@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, ChangeDetectorRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, ChangeDetectorRef, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
@@ -36,7 +36,7 @@ import { EditGuiaComponent } from '../../../shared/modals-almacenero/modals-guia
   templateUrl: './guia-remision-almacenero.component.html',
   styleUrl: './guia-remision-almacenero.component.scss'
 })
-export class GuiaRemisionAlmaceneroComponent implements OnInit {
+export class GuiaRemisionAlmaceneroComponent implements OnInit, AfterViewInit {
 
   guias: any[] = [];
   guiasFiltradas: any[] = [];
@@ -45,6 +45,11 @@ export class GuiaRemisionAlmaceneroComponent implements OnInit {
   proveedores: Proveedor[] = [];
   selectedProveedorId: string = '';
   selectedEstado: string = '';
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+    pageSize = 6;
+    pageIndex = 0;
+    guiasPaginadas: any[] = [];
 
   constructor(private router: Router, private productoService: ProductoService, private entradaService: EntradaService,
     private proveedorService: ProveedorService, private clienteService: ClienteService, 
@@ -55,11 +60,31 @@ export class GuiaRemisionAlmaceneroComponent implements OnInit {
   this.cargarProveedores();
 }
 
+ngAfterViewInit(): void {
+  this.paginator.page.subscribe(() => {
+    this.pageIndex = this.paginator.pageIndex;
+    this.pageSize = this.paginator.pageSize;
+    this.aplicarPaginacion();
+
+  });
+
+}
+
+aplicarPaginacion() {
+  const inicio = this.pageIndex * this.pageSize;
+  const fin = inicio + this.pageSize;
+  this.guiasPaginadas =
+    this.guiasFiltradas.slice(inicio, fin);
+  this.reload.markForCheck();
+}
+
 cargarGuias() {
   this.guiaService.getGuias().subscribe({
     next: (res) => {
       this.guias = res;
       this.guiasFiltradas = [...res];
+      this.pageIndex = 0;
+      this.aplicarPaginacion();
       this.reload.markForCheck();
     },
     error: (err) => console.error('Error al cargar guias', err)
@@ -91,7 +116,8 @@ aplicarFiltros() {
     return proveedorOk && estadoOk;
   });
 
-  this.reload.markForCheck();
+  this.pageIndex = 0;
+  this.aplicarPaginacion();
 }
 
 getCantidadTotal(guia: any): number {
