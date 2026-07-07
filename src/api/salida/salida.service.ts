@@ -176,4 +176,32 @@ export class SalidaService {
     return { message: 'Salida eliminada correctamente', eliminado };
   }
 
+  async getSalidasByAsignado(nombre: string) {
+  if (!nombre.trim()) {
+    throw new BadRequestException(
+      'El nombre del asignado no puede estar vacío'
+    );
+  }
+
+  return this.prisma.salida.findMany({
+    where: {
+      asignadoA: {
+        contains: nombre,
+        mode: 'insensitive'
+      }
+    },
+    include: {
+      user: true,
+      detalles: {
+        include: {
+          product: true
+        }
+      }
+    },
+    orderBy: {
+      createdAt: 'desc'
+    }
+  });
+}
+
 }

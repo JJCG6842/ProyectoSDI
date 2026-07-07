@@ -30,6 +30,11 @@ export class SalidaController {
     return this.salidaService.getSalidasByUserName(nombre);
   }
 
+  @Get('buscar/asignado/:nombre')
+  buscarPorAsignado(@Param('nombre') nombre: string) {
+    return this.salidaService.getSalidasByAsignado(nombre);
+}
+
   @Post()
   async crearSalida(@Body() body: any) {
     return this.salidaService.crearSalida(body);
