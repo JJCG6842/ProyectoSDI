@@ -47,6 +47,7 @@ export class SalidasAdministradorComponent implements OnInit {
   selectedUserId: string = '';
   currentUserId: string = '';
   usuarios: Usuario[] = [];
+  asignadoFiltro = '';
 
 
   constructor(private router: Router, private productoService: ProductoService,
@@ -99,6 +100,31 @@ export class SalidasAdministradorComponent implements OnInit {
       },
     })
   }
+
+  filtrarPorAsignado() {
+
+  const nombre = this.asignadoFiltro.trim();
+
+  if (!nombre) {
+    this.cargarSalidas();
+    return;
+  }
+
+  this.salidaService.buscarPorAsignado(nombre).subscribe({
+    next: (res) => {
+      this.salidas = res;
+      this.salidasFiltradas = [...res];
+      this.pageIndex = 0;
+      this.reload.markForCheck();
+    },
+    error: (err) => {
+      console.error(err);
+      this.salidas = [];
+      this.salidasFiltradas = [];
+      this.reload.markForCheck();
+    }
+  });
+}
 
   cargarUsuarios() {
     this.usuarioService.getUsuario().subscribe({

@@ -20,6 +20,12 @@
   </mat-select>
 </mat-form-field>
 
+<mat-form-field style="margin-left:20px">
+  <mat-label>Asignado a</mat-label>
+
+  <input matInput placeholder="Buscar..." [(ngModel)]="asignadoFiltro" (keyup)="filtrarPorAsignado()"/>
+</mat-form-field>
+
   <!-- <mat-form-field>
   <mat-label>Fecha</mat-label>
   <input matInput [matDatepicker]="datepicker" [(ngModel)]="filterDate" (dateChange)="aplicarFiltros()">
