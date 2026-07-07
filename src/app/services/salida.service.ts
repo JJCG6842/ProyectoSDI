@@ -37,6 +37,10 @@ export class SalidaService {
     return this.http.get<Salida[]>(`${this.apiUrl}/buscar/producto/${term}`);
   }
 
+  buscarPorAsignado(nombre: string): Observable<Salida[]> {
+    return this.http.get<Salida[]>(`${this.apiUrl}/buscar/asignado/${nombre}`);
+  }
+
   createSalida(data: { userId: string; asignadoA: string ;productos: ProductoSalida[] }): Observable<Salida>{
     return this.http.post<Salida>(this.apiUrl, data);
   }

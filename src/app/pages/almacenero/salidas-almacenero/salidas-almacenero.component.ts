@@ -47,6 +47,7 @@ export class SalidasAlmaceneroComponent implements OnInit {
   selectedUserId: string = '';
   currentUserId: string = '';
   usuarios: Usuario[] = [];
+  asignadoFiltro = '';
 
   constructor(private router: Router, private productoService: ProductoService,
     private salidaService: SalidaService,private usuarioService: UsuarioService) { }
@@ -56,7 +57,6 @@ export class SalidasAlmaceneroComponent implements OnInit {
     this.cargarProductos();
     this.cargarUsuarios();
   }
-
 
   get pagedSalidas(): Salida[] {
     const start = this.pageIndex * this.pageSize;
@@ -68,7 +68,6 @@ export class SalidasAlmaceneroComponent implements OnInit {
     this.pageIndex = event.pageIndex;
     this.reload.markForCheck();
   }
-
 
   cargarProductos() {
     this.productoService.getProductos().subscribe({
@@ -99,6 +98,31 @@ export class SalidasAlmaceneroComponent implements OnInit {
       },
     })
   }
+
+  filtrarPorAsignado() {
+
+  const nombre = this.asignadoFiltro.trim();
+
+  if (!nombre) {
+    this.cargarSalidas();
+    return;
+  }
+
+  this.salidaService.buscarPorAsignado(nombre).subscribe({
+    next: (res) => {
+      this.salidas = res;
+      this.salidasFiltradas = [...res];
+      this.pageIndex = 0;
+      this.reload.markForCheck();
+    },
+    error: (err) => {
+      console.error(err);
+      this.salidas = [];
+      this.salidasFiltradas = [];
+      this.reload.markForCheck();
+    }
+  });
+}
 
   cargarUsuarios() {
     this.usuarioService.getUsuario().subscribe({
