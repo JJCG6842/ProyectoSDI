@@ -9,7 +9,7 @@ import { Almacen } from '../interface/almacen.interface';
 })
 export class AlmacenService {
 
-  private apiUrl = 'http://localhost:3000/almacen';
+  private apiUrl = 'https://proyectosdibackend.onrender.com/almacen';
 
   constructor(
     private http: HttpClient

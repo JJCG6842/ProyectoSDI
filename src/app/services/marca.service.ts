@@ -8,7 +8,7 @@ import { Marca } from '../interface/marca.interface';
 })
 export class MarcaService {
 
-  private apiUrl = 'http://localhost:3000/marcas'; 
+  private apiUrl = 'https://proyectosdibackend.onrender.com/marcas'; 
 
   constructor(private http: HttpClient) { }
 

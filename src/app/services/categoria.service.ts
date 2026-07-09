@@ -7,7 +7,7 @@ import { Categoria } from '../interface/categoria.interface';
   providedIn: 'root',
 })
 export class CategoriaService {
-  private apiUrl = "http://localhost:3000/categoria";
+  private apiUrl = "https://proyectosdibackend.onrender.com/categoria";
 
   constructor(private http: HttpClient) {}
 

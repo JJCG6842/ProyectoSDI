@@ -13,7 +13,7 @@ export interface ProductoSalida {
 })
 export class SalidaService {
 
-  private apiUrl = 'http://localhost:3000/salida';
+  private apiUrl = 'https://proyectosdibackend.onrender.com/salida';
 
   constructor(private http: HttpClient) { }
 

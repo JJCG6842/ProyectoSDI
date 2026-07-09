@@ -7,7 +7,7 @@ import { Subcategoria } from '../interface/subcategoria.interface';
   providedIn: 'root'
 })
 export class SubcategoriaService {
-  private apiUrl = "http://localhost:3000/subcategoria";
+  private apiUrl = "https://proyectosdibackend.onrender.com/subcategoria";
 
   constructor(private http: HttpClient){}
 

@@ -9,7 +9,7 @@ import { GuiaRemision } from '../interface/guia_remision';
 
 export class GuiaRemisionService {
 
-  private apiUrl = 'http://localhost:3000/guia-remision';
+  private apiUrl = 'https://proyectosdibackend.onrender.com/guia-remision';
 
   constructor(private http: HttpClient) {}
 

@@ -7,7 +7,7 @@ import { Entrada } from '../interface/entrada.interface';
   providedIn: 'root',
 })
 export class EntradaService {
-  private readonly apiUrl = 'http://localhost:3000/entrada';
+  private readonly apiUrl = 'https://proyectosdibackend.onrender.com/entrada';
 
   constructor(private http: HttpClient) {}
 

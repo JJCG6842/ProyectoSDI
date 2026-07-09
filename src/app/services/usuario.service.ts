@@ -9,7 +9,7 @@ import { environment } from '../environments/environments.prod';
 })
 
 export class UsuarioService {
-    private apiUrl = `http://localhost:3000/usuario`;
+    private apiUrl = `https://proyectosdibackend.onrender.com/usuario`;
 
     constructor(private http: HttpClient) { }
 

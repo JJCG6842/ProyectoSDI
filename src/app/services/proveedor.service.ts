@@ -8,7 +8,7 @@ import { Proveedor } from '../interface/proveedor.interface';
 })
 export class ProveedorService {
 
-  private apiUrl = "http://localhost:3000/proveedores";
+  private apiUrl = "https://proyectosdibackend.onrender.com/proveedores";
 
   constructor(private http: HttpClient) {}
 

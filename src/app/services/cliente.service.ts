@@ -8,7 +8,7 @@ import { Cliente } from '../interface/cliente.interface';
 })
 export class ClienteService {
 
-  private apiUrl = 'http://localhost:3000/cliente';
+  private apiUrl = 'https://proyectosdibackend.onrender.com/cliente';
 
   constructor(private http: HttpClient) {}
 
