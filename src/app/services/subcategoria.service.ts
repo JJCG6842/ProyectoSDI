@@ -16,8 +16,10 @@ export class SubcategoriaService {
   }
 
   getSubcategoriasPorCategoriaId(categoryId: string): Observable<Subcategoria[]> {
-    return this.http.get<Subcategoria[]>(`https://proyectosdibackend.onrender.com/marcas/subcategoria/categoria/${categoryId}`);
-  }
+  return this.http.get<Subcategoria[]>(
+    `${this.apiUrl}/categoria/${categoryId}`
+  );
+}
 
   getSubcategoriaByName(name: string): Observable<Subcategoria>{
     return this.http.get<Subcategoria>(`${this.apiUrl}/nombre/${name}`);
